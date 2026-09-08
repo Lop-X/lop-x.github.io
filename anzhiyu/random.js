@@ -1,3 +1,3 @@
-var posts=["2026/09/07/已复活/","2026/09/07/anzhiyu-themes/"];function toRandomPost(){
+var posts=["网站搭建/已复活/","uncategorized/考研记录（一）/","网站搭建/网站装修记录/"];function toRandomPost(){
     pjax.loadUrl('/'+posts[Math.floor(Math.random() * posts.length)]);
   };
