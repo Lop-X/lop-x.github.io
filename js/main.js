@@ -193,6 +193,7 @@ document.addEventListener("DOMContentLoaded", function () {
   // sidebar menus
   const sidebarFn = {
     open: () => {
+      document.getElementById("body-wrap").classList.add("open");
       anzhiyu.sidebarPaddingR();
       anzhiyu.animateIn(document.getElementById("menu-mask"), "to_show 0.5s");
       document.getElementById("sidebar-menus").classList.add("open");
@@ -200,6 +201,7 @@ document.addEventListener("DOMContentLoaded", function () {
     },
     close: () => {
       const $body = document.body;
+      document.getElementById("body-wrap").classList.remove("open");
       $body.style.paddingRight = "";
       anzhiyu.animateOut(document.getElementById("menu-mask"), "to_hide 0.5s");
       document.getElementById("sidebar-menus").classList.remove("open");
@@ -1808,9 +1810,6 @@ document.addEventListener("DOMContentLoaded", function () {
     clickFnOfTagHide();
     tabsFn();
     switchComments();
-    document.getElementById("toggle-menu").addEventListener("click", () => {
-      sidebarFn.open();
-    });
 
     // 如果当前页有评论就执行函数
     if (document.getElementById("post-comment")) owoBig();

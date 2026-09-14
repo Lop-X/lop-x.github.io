@@ -445,9 +445,11 @@ function addRightMenuClickEvent() {
       window.location.href = window.location.origin;
     });
 
-  document.getElementById("menu-randomPost").addEventListener("click", function () {
-    toRandomPost();
-  });
+  const randomPostMenuItem = document.getElementById("menu-randomPost");
+  randomPostMenuItem &&
+    randomPostMenuItem.addEventListener("click", function () {
+      toRandomPost();
+    });
 
   document.getElementById("menu-commentBarrage").addEventListener("click", anzhiyu.switchCommentBarrage);
 
