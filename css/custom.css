@@ -643,6 +643,16 @@
   border-bottom: 1px solid var(--indie-line);
 }
 
+/* 首页 Latest Devlog 的条目模板是 article > a（没有 h2 / time），
+   而 section:last-of-type > article 是按“日期列 + 内容列”两列排的，
+   链接会掉进 120px 的窄列里折行。
+   这里让标题占满整行，并给一个比默认 16px 更大的字号。 */
+#indie-space section:last-of-type > article > a {
+  grid-column: 1 / -1;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
 #indie-space section:last-of-type > article h2,
 #indie-devlog > article h2 {
   grid-column: 2;
