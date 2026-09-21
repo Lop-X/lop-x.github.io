@@ -1443,6 +1443,31 @@
   }
 }
 
+/* Fixed homepage background */
+body:has(#page-header.full_page) #recent-posts > .recent-post-item,
+body:has(#page-header.full_page) #home-projects .project-card {
+  background: rgba(255, 255, 255, 0.72);
+}
+
+html[data-theme="dark"]:has(#page-header.full_page) #recent-posts > .recent-post-item,
+html[data-theme="dark"]:has(#page-header.full_page) #home-projects .project-card {
+  background: rgba(29, 30, 34, 0.72);
+}
+
+body:has(#page-header.full_page) #web_bg {
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  transform: none;
+  background: url("/img/home-bg.jpg") center / cover no-repeat;
+  background-attachment: fixed;
+}
+
+body:has(#page-header.full_page) #page-header.full_page {
+  background: transparent !important;
+}
+
 /* 导航精简：PC 端隐藏随机文章与中控台入口（移动端保留，侧边栏仍需要） */
 @media screen and (min-width: 769px) {
   #page-header #nav #nav-right .nav-button#randomPost_button,
