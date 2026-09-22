@@ -1462,6 +1462,19 @@ body:has(#page-header.full_page) #web_bg {
   transform: none;
   background: url("/img/home-bg.jpg") center / cover no-repeat;
   background-attachment: fixed;
+  filter: blur(0px);
+  transition: filter 0.35s ease;
+}
+
+/* 下滑背景略微模糊（仅首页）：主题在 scrollTop > 26 时给 #page-header 加 .nav-fixed，
+   用它作为纯 CSS 的滚动信号，无需额外的 JS。用 .full_page 限定为首页，
+   避免空间页 / 关于页等同样滚动时背景被一起模糊。 */
+body:has(#page-header.full_page.nav-fixed) #web_bg {
+  filter: blur(6px) brightness(0.94);
+}
+
+html[data-theme="dark"] body:has(#page-header.full_page.nav-fixed) #web_bg {
+  filter: blur(6px) brightness(0.86);
 }
 
 body:has(#page-header.full_page) #page-header.full_page {
@@ -1604,6 +1617,76 @@ body:has(#page-header.full_page) #page-header.full_page {
 
   #article-container .anime-gallery-card:hover,
   #article-container .anime-gallery-card:hover .anime-gallery-img {
+    transform: none;
+  }
+}
+
+/* ===== Home: left aside + right post list (>=769px) =====
+   Home is the only route whose #recent-posts exists, and the only route whose
+   #page-header carries .full_page (space pages use .not-top-img). Both anchors
+   are unique to "/", so /garden/, /hardware-soft/ and /indie/ can never match.
+   No :has(), no JS, no DOM change, no !important. */
+@media screen and (min-width: 769px) {
+  /* 1) Home container: restore the theme's horizontal row.
+        Scoped through the home-only .full_page header (space pages render
+        .not-top-img instead). The header is the first child of #body-wrap and
+        main#blog-container is its next sibling, so the row is declared on the
+        home container only; the theme's <=1200px `flex-direction: column`
+        override stays in force for every other layout. */
+  #body-wrap > header.full_page + main#blog-container > #content-inner.layout {
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: flex-start;
+  }
+
+  /* 2) Article column: right side, takes the remaining width. */
+  #content-inner.layout > #recent-posts {
+    order: 2;
+    width: auto;
+    flex: 1 1 0%;
+    min-width: 0;
+  }
+
+  /* 3) Left aside: visible again, ~300px, pinned before the articles.
+        `+` and `~` both require #recent-posts as a preceding sibling, so this
+        block only ever applies to the home layout. */
+  #content-inner.layout > #recent-posts + #aside-content,
+  #content-inner.layout > #recent-posts ~ .aside-content {
+    display: block;
+    order: 1;
+    flex: 0 0 300px;
+    width: 300px;
+    max-width: 300px;
+    margin: 0;
+    padding: 0 15px 0 0;
+    box-sizing: border-box;
+  }
+
+  /* 4) Top alignment between the two columns.
+        The theme pushes the first row of each column down by different amounts:
+          - the aside carries `animation: slide-in 0.6s 0.3s backwards`, whose
+            0% keyframe is `translateY(20px)`; with `backwards` filling the
+            delay, the aside renders 20px lower and never lines up with the
+            article column,
+          - the article flow's first .recent-post-item keeps `margin-top: 20px`
+            after the 50px category bar,
+          - the aside's first .card-widget keeps `margin-top: 20px`.
+        All three are neutralised here so both columns start on the container's
+        content-box baseline. */
+  #content-inner.layout > #recent-posts > .recent-post-item:first-child {
+    margin-top: 0;
+  }
+
+  #content-inner.layout > #recent-posts + #aside-content > .card-widget:first-child,
+  #content-inner.layout > #recent-posts ~ .aside-content > .card-widget:first-child {
+    margin-top: 0;
+  }
+
+  /* Cancel the aside's slide-in offset so its first card aligns with the top of
+     the article column instead of sitting 20px lower. */
+  #content-inner.layout > #recent-posts + #aside-content,
+  #content-inner.layout > #recent-posts ~ .aside-content {
+    animation: none;
     transform: none;
   }
 }
