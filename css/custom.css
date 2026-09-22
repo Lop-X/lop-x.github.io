@@ -1462,19 +1462,131 @@ body:has(#page-header.full_page) #web_bg {
   transform: none;
   background: url("/img/home-bg.jpg") center / cover no-repeat;
   background-attachment: fixed;
-  filter: blur(0px);
-  transition: filter 0.35s ease;
+  filter: blur(0px) brightness(1);
+  will-change: filter, transform;
 }
 
-/* 下滑背景略微模糊（仅首页）：主题在 scrollTop > 26 时给 #page-header 加 .nav-fixed，
-   用它作为纯 CSS 的滚动信号，无需额外的 JS。用 .full_page 限定为首页，
-   避免空间页 / 关于页等同样滚动时背景被一起模糊。 */
-body:has(#page-header.full_page.nav-fixed) #web_bg {
-  filter: blur(6px) brightness(0.94);
+/* ============================================================
+   首页滚动驱动背景模糊（仅首页，纯 CSS，无 JS）
+   ------------------------------------------------------------
+   用 animation-timeline: scroll(root block) 把 #web_bg 的 filter / transform
+   直接绑定到根滚动进度，滚动多少就模糊多少，不会出现 blur(0) → blur(6px)
+   的突跳。整段用 .full_page 限定首页：空间页 / 文章页 / 分类页 / 标签页的
+   #page-header 都是 .not-top-img，永远不会命中。
+
+   滚动距离 → 效果（animation-range: 0px 400px）
+     0px    blur(0px)   scale(1)      brightness(1)
+     100px  blur(1px)   scale(1.001)  brightness(0.988)
+     200px  blur(2.5px) scale(1.003)  brightness(0.975)
+     300px  blur(4px)   scale(1.005)  brightness(0.962)
+     400px+ blur(6px)   scale(1.008)  brightness(0.95)
+   上限固定为 blur 6px / scale 1.008，线性推进，无弹性过冲。
+   ============================================================ */
+@supports (animation-timeline: scroll()) {
+  body:has(#page-header.full_page) #web_bg {
+    animation: lopx-bg-blur linear both;
+    animation-timeline: scroll(root block);
+    /* 用固定像素区间而非百分比：整页高度在不同设备差异很大，
+       百分比会让矮窗口在几十像素内就冲满。这里把 0 → 400px 的滚动
+       映射到完整的 0% → 100%，与目标数值表一一对应。 */
+    animation-range: 0px 400px;
+  }
+
+  @keyframes lopx-bg-blur {
+    0% {
+      filter: blur(0px) brightness(1);
+      transform: scale(1);
+    }
+    25% {
+      filter: blur(1px) brightness(0.988);
+      transform: scale(1.001);
+    }
+    50% {
+      filter: blur(2.5px) brightness(0.975);
+      transform: scale(1.003);
+    }
+    75% {
+      filter: blur(4px) brightness(0.962);
+      transform: scale(1.005);
+    }
+    100% {
+      filter: blur(6px) brightness(0.95);
+      transform: scale(1.008);
+    }
+  }
+
+  /* 深色模式：亮度压得更弱一些，模糊与缩放保持一致 */
+  html[data-theme="dark"] body:has(#page-header.full_page) #web_bg {
+    animation-name: lopx-bg-blur-dark;
+  }
+
+  @keyframes lopx-bg-blur-dark {
+    0% {
+      filter: blur(0px) brightness(1);
+      transform: scale(1);
+    }
+    25% {
+      filter: blur(1px) brightness(0.973);
+      transform: scale(1.001);
+    }
+    50% {
+      filter: blur(2.5px) brightness(0.945);
+      transform: scale(1.003);
+    }
+    75% {
+      filter: blur(4px) brightness(0.917);
+      transform: scale(1.005);
+    }
+    100% {
+      filter: blur(6px) brightness(0.89);
+      transform: scale(1.008);
+    }
+  }
 }
 
-html[data-theme="dark"] body:has(#page-header.full_page.nav-fixed) #web_bg {
-  filter: blur(6px) brightness(0.86);
+/* ------------------------------------------------------------
+   Fallback：不支持 animation-timeline 的浏览器
+   沿用主题现成的 .nav-fixed 状态（scrollTop > 26 时挂到 #page-header），
+   一次性平滑过渡到最大 blur，不会完全没有效果。
+   已支持滚动时间轴时，@supports not 不会生效，两条规则不会冲突。
+   ------------------------------------------------------------ */
+@supports not (animation-timeline: scroll()) {
+  body:has(#page-header.full_page) #web_bg {
+    transition:
+      filter 0.6s var(--animation-in),
+      transform 0.6s var(--animation-in);
+  }
+
+  body:has(#page-header.full_page.nav-fixed) #web_bg {
+    filter: blur(6px) brightness(0.95);
+    transform: scale(1.008);
+  }
+
+  html[data-theme="dark"] body:has(#page-header.full_page.nav-fixed) #web_bg {
+    filter: blur(6px) brightness(0.89);
+    transform: scale(1.008);
+  }
+}
+
+/* 尊重系统的“减少动态效果”设置：不做缩放、不做过冲，
+   只保留非常轻微的模糊与亮度变化。 */
+@media (prefers-reduced-motion: reduce) {
+  @supports (animation-timeline: scroll()) {
+    body:has(#page-header.full_page) #web_bg {
+      animation: none;
+    }
+  }
+
+  body:has(#page-header.full_page) #web_bg {
+    transform: none;
+    transition: filter 0.3s linear;
+  }
+
+  body:has(#page-header.full_page.nav-fixed) #web_bg,
+  html[data-theme="dark"] body:has(#page-header.full_page.nav-fixed) #web_bg {
+    transform: none;
+    filter: blur(2px) brightness(0.98);
+  }
 }
 
 body:has(#page-header.full_page) #page-header.full_page {
