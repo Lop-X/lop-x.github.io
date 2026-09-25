@@ -11,38 +11,44 @@
   color: var(--lopx-ink);
 }
 
-/* Header */
-#lopx-home > header {
-  max-width: 680px;
-  margin: 0 0 72px;
+/* Home About 区块：整体复用 /about/ 的 #about-page 结构与样式，仅做首页语境下的微调 */
+#lopx-home > section#home-about {
+  margin-top: 0;
+  margin-bottom: 24px;
 }
 
-#lopx-home > header h1 {
+/* 去掉 About 页面级留白，使其嵌入首页容器（保留其余全部 About 视觉） */
+#lopx-home #about-page {
+  max-width: none;
   margin: 0;
-  color: var(--lopx-ink);
-  font-size: clamp(2.75rem, 7vw, 5.25rem);
-  font-weight: 750;
-  letter-spacing: 0;
-  line-height: 0.98;
+  padding: 0;
 }
 
-#lopx-home > header p {
-  margin: 12px 0 0;
+/* 自我介绍文字：标题放大为区块主标题，正文回到常规字号（覆盖 About 页的 title2 大字号） */
+#lopx-home #about-page .myInfoAndSayHello .title1 {
+  color: #273239;
+  font-size: clamp(1.5rem, 3.4vw, 2.25rem);
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+#lopx-home #about-page .myInfoAndSayHello .title2 {
+  margin: 10px 0 0;
   color: var(--lopx-muted);
   font-size: 1rem;
-  line-height: 1.6;
+  font-weight: 400;
+  line-height: 1.7;
 }
 
-#lopx-home > header p:first-of-type {
-  margin-top: 20px;
-  color: var(--lopx-ink);
-  font-size: 1.1rem;
-  font-weight: 600;
+/* 自我介绍卡片的 hover：与技术方向 / About Me 卡片保持一致 */
+#lopx-home #about-page .author-content-item.myInfoAndSayHello {
+  transition: transform 200ms ease, border-color 180ms ease, box-shadow 180ms ease;
 }
 
-#lopx-home > header p:last-of-type {
-  margin-top: 4px;
-  font-size: 0.95rem;
+#lopx-home #about-page .author-content-item.myInfoAndSayHello:hover {
+  transform: translateY(-2px);
+  border-color: #ccd8d4;
+  box-shadow: 0 10px 24px rgba(39, 50, 57, 0.07);
 }
 
 /* Projects */
@@ -179,8 +185,8 @@
     padding: 40px 20px 56px;
   }
 
-  #lopx-home > header {
-    margin-bottom: 52px;
+  #lopx-home > section#home-about {
+    margin-bottom: 16px;
   }
 
   #home-projects .project-list {
@@ -194,10 +200,6 @@
 }
 
 @media screen and (max-width: 480px) {
-  #lopx-home > header h1 {
-    font-size: 3.25rem;
-  }
-
   #recent-writing li {
     display: block;
     padding: 14px 0;
@@ -1420,6 +1422,7 @@
   #garden-category .article-sort .article-sort-item-title,
   #about-page .author-content-item.skills,
   #about-page .author-content-item.buff,
+  #lopx-home #about-page .author-content-item.myInfoAndSayHello,
   #page-header #nav #nav-right .nav-button a,
   #page-header #nav #nav-right .nav-button a:hover,
   #page-header #nav #nav-right #toggle-menu > a,
@@ -1438,159 +1441,10 @@
   #indie-space section:first-of-type > article:hover,
   #garden-space > nav a:hover,
   #about-page .author-content-item.skills:hover,
-  #about-page .author-content-item.buff:hover {
+  #about-page .author-content-item.buff:hover,
+  #lopx-home #about-page .author-content-item.myInfoAndSayHello:hover {
     transform: none;
   }
-}
-
-/* Fixed homepage background */
-body:has(#page-header.full_page) #recent-posts > .recent-post-item,
-body:has(#page-header.full_page) #home-projects .project-card {
-  background: rgba(255, 255, 255, 0.72);
-}
-
-html[data-theme="dark"]:has(#page-header.full_page) #recent-posts > .recent-post-item,
-html[data-theme="dark"]:has(#page-header.full_page) #home-projects .project-card {
-  background: rgba(29, 30, 34, 0.72);
-}
-
-body:has(#page-header.full_page) #web_bg {
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  transform: none;
-  background: url("/img/home-bg.jpg") center / cover no-repeat;
-  background-attachment: fixed;
-  filter: blur(0px) brightness(1);
-  will-change: filter, transform;
-}
-
-/* ============================================================
-   首页滚动驱动背景模糊（仅首页，纯 CSS，无 JS）
-   ------------------------------------------------------------
-   用 animation-timeline: scroll(root block) 把 #web_bg 的 filter / transform
-   直接绑定到根滚动进度，滚动多少就模糊多少，不会出现 blur(0) → blur(6px)
-   的突跳。整段用 .full_page 限定首页：空间页 / 文章页 / 分类页 / 标签页的
-   #page-header 都是 .not-top-img，永远不会命中。
-
-   滚动距离 → 效果（animation-range: 0px 400px）
-     0px    blur(0px)   scale(1)      brightness(1)
-     100px  blur(1px)   scale(1.001)  brightness(0.988)
-     200px  blur(2.5px) scale(1.003)  brightness(0.975)
-     300px  blur(4px)   scale(1.005)  brightness(0.962)
-     400px+ blur(6px)   scale(1.008)  brightness(0.95)
-   上限固定为 blur 6px / scale 1.008，线性推进，无弹性过冲。
-   ============================================================ */
-@supports (animation-timeline: scroll()) {
-  body:has(#page-header.full_page) #web_bg {
-    animation: lopx-bg-blur linear both;
-    animation-timeline: scroll(root block);
-    /* 用固定像素区间而非百分比：整页高度在不同设备差异很大，
-       百分比会让矮窗口在几十像素内就冲满。这里把 0 → 400px 的滚动
-       映射到完整的 0% → 100%，与目标数值表一一对应。 */
-    animation-range: 0px 400px;
-  }
-
-  @keyframes lopx-bg-blur {
-    0% {
-      filter: blur(0px) brightness(1);
-      transform: scale(1);
-    }
-    25% {
-      filter: blur(1px) brightness(0.988);
-      transform: scale(1.001);
-    }
-    50% {
-      filter: blur(2.5px) brightness(0.975);
-      transform: scale(1.003);
-    }
-    75% {
-      filter: blur(4px) brightness(0.962);
-      transform: scale(1.005);
-    }
-    100% {
-      filter: blur(6px) brightness(0.95);
-      transform: scale(1.008);
-    }
-  }
-
-  /* 深色模式：亮度压得更弱一些，模糊与缩放保持一致 */
-  html[data-theme="dark"] body:has(#page-header.full_page) #web_bg {
-    animation-name: lopx-bg-blur-dark;
-  }
-
-  @keyframes lopx-bg-blur-dark {
-    0% {
-      filter: blur(0px) brightness(1);
-      transform: scale(1);
-    }
-    25% {
-      filter: blur(1px) brightness(0.973);
-      transform: scale(1.001);
-    }
-    50% {
-      filter: blur(2.5px) brightness(0.945);
-      transform: scale(1.003);
-    }
-    75% {
-      filter: blur(4px) brightness(0.917);
-      transform: scale(1.005);
-    }
-    100% {
-      filter: blur(6px) brightness(0.89);
-      transform: scale(1.008);
-    }
-  }
-}
-
-/* ------------------------------------------------------------
-   Fallback：不支持 animation-timeline 的浏览器
-   沿用主题现成的 .nav-fixed 状态（scrollTop > 26 时挂到 #page-header），
-   一次性平滑过渡到最大 blur，不会完全没有效果。
-   已支持滚动时间轴时，@supports not 不会生效，两条规则不会冲突。
-   ------------------------------------------------------------ */
-@supports not (animation-timeline: scroll()) {
-  body:has(#page-header.full_page) #web_bg {
-    transition:
-      filter 0.6s var(--animation-in),
-      transform 0.6s var(--animation-in);
-  }
-
-  body:has(#page-header.full_page.nav-fixed) #web_bg {
-    filter: blur(6px) brightness(0.95);
-    transform: scale(1.008);
-  }
-
-  html[data-theme="dark"] body:has(#page-header.full_page.nav-fixed) #web_bg {
-    filter: blur(6px) brightness(0.89);
-    transform: scale(1.008);
-  }
-}
-
-/* 尊重系统的“减少动态效果”设置：不做缩放、不做过冲，
-   只保留非常轻微的模糊与亮度变化。 */
-@media (prefers-reduced-motion: reduce) {
-  @supports (animation-timeline: scroll()) {
-    body:has(#page-header.full_page) #web_bg {
-      animation: none;
-    }
-  }
-
-  body:has(#page-header.full_page) #web_bg {
-    transform: none;
-    transition: filter 0.3s linear;
-  }
-
-  body:has(#page-header.full_page.nav-fixed) #web_bg,
-  html[data-theme="dark"] body:has(#page-header.full_page.nav-fixed) #web_bg {
-    transform: none;
-    filter: blur(2px) brightness(0.98);
-  }
-}
-
-body:has(#page-header.full_page) #page-header.full_page {
-  background: transparent !important;
 }
 
 /* 导航精简：PC 端隐藏随机文章与中控台入口（移动端保留，侧边栏仍需要） */
@@ -1729,76 +1583,6 @@ body:has(#page-header.full_page) #page-header.full_page {
 
   #article-container .anime-gallery-card:hover,
   #article-container .anime-gallery-card:hover .anime-gallery-img {
-    transform: none;
-  }
-}
-
-/* ===== Home: left aside + right post list (>=769px) =====
-   Home is the only route whose #recent-posts exists, and the only route whose
-   #page-header carries .full_page (space pages use .not-top-img). Both anchors
-   are unique to "/", so /garden/, /hardware-soft/ and /indie/ can never match.
-   No :has(), no JS, no DOM change, no !important. */
-@media screen and (min-width: 769px) {
-  /* 1) Home container: restore the theme's horizontal row.
-        Scoped through the home-only .full_page header (space pages render
-        .not-top-img instead). The header is the first child of #body-wrap and
-        main#blog-container is its next sibling, so the row is declared on the
-        home container only; the theme's <=1200px `flex-direction: column`
-        override stays in force for every other layout. */
-  #body-wrap > header.full_page + main#blog-container > #content-inner.layout {
-    flex-direction: row;
-    align-items: flex-start;
-    justify-content: flex-start;
-  }
-
-  /* 2) Article column: right side, takes the remaining width. */
-  #content-inner.layout > #recent-posts {
-    order: 2;
-    width: auto;
-    flex: 1 1 0%;
-    min-width: 0;
-  }
-
-  /* 3) Left aside: visible again, ~300px, pinned before the articles.
-        `+` and `~` both require #recent-posts as a preceding sibling, so this
-        block only ever applies to the home layout. */
-  #content-inner.layout > #recent-posts + #aside-content,
-  #content-inner.layout > #recent-posts ~ .aside-content {
-    display: block;
-    order: 1;
-    flex: 0 0 300px;
-    width: 300px;
-    max-width: 300px;
-    margin: 0;
-    padding: 0 15px 0 0;
-    box-sizing: border-box;
-  }
-
-  /* 4) Top alignment between the two columns.
-        The theme pushes the first row of each column down by different amounts:
-          - the aside carries `animation: slide-in 0.6s 0.3s backwards`, whose
-            0% keyframe is `translateY(20px)`; with `backwards` filling the
-            delay, the aside renders 20px lower and never lines up with the
-            article column,
-          - the article flow's first .recent-post-item keeps `margin-top: 20px`
-            after the 50px category bar,
-          - the aside's first .card-widget keeps `margin-top: 20px`.
-        All three are neutralised here so both columns start on the container's
-        content-box baseline. */
-  #content-inner.layout > #recent-posts > .recent-post-item:first-child {
-    margin-top: 0;
-  }
-
-  #content-inner.layout > #recent-posts + #aside-content > .card-widget:first-child,
-  #content-inner.layout > #recent-posts ~ .aside-content > .card-widget:first-child {
-    margin-top: 0;
-  }
-
-  /* Cancel the aside's slide-in offset so its first card aligns with the top of
-     the article column instead of sitting 20px lower. */
-  #content-inner.layout > #recent-posts + #aside-content,
-  #content-inner.layout > #recent-posts ~ .aside-content {
-    animation: none;
     transform: none;
   }
 }
