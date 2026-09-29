@@ -1586,3 +1586,147 @@
     transform: none;
   }
 }
+
+/* ============================================================
+   导航栏双语副标题（中文主文字 + 英文小字）
+   由 themes/anzhiyu/layout/includes/header/menu_item.pug 渲染：
+   menu 里写成「中文 || English」，English 会输出为 .nav-sub-label
+   说明：父级 a 带 letter-spacing: 0.3rem / font-weight: 700，
+        这里必须显式重置，否则英文小字会被拉得很散。
+        用 opacity 而非 color 调淡，才能跟随 hover 时的反白。
+   ============================================================ */
+.nav-label .nav-sub-label {
+  margin-left: 6px;
+  font-size: 0.72em;
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  opacity: 0.78;
+}
+
+/* ============================================================
+   视觉统一层 —— 2026-09-29
+   背景：站内并存三套配色（首页鼠尾草绿灰 / 空间页蓝灰 / 主题默认宝典蓝），
+        另有列表宽度、字重、留白三处不统一，以及 tech、indie 两页的布局硬伤。
+   本段全部为「覆盖式」声明，删除本段即可完整回退到改造前。
+   ============================================================ */
+
+/* ---- 1. 主色统一：AnZhiYu 默认宝典蓝 → 首页鼠尾草绿灰 ----
+   主题变量链路：--anzhiyu-theme 是源头，--anzhiyu-main / --anzhiyu-main-op /
+   --anzhiyu-shadow-* 全部由它派生。只改 --anzhiyu-main 不够（-op 系列仍是蓝色），
+   必须覆盖源头。用 :root:root 提高权重，稳定压过主题的 :root 与 [data-theme] 定义。 */
+:root:root {
+  --anzhiyu-theme: #60756d;
+  --anzhiyu-theme-op: #60756d24;
+  --anzhiyu-theme-op-deep: #60756ddd;
+  --anzhiyu-main: #60756d;
+  --anzhiyu-main-op: #60756d24;
+  --anzhiyu-shadow-theme: 0 8px 12px -3px rgba(96, 117, 109, 0.16);
+  --anzhiyu-shadow-main: 0 8px 12px -3px rgba(96, 117, 109, 0.16);
+}
+
+/* ---- 2. 右边缘对齐：首页 Recent Writing 原被限宽 900px，比 Projects 区窄约 194px ---- */
+#recent-writing {
+  max-width: none;
+}
+
+/* ---- 3. 列表标题字重统一为 600（页面主标题才用 700+）---- */
+#recent-writing li a,
+#hardware-soft-notes > article h2 {
+  font-weight: 600;
+}
+
+#indie-space section:last-of-type > article > a {
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+/* ---- 4. tech 空间首页列表：单列 ----
+   .pug 结构是 section > article > a(标题)[+ p(描述)]，没有日期列；
+   而共享规则为「带日期的 notes 列表」写了 grid-template-columns: 120px 1fr，
+   于是唯一的标题链接被塞进 120px 窄列逐字换行。此处让它回到单列。 */
+#hardware-soft-space section:last-child > article,
+#hardware-soft-space section > article {
+  display: block;
+  padding: 16px 0;
+  border-top: 1px solid var(--hardware-line);
+}
+
+#hardware-soft-space section:last-child > article:last-child,
+#hardware-soft-space section > article:last-child {
+  border-bottom: 1px solid var(--hardware-line);
+}
+
+#hardware-soft-space section article > a {
+  color: var(--hardware-ink);
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.5;
+}
+
+/* ---- 5. indie 空间首页：标题跨列 + 单卡片时退回单列 ----
+   原规则把 section:first-of-type 设为两列网格，但 section 的第一个子元素是 h2，
+   于是「标题 + 唯一文章」被并排成左右两栏。
+   当前 0 篇 project，该 section 同时是 last-of-type，问题必现。 */
+@media screen and (min-width: 769px) {
+  #indie-space section:first-of-type {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  #indie-space section:first-of-type:has(> article + article) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+#indie-space section:first-of-type > h2 {
+  grid-column: 1 / -1;
+}
+
+/* ---- 6. 正文宽度统一：tech notes 原 1094px，indie / garden 为 900px ---- */
+#hardware-soft-notes {
+  max-width: 964px; /* 900px 内容 + 左右各 32px 内边距 */
+}
+
+/* ---- 7. 留白收紧 ---- */
+#indie-space section {
+  margin-top: 40px; /* 原 56px */
+}
+
+#garden-space > section {
+  margin-top: 38px; /* 原 58px */
+}
+
+/* ---- 8. 主题内置的蓝色残留（静态色，不随 --anzhiyu-theme 变化）----
+   ① Pace 页面加载进度条：原为蓝→品红渐变
+   ② --hr-border：主题编译期按旧主色混出的淡蓝，需单独覆盖 */
+.pace-progress {
+  background-image: none !important;
+  background-color: #60756d !important;
+}
+
+:root:root {
+  --hr-border: rgba(96, 117, 109, 0.16);
+}
+
+/* ---- 9. 首页横幅（index_img 启用后）----
+   背景图主体（人物）位于画面正中，主题默认把站点标题放在 top: 43% 处，
+   正好压在人物面部——浅肤色上白字对比度不足，实测已糊成一片。
+   处理：① 标题上移到上方区域；② 顶部补一层由深到透明的渐变压暗，
+   顺带稳住悬浮导航与标题的对比度。滚动提示 z-index 为 11，不受遮罩影响。 */
+#page-header.full_page::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(0, 0, 0, 0.42) 0%,
+    rgba(0, 0, 0, 0.18) 22%,
+    rgba(0, 0, 0, 0) 46%
+  );
+  pointer-events: none;
+  z-index: 1;
+}
+
+#page-header.full_page #site-info {
+  top: 22vh;
+  z-index: 2;
+}

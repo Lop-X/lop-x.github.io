@@ -1,3 +1,3 @@
-var posts=["笔记/hexo配置bangumi追番页面/","笔记/常见Git命令学习/","笔记/使用obsidian编辑笔记/","笔记/已复活/","笔记/用easyX制作Snake-Game/","uncategorized/考研记录（一）/","笔记/网站装修记录/","uncategorized/考研记录（二）/"];function toRandomPost(){
+var posts=["建站/hexo配置bangumi追番页面/","Git/常见Git命令学习/","工具/使用obsidian编辑笔记/","建站/已复活/","游戏开发/用easyX制作Snake-Game/","考研/考研记录（一）/","建站/网站装修记录/","考研/考研记录（二）/"];function toRandomPost(){
     pjax.loadUrl('/'+posts[Math.floor(Math.random() * posts.length)]);
   };
