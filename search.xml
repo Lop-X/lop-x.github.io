@@ -1,6 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>Hexo 配置 Bangumi 追番页面</title>
+    <url>/%E5%BB%BA%E7%AB%99/hexo%E9%85%8D%E7%BD%AEbangumi%E8%BF%BD%E7%95%AA%E9%A1%B5%E9%9D%A2/</url>
+    <content><![CDATA[<h2 id="终于成功啦"><a href="#终于成功啦" class="headerlink" title="终于成功啦"></a>终于成功啦</h2><p><strong>Todo 目前不挂梯子无法显示封面，待解决！！！</strong></p>
+<p>使用插件<br><a href="https://github.com/HCLonely/hexo-bilibili-bangumi">HCLonely&#x2F;hexo-bilibili-bangumi: hexo 番剧页面插件，可选数据源：Bilibili, Bangumi</a></p>
+<h3 id="第一步安装插件"><a href="#第一步安装插件" class="headerlink" title="第一步安装插件"></a>第一步安装插件</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">npm install hexo-bilibili-bangumi --save</span><br></pre></td></tr></table></figure>
+<h3 id="第二步安配置设置"><a href="#第二步安配置设置" class="headerlink" title="第二步安配置设置"></a>第二步安配置设置</h3><p><strong>在_config.yml里面添加如下代码，注意是hexo配置不是主题配置</strong></p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">bangumi: <span class="comment"># 追番设置</span></span><br><span class="line">  <span class="built_in">enable</span>: <span class="literal">true</span></span><br><span class="line">  <span class="built_in">source</span>: bangumi</span><br><span class="line">  path: bangumis/index.html</span><br><span class="line">  vmid: 956578 <span class="comment">#注意此处换成自己的bangumi ID 主页名字旁边有个 @XXXXX数字的那个</span></span><br><span class="line">  title: <span class="string">&quot;追番列表&quot;</span></span><br><span class="line">  quote: <span class="string">&quot;生命不息，追番不止！&quot;</span></span><br><span class="line">  show: 1</span><br><span class="line">  lazyload: <span class="literal">false</span></span><br><span class="line">  loading:</span><br><span class="line">  showMyComment: <span class="literal">false</span></span><br><span class="line">  pagination: <span class="literal">false</span></span><br><span class="line">  metaColor:</span><br><span class="line">  color:</span><br><span class="line">  webp:</span><br><span class="line">  progress:</span><br><span class="line">  extraOrder:</span><br><span class="line">  proxy:</span><br><span class="line">    host: <span class="string">&quot;127.0.0.1&quot;</span>   <span class="comment">#换成自己代理的地址</span></span><br><span class="line">    port: <span class="string">&quot;7897&quot;</span>        <span class="comment">#换成自己代理的端口</span></span><br><span class="line">  extra_options:</span><br><span class="line">    top_img: <span class="literal">false</span></span><br><span class="line">    lazyload:</span><br><span class="line">      <span class="built_in">enable</span>: <span class="literal">false</span></span><br></pre></td></tr></table></figure>
+
+<p>把vmid 换成自己bangumi的 </p>
+<p>proxy代理换成自己的地址（自己去小软件里面查），众所周知bangumi现在不能直连了</p>
+<p>规则代理可能会绕过梯子，导致无法更新bangumi数据，</p>
+<h3 id="第三步同步数据"><a href="#第三步同步数据" class="headerlink" title="第三步同步数据"></a>第三步同步数据</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 更新追番数据</span></span><br><span class="line">hexo bangumi -u</span><br><span class="line"></span><br><span class="line"><span class="comment"># 删除追番数据</span></span><br><span class="line">hexo bangumi -d</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>连接正常的话会看到</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">INFO  Getting bangumis, please <span class="built_in">wait</span>...</span><br><span class="line">正在获取 [想看] 番剧 [██] 100% 0.0s</span><br><span class="line">正在获取 [在看] 番剧 [█] 100% 0.0s</span><br><span class="line">正在获取 [已看] 番剧 [█████████████] 100% 33.6s</span><br></pre></td></tr></table></figure>
+<p>之后就可以正常部署啦</p>
+]]></content>
+      <categories>
+        <category>建站</category>
+      </categories>
+      <tags>
+        <tag>hexo</tag>
+        <tag>bangumi</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>使用 Obsidian 编辑笔记</title>
     <url>/%E5%B7%A5%E5%85%B7/%E4%BD%BF%E7%94%A8obsidian%E7%BC%96%E8%BE%91%E7%AC%94%E8%AE%B0/</url>
     <content><![CDATA[<p>使用Vscode编辑markdown显示效果不好，使用Typora编辑只能一次打开一篇文章，<br>为了解决编辑文章的痛点，可以使用obsidian。</p>
@@ -14,88 +40,6 @@
       </categories>
       <tags>
         <tag>obsidian</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>常见 Git 命令学习使用</title>
-    <url>/Git/%E5%B8%B8%E8%A7%81Git%E5%91%BD%E4%BB%A4%E5%AD%A6%E4%B9%A0/</url>
-    <content><![CDATA[<h1 id="Git-基础使用"><a href="#Git-基础使用" class="headerlink" title="Git 基础使用"></a>Git 基础使用</h1><p>Git 是本地代码版本管理工具，用来记录修改历史、恢复旧版本。<br>GitHub 是把 Git 仓库托管到网上的平台。</p>
-<h2 id="1-第一次配置"><a href="#1-第一次配置" class="headerlink" title="1. 第一次配置"></a>1. 第一次配置</h2><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git config --global user.name <span class="string">&quot;Fanbo&quot;</span></span><br><span class="line">git config --global user.email <span class="string">&quot;你的GitHub邮箱&quot;</span></span><br><span class="line">git config --global --list</span><br></pre></td></tr></table></figure>
-<p>可以使用下面的命令检查配置：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git config --global --list</span><br></pre></td></tr></table></figure>
-
-<p>如果看到类似：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">user.name=Fanbo</span><br><span class="line">user.email=xxxx@example.com</span><br></pre></td></tr></table></figure>
-
-<p>就说明配置成功了。</p>
-<h2 id="2-创建仓库"><a href="#2-创建仓库" class="headerlink" title="2. 创建仓库"></a>2. 创建仓库</h2><p>在项目文件夹中执行：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git init</span><br></pre></td></tr></table></figure>
-
-<p>会生成隐藏的 <code>.git</code> 文件夹，不要删除。</p>
-<p>先创建 <code>.gitignore</code>，告诉 Git 哪些文件不管理，列如：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">node_modules/</span><br><span class="line">.env</span><br><span class="line">*.log</span><br><span class="line">.DS_Store</span><br></pre></td></tr></table></figure>
-
-<p>如果某个文件不想被忽略，用 <code>!</code>：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">!important.log</span><br></pre></td></tr></table></figure>
-
-<h2 id="3-第一次提交并上传-GitHub"><a href="#3-第一次提交并上传-GitHub" class="headerlink" title="3. 第一次提交并上传 GitHub"></a>3. 第一次提交并上传 GitHub</h2><p>在 GitHub 新建仓库，然后本地执行：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git add .</span><br><span class="line">git commit -m <span class="string">&quot;Initial commit&quot;</span></span><br><span class="line">git branch -M main</span><br><span class="line">git remote add origin 你的仓库地址</span><br><span class="line">git push -u origin main</span><br></pre></td></tr></table></figure>
-
-<p>如果提示 <code>src refspec main does not match any</code>，通常是还没提交，或分支不是 <code>main</code>。先执行：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git add .</span><br><span class="line">git commit -m <span class="string">&quot;Initial commit&quot;</span></span><br><span class="line">git branch -M main</span><br></pre></td></tr></table></figure>
-
-<p>如果远程仓库已有 README，先合并再推送：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git pull origin main --allow-unrelated-histories</span><br><span class="line">git push -u origin main</span><br></pre></td></tr></table></figure>
-
-<h2 id="4-以后每次修改"><a href="#4-以后每次修改" class="headerlink" title="4. 以后每次修改"></a>4. 以后每次修改</h2><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git add .</span><br><span class="line">git commit -m <span class="string">&quot;说明修改内容&quot;</span></span><br><span class="line">git push</span><br></pre></td></tr></table></figure>
-
-<p>记住这三条即可。</p>
-<h2 id="5-常用命令"><a href="#5-常用命令" class="headerlink" title="5. 常用命令"></a>5. 常用命令</h2><table>
-<thead>
-<tr>
-<th>命令</th>
-<th>作用</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><code>git init</code></td>
-<td>创建 Git 仓库</td>
-</tr>
-<tr>
-<td><code>git status</code></td>
-<td>查看当前状态</td>
-</tr>
-<tr>
-<td><code>git add .</code></td>
-<td>暂存所有修改</td>
-</tr>
-<tr>
-<td><code>git commit -m &quot;...&quot;</code></td>
-<td>创建新版本</td>
-</tr>
-<tr>
-<td><code>git push</code></td>
-<td>上传到 GitHub</td>
-</tr>
-<tr>
-<td><code>git pull</code></td>
-<td>获取远程最新代码</td>
-</tr>
-<tr>
-<td><code>git log</code></td>
-<td>查看提交历史</td>
-</tr>
-<tr>
-<td><code>git remote -v</code></td>
-<td>查看远程仓库</td>
-</tr>
-</tbody></table>
-]]></content>
-      <categories>
-        <category>Git</category>
-      </categories>
-      <tags>
-        <tag>Git</tag>
       </tags>
   </entry>
   <entry>
@@ -230,74 +174,85 @@
       </tags>
   </entry>
   <entry>
-    <title>Hexo 配置 Bangumi 追番页面</title>
-    <url>/%E5%BB%BA%E7%AB%99/hexo%E9%85%8D%E7%BD%AEbangumi%E8%BF%BD%E7%95%AA%E9%A1%B5%E9%9D%A2/</url>
-    <content><![CDATA[<h2 id="终于成功啦"><a href="#终于成功啦" class="headerlink" title="终于成功啦"></a>终于成功啦</h2><p><strong>Todo 目前不挂梯子无法显示封面，待解决！！！</strong></p>
-<p>使用插件<br><a href="https://github.com/HCLonely/hexo-bilibili-bangumi">HCLonely&#x2F;hexo-bilibili-bangumi: hexo 番剧页面插件，可选数据源：Bilibili, Bangumi</a></p>
-<h3 id="第一步安装插件"><a href="#第一步安装插件" class="headerlink" title="第一步安装插件"></a>第一步安装插件</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">npm install hexo-bilibili-bangumi --save</span><br></pre></td></tr></table></figure>
-<h3 id="第二步安配置设置"><a href="#第二步安配置设置" class="headerlink" title="第二步安配置设置"></a>第二步安配置设置</h3><p><strong>在_config.yml里面添加如下代码，注意是hexo配置不是主题配置</strong></p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">bangumi: <span class="comment"># 追番设置</span></span><br><span class="line">  <span class="built_in">enable</span>: <span class="literal">true</span></span><br><span class="line">  <span class="built_in">source</span>: bangumi</span><br><span class="line">  path: bangumis/index.html</span><br><span class="line">  vmid: 956578 <span class="comment">#注意此处换成自己的bangumi ID 主页名字旁边有个 @XXXXX数字的那个</span></span><br><span class="line">  title: <span class="string">&quot;追番列表&quot;</span></span><br><span class="line">  quote: <span class="string">&quot;生命不息，追番不止！&quot;</span></span><br><span class="line">  show: 1</span><br><span class="line">  lazyload: <span class="literal">false</span></span><br><span class="line">  loading:</span><br><span class="line">  showMyComment: <span class="literal">false</span></span><br><span class="line">  pagination: <span class="literal">false</span></span><br><span class="line">  metaColor:</span><br><span class="line">  color:</span><br><span class="line">  webp:</span><br><span class="line">  progress:</span><br><span class="line">  extraOrder:</span><br><span class="line">  proxy:</span><br><span class="line">    host: <span class="string">&quot;127.0.0.1&quot;</span>   <span class="comment">#换成自己代理的地址</span></span><br><span class="line">    port: <span class="string">&quot;7897&quot;</span>        <span class="comment">#换成自己代理的端口</span></span><br><span class="line">  extra_options:</span><br><span class="line">    top_img: <span class="literal">false</span></span><br><span class="line">    lazyload:</span><br><span class="line">      <span class="built_in">enable</span>: <span class="literal">false</span></span><br></pre></td></tr></table></figure>
+    <title>常见 Git 命令学习使用</title>
+    <url>/Git/%E5%B8%B8%E8%A7%81Git%E5%91%BD%E4%BB%A4%E5%AD%A6%E4%B9%A0/</url>
+    <content><![CDATA[<h1 id="Git-基础使用"><a href="#Git-基础使用" class="headerlink" title="Git 基础使用"></a>Git 基础使用</h1><p>Git 是本地代码版本管理工具，用来记录修改历史、恢复旧版本。<br>GitHub 是把 Git 仓库托管到网上的平台。</p>
+<h2 id="1-第一次配置"><a href="#1-第一次配置" class="headerlink" title="1. 第一次配置"></a>1. 第一次配置</h2><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git config --global user.name <span class="string">&quot;Fanbo&quot;</span></span><br><span class="line">git config --global user.email <span class="string">&quot;你的GitHub邮箱&quot;</span></span><br><span class="line">git config --global --list</span><br></pre></td></tr></table></figure>
+<p>可以使用下面的命令检查配置：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git config --global --list</span><br></pre></td></tr></table></figure>
 
-<p>把vmid 换成自己bangumi的 </p>
-<p>proxy代理换成自己的地址（自己去小软件里面查），众所周知bangumi现在不能直连了</p>
-<p>规则代理可能会绕过梯子，导致无法更新bangumi数据，</p>
-<h3 id="第三步同步数据"><a href="#第三步同步数据" class="headerlink" title="第三步同步数据"></a>第三步同步数据</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 更新追番数据</span></span><br><span class="line">hexo bangumi -u</span><br><span class="line"></span><br><span class="line"><span class="comment"># 删除追番数据</span></span><br><span class="line">hexo bangumi -d</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>如果看到类似：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">user.name=Fanbo</span><br><span class="line">user.email=xxxx@example.com</span><br></pre></td></tr></table></figure>
 
-<p>连接正常的话会看到</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">INFO  Getting bangumis, please <span class="built_in">wait</span>...</span><br><span class="line">正在获取 [想看] 番剧 [██] 100% 0.0s</span><br><span class="line">正在获取 [在看] 番剧 [█] 100% 0.0s</span><br><span class="line">正在获取 [已看] 番剧 [█████████████] 100% 33.6s</span><br></pre></td></tr></table></figure>
-<p>之后就可以正常部署啦</p>
+<p>就说明配置成功了。</p>
+<h2 id="2-创建仓库"><a href="#2-创建仓库" class="headerlink" title="2. 创建仓库"></a>2. 创建仓库</h2><p>在项目文件夹中执行：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git init</span><br></pre></td></tr></table></figure>
+
+<p>会生成隐藏的 <code>.git</code> 文件夹，不要删除。</p>
+<p>先创建 <code>.gitignore</code>，告诉 Git 哪些文件不管理，列如：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">node_modules/</span><br><span class="line">.env</span><br><span class="line">*.log</span><br><span class="line">.DS_Store</span><br></pre></td></tr></table></figure>
+
+<p>如果某个文件不想被忽略，用 <code>!</code>：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">!important.log</span><br></pre></td></tr></table></figure>
+
+<h2 id="3-第一次提交并上传-GitHub"><a href="#3-第一次提交并上传-GitHub" class="headerlink" title="3. 第一次提交并上传 GitHub"></a>3. 第一次提交并上传 GitHub</h2><p>在 GitHub 新建仓库，然后本地执行：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git add .</span><br><span class="line">git commit -m <span class="string">&quot;Initial commit&quot;</span></span><br><span class="line">git branch -M main</span><br><span class="line">git remote add origin 你的仓库地址</span><br><span class="line">git push -u origin main</span><br></pre></td></tr></table></figure>
+
+<p>如果提示 <code>src refspec main does not match any</code>，通常是还没提交，或分支不是 <code>main</code>。先执行：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git add .</span><br><span class="line">git commit -m <span class="string">&quot;Initial commit&quot;</span></span><br><span class="line">git branch -M main</span><br></pre></td></tr></table></figure>
+
+<p>如果远程仓库已有 README，先合并再推送：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git pull origin main --allow-unrelated-histories</span><br><span class="line">git push -u origin main</span><br></pre></td></tr></table></figure>
+
+<h2 id="4-以后每次修改"><a href="#4-以后每次修改" class="headerlink" title="4. 以后每次修改"></a>4. 以后每次修改</h2><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git add .</span><br><span class="line">git commit -m <span class="string">&quot;说明修改内容&quot;</span></span><br><span class="line">git push</span><br></pre></td></tr></table></figure>
+
+<p>记住这三条即可。</p>
+<h2 id="5-常用命令"><a href="#5-常用命令" class="headerlink" title="5. 常用命令"></a>5. 常用命令</h2><table>
+<thead>
+<tr>
+<th>命令</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>git init</code></td>
+<td>创建 Git 仓库</td>
+</tr>
+<tr>
+<td><code>git status</code></td>
+<td>查看当前状态</td>
+</tr>
+<tr>
+<td><code>git add .</code></td>
+<td>暂存所有修改</td>
+</tr>
+<tr>
+<td><code>git commit -m &quot;...&quot;</code></td>
+<td>创建新版本</td>
+</tr>
+<tr>
+<td><code>git push</code></td>
+<td>上传到 GitHub</td>
+</tr>
+<tr>
+<td><code>git pull</code></td>
+<td>获取远程最新代码</td>
+</tr>
+<tr>
+<td><code>git log</code></td>
+<td>查看提交历史</td>
+</tr>
+<tr>
+<td><code>git remote -v</code></td>
+<td>查看远程仓库</td>
+</tr>
+</tbody></table>
 ]]></content>
       <categories>
-        <category>建站</category>
+        <category>Git</category>
       </categories>
       <tags>
-        <tag>hexo</tag>
-        <tag>bangumi</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>网站装修记录</title>
-    <url>/%E5%BB%BA%E7%AB%99/%E7%BD%91%E7%AB%99%E8%A3%85%E4%BF%AE%E8%AE%B0%E5%BD%95/</url>
-    <content><![CDATA[<p><strong>[2026-09-30]</strong><br>统一了三个空间的页面宽度：容器一律 1160、列表与正文一律 900，内容左边缘对齐，不再左右错位<br>标题按层级分档：空间主页大、列表页小<br>Garden 列表补回了日期（之前只剩标题）<br>文章页代码块从深蓝底换成白底，并提高了文字对比度<br>动态页横幅从蓝色照片换成与站点同色的绿灰渐变<br>Tech、Indie 的项目页还是空的，加了「项目整理中」的说明</p>
-<p><strong>[2026-09-29]</strong><br>新增「动态」页面，随手记的东西以后放这里<br>恢复了关于页面<br>导航栏改成中英双语，顺手修好了图标不显示的问题<br>Hardware &amp; Soft 空间改名为 Tech，旧地址自动跳转<br>整理文章：标题统一中英文加空格，站务折腾类统一归入 Tech<br>文章分类从「笔记」改为 建站 &#x2F; Git &#x2F; 工具 &#x2F; 游戏开发 &#x2F; 考研，旧地址自动跳转<br>统一全站配色，原来的宝典蓝都换成了首页那套绿灰<br>修好了 Tech 和 Indie 页面文字错位、标题竖排的问题<br>列表的宽度、字重、行距做了统一<br>首页顶部加了一张横幅图（原图 3.6MB，压成 WebP 只有 104KB）<br>横幅上的站点标题原本压在人物脸上，挪到上方去了</p>
-<p><strong>[2026-09-23]</strong><br>首页修改<br>删除about页面</p>
-<p><strong>[2026-09-15]</strong><br>在garden中添加背单词选项卡</p>
-<p><strong>[2026-09-13]</strong><br>借助AI简单重构了一下网站<br>给网站分了三个空间：Hardware &amp; Soft、Indie、Garden<br>首页改成项目优先，只放 Projects 和 Recent Writing<br>简化网站界面，删除anzhiyu多余的动态效果</p>
-<p><strong>[2026-09-10]</strong><br>基础信息配置<br>导航栏装修<br>修改nav相关配置</p>
-<p><strong>[2026-09-09]</strong><br>追番页面配置成功</p>
-<p><strong>[2026-09-08]</strong><br>创建日记分栏，实现即可实现隐藏主页可见(配置index:false)<br>添加顶部相关配置页面，内容待填充<br>开启作者卡片(头像左下角)<br>开启字数统计，关闭部分侧边栏显示<br>添加密码功能</p>
-<p><strong>[2026-09-07]</strong><br>安装anzhiyu主题 <a href="https://docs.anheyu.com/initall.html">主题安装 | 安知鱼主题官方文档</a></p>
-]]></content>
-      <categories>
-        <category>建站</category>
-      </categories>
-      <tags>
-        <tag>hexo</tag>
-        <tag>网站</tag>
-        <tag>记录</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>考研记录（一）</title>
-    <url>/%E8%80%83%E7%A0%94/%E8%80%83%E7%A0%94%E8%AE%B0%E5%BD%95%EF%BC%88%E4%B8%80%EF%BC%89/</url>
-    <content><![CDATA[<h4 id="写在前面"><a href="#写在前面" class="headerlink" title="写在前面"></a>写在前面</h4><p>搞定搞定网站，记录一下考研。<br>第一次写，就先总结一下，<br>目前是二战，一战失败，6月毕业回家摆了一个月才正式开始学习，<br>现在不知不觉也回到了去年一战的状态了，也是和去年一样剩下100天左右，去年是同期在贴吧发了一个记录帖子，现在改成自己的网站，暂定十天的记录组成一篇文章。<br>写记录也算是督促一下自己吧，二战学到现在很糊涂，和自己的预期有很大出入。</p>
-<p><strong>[2026-9-18]</strong><br>阅读精读了几篇，发现还是看文章太不仔细了。<br>数学明天结束线性代数，然后写一下高数和线代收尾的习题。<br>现控结束了第一章，明天开第二章。</p>
-<p><strong>[2026-9-17]</strong><br>我回来啦！<br>今天在自习室换了个位置，从小黑屋逃出来了。<br>今天开始收尾线性代数，二次型章节，课听了一半，<br>线面那块的习题同步在写，往前推一推进度了，计划国庆开真题！<br>现控第一章也基本完了，就剩了几道习题，明天收一下尾巴，专业课也开始赶进度了，毕竟也没强化，打算一边做真题一边强化了。</p>
-<p><strong>[2026-9-16]</strong><br>计划有变，休息一天！</p>
-<p><strong>[2026-9-15]</strong><br>今天是我的22岁生日，恭喜自己又老一岁。<br>英语完型依旧完蛋，阅读找回感觉，<br>目前线面积分再写题，发现前面的二重三重学的不好，返工中。。。<br>专业课快过完第一章了，由于最近这几天晚上不太确定，专业课几乎没怎么推进。<br>最近效率低迷，每天都感觉很累，但是每天又学不了多少个小时，<br>感觉需要一点新鲜感，试着明天换个自习室位置，给自己一点不一样的感觉。</p>
-<p><strong>[2026-9-14]</strong><br>今天继续处理了无穷级数的小尾巴和线面积分部分，<br>知识点回顾的差不多了，可以继续写880了。<br>现在打算改变一下英语的学习节奏了，不太像花时间背单词了，上调英语阅读的优先度，<br>阅读写两篇之后如果有时间就接着背单词。<br>专业课目前还在在现控第一章，明天发力。</p>
-<p><strong>[2026-9-13]</strong><br>想写一下有关于二战心态，<br>剩下不到100天了，现在每天大概能学5-6个小时，时间提不上去了，<br>但是比去年还是要乐观很多了，所以不用太悲观，由于自己学习能力不强，所以效率也不算很高，做题正确率也低。<br>不过，没有关系，把时间和精力都放在焦虑上不会起到任何作用，<br>一步一步的去做，剩下的结果交给天意了，对自己负责就可以了。</p>
-<p><strong>[2026-9-11]</strong><br>阅读2011年的text2终于迎来了全对！<br>今天继续写了几道级数题，把傅里叶级数搞得清晰了一点，继续接着学线面积分，<br>专业课还是决定现代控制理论了,从速成课开始看起，机构的课太长了，速成课过知识然后仔细听他讲题，<br>今天学的状态很不错，感觉现控应该能在10月前学完。</p>
-<p>今天早回家了一会，打了几把瓦，很惬意，继续加油！考完猛猛玩！</p>
-<p><strong>[2026-9-10]</strong><br>今天起的相对早了，也是成功的在11点之前赶到了自习室。<br>单词背了，阅读写到2011年了，仔细研读了一下10年的新题型，感觉还是有不少进步空间，还得练。<br>数学今天没咋学，把相似矩阵写完了，无穷级数写不动了。<br>专业课把第八章看完了，还有时间，先强化一下前几章，后面再考虑开不开现控。<br>以后尽量早点回来，多休息，才有动力学习。</p>
-<p><strong>[2026-9-9]</strong><br>好吧，很遗憾昨天的目标几乎都没有完成。<br>今天起的比较晚，于是早上的英语时间就被压缩了，880写完了相似矩阵篇章的基础+综合小题，无穷级数基础大题还剩几道。<br>专业课也比较卡，第八章还是没太搞懂，难受。<br>一点一点干吧，毕竟时间还有一些的。<br>感觉可以花费一点时间在总结上面，毕竟一战也验证过了赶进度没有用，放平心态吧。</p>
-<p><strong>[2026-9-8]</strong><br>目前的状况是告诉强化到级数了，880块写完级数基础了；线性代数是刚看完相似矩阵章节的课了，在写880相似矩阵的基础。<br>专业课明天应该能搞定自控的最后一章，争取后天开现控！<br>英语目前刚写完2010年的题，感觉真是难的离谱，去年能考75感觉全是靠题简单+狗运<br>明天继续加油吧，尽量把级数和相似矩阵的题写完（虽然很难）。</p>
-]]></content>
-      <categories>
-        <category>考研</category>
-      </categories>
-      <tags>
-        <tag>考研</tag>
+        <tag>Git</tag>
       </tags>
   </entry>
   <entry>
@@ -378,6 +333,51 @@
       </categories>
       <tags>
         <tag>EasyX</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>网站装修记录</title>
+    <url>/%E5%BB%BA%E7%AB%99/%E7%BD%91%E7%AB%99%E8%A3%85%E4%BF%AE%E8%AE%B0%E5%BD%95/</url>
+    <content><![CDATA[<p><strong>[2026-09-30]</strong><br>统一了三个空间的页面宽度：容器一律 1160、列表与正文一律 900，内容左边缘对齐，不再左右错位<br>标题按层级分档：空间主页大、列表页小<br>Garden 列表补回了日期（之前只剩标题）<br>文章页代码块从深蓝底换成白底，并提高了文字对比度<br>动态页横幅从蓝色照片换成与站点同色的绿灰渐变<br>Tech、Indie 的项目页还是空的，加了「项目整理中」的说明</p>
+<p><strong>[2026-09-29]</strong><br>新增「动态」页面，随手记的东西以后放这里<br>恢复了关于页面<br>导航栏改成中英双语，顺手修好了图标不显示的问题<br>Hardware &amp; Soft 空间改名为 Tech，旧地址自动跳转<br>整理文章：标题统一中英文加空格，站务折腾类统一归入 Tech<br>文章分类从「笔记」改为 建站 &#x2F; Git &#x2F; 工具 &#x2F; 游戏开发 &#x2F; 考研，旧地址自动跳转<br>统一全站配色，原来的宝典蓝都换成了首页那套绿灰<br>修好了 Tech 和 Indie 页面文字错位、标题竖排的问题<br>列表的宽度、字重、行距做了统一<br>首页顶部加了一张横幅图（原图 3.6MB，压成 WebP 只有 104KB）<br>横幅上的站点标题原本压在人物脸上，挪到上方去了</p>
+<p><strong>[2026-09-23]</strong><br>首页修改<br>删除about页面</p>
+<p><strong>[2026-09-15]</strong><br>在garden中添加背单词选项卡</p>
+<p><strong>[2026-09-13]</strong><br>借助AI简单重构了一下网站<br>给网站分了三个空间：Hardware &amp; Soft、Indie、Garden<br>首页改成项目优先，只放 Projects 和 Recent Writing<br>简化网站界面，删除anzhiyu多余的动态效果</p>
+<p><strong>[2026-09-10]</strong><br>基础信息配置<br>导航栏装修<br>修改nav相关配置</p>
+<p><strong>[2026-09-09]</strong><br>追番页面配置成功</p>
+<p><strong>[2026-09-08]</strong><br>创建日记分栏，实现即可实现隐藏主页可见(配置index:false)<br>添加顶部相关配置页面，内容待填充<br>开启作者卡片(头像左下角)<br>开启字数统计，关闭部分侧边栏显示<br>添加密码功能</p>
+<p><strong>[2026-09-07]</strong><br>安装anzhiyu主题 <a href="https://docs.anheyu.com/initall.html">主题安装 | 安知鱼主题官方文档</a></p>
+]]></content>
+      <categories>
+        <category>建站</category>
+      </categories>
+      <tags>
+        <tag>hexo</tag>
+        <tag>网站</tag>
+        <tag>记录</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>考研记录（一）</title>
+    <url>/%E8%80%83%E7%A0%94/%E8%80%83%E7%A0%94%E8%AE%B0%E5%BD%95%EF%BC%88%E4%B8%80%EF%BC%89/</url>
+    <content><![CDATA[<h4 id="写在前面"><a href="#写在前面" class="headerlink" title="写在前面"></a>写在前面</h4><p>搞定搞定网站，记录一下考研。<br>第一次写，就先总结一下，<br>目前是二战，一战失败，6月毕业回家摆了一个月才正式开始学习，<br>现在不知不觉也回到了去年一战的状态了，也是和去年一样剩下100天左右，去年是同期在贴吧发了一个记录帖子，现在改成自己的网站，暂定十天的记录组成一篇文章。<br>写记录也算是督促一下自己吧，二战学到现在很糊涂，和自己的预期有很大出入。</p>
+<p><strong>[2026-9-18]</strong><br>阅读精读了几篇，发现还是看文章太不仔细了。<br>数学明天结束线性代数，然后写一下高数和线代收尾的习题。<br>现控结束了第一章，明天开第二章。</p>
+<p><strong>[2026-9-17]</strong><br>我回来啦！<br>今天在自习室换了个位置，从小黑屋逃出来了。<br>今天开始收尾线性代数，二次型章节，课听了一半，<br>线面那块的习题同步在写，往前推一推进度了，计划国庆开真题！<br>现控第一章也基本完了，就剩了几道习题，明天收一下尾巴，专业课也开始赶进度了，毕竟也没强化，打算一边做真题一边强化了。</p>
+<p><strong>[2026-9-16]</strong><br>计划有变，休息一天！</p>
+<p><strong>[2026-9-15]</strong><br>今天是我的22岁生日，恭喜自己又老一岁。<br>英语完型依旧完蛋，阅读找回感觉，<br>目前线面积分再写题，发现前面的二重三重学的不好，返工中。。。<br>专业课快过完第一章了，由于最近这几天晚上不太确定，专业课几乎没怎么推进。<br>最近效率低迷，每天都感觉很累，但是每天又学不了多少个小时，<br>感觉需要一点新鲜感，试着明天换个自习室位置，给自己一点不一样的感觉。</p>
+<p><strong>[2026-9-14]</strong><br>今天继续处理了无穷级数的小尾巴和线面积分部分，<br>知识点回顾的差不多了，可以继续写880了。<br>现在打算改变一下英语的学习节奏了，不太像花时间背单词了，上调英语阅读的优先度，<br>阅读写两篇之后如果有时间就接着背单词。<br>专业课目前还在在现控第一章，明天发力。</p>
+<p><strong>[2026-9-13]</strong><br>想写一下有关于二战心态，<br>剩下不到100天了，现在每天大概能学5-6个小时，时间提不上去了，<br>但是比去年还是要乐观很多了，所以不用太悲观，由于自己学习能力不强，所以效率也不算很高，做题正确率也低。<br>不过，没有关系，把时间和精力都放在焦虑上不会起到任何作用，<br>一步一步的去做，剩下的结果交给天意了，对自己负责就可以了。</p>
+<p><strong>[2026-9-11]</strong><br>阅读2011年的text2终于迎来了全对！<br>今天继续写了几道级数题，把傅里叶级数搞得清晰了一点，继续接着学线面积分，<br>专业课还是决定现代控制理论了,从速成课开始看起，机构的课太长了，速成课过知识然后仔细听他讲题，<br>今天学的状态很不错，感觉现控应该能在10月前学完。</p>
+<p>今天早回家了一会，打了几把瓦，很惬意，继续加油！考完猛猛玩！</p>
+<p><strong>[2026-9-10]</strong><br>今天起的相对早了，也是成功的在11点之前赶到了自习室。<br>单词背了，阅读写到2011年了，仔细研读了一下10年的新题型，感觉还是有不少进步空间，还得练。<br>数学今天没咋学，把相似矩阵写完了，无穷级数写不动了。<br>专业课把第八章看完了，还有时间，先强化一下前几章，后面再考虑开不开现控。<br>以后尽量早点回来，多休息，才有动力学习。</p>
+<p><strong>[2026-9-9]</strong><br>好吧，很遗憾昨天的目标几乎都没有完成。<br>今天起的比较晚，于是早上的英语时间就被压缩了，880写完了相似矩阵篇章的基础+综合小题，无穷级数基础大题还剩几道。<br>专业课也比较卡，第八章还是没太搞懂，难受。<br>一点一点干吧，毕竟时间还有一些的。<br>感觉可以花费一点时间在总结上面，毕竟一战也验证过了赶进度没有用，放平心态吧。</p>
+<p><strong>[2026-9-8]</strong><br>目前的状况是告诉强化到级数了，880块写完级数基础了；线性代数是刚看完相似矩阵章节的课了，在写880相似矩阵的基础。<br>专业课明天应该能搞定自控的最后一章，争取后天开现控！<br>英语目前刚写完2010年的题，感觉真是难的离谱，去年能考75感觉全是靠题简单+狗运<br>明天继续加油吧，尽量把级数和相似矩阵的题写完（虽然很难）。</p>
+]]></content>
+      <categories>
+        <category>考研</category>
+      </categories>
+      <tags>
+        <tag>考研</tag>
       </tags>
   </entry>
   <entry>

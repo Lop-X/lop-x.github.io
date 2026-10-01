@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <author>
+    <name>Fanbo</name>
+  </author>
+  <generator uri="https://hexo.io/">Hexo</generator>
+  <id>https://lop-x.github.io/</id>
+  <link href="https://lop-x.github.io/" rel="alternate"/>
+  <link href="https://lop-x.github.io/atom.xml" rel="self"/>
+  <rights>All rights reserved 2026, Fanbo</rights>
+  <subtitle>Embedded · Robotics · Indie Game</subtitle>
+  <title>Lop-X</title>
+  <updated>2026-09-29T16:24:31.214Z</updated>
+  <entry>
+    <author>
+      <name>Fanbo</name>
+    </author>
+    <category term="考研" scheme="https://lop-x.github.io/categories/%E8%80%83%E7%A0%94/"/>
+    <category term="考研" scheme="https://lop-x.github.io/tags/%E8%80%83%E7%A0%94/"/>
+    <id>https://lop-x.github.io/%E8%80%83%E7%A0%94/%E8%80%83%E7%A0%94%E8%AE%B0%E5%BD%95%EF%BC%88%E4%BA%8C%EF%BC%89/</id>
+    <link href="https://lop-x.github.io/%E8%80%83%E7%A0%94/%E8%80%83%E7%A0%94%E8%AE%B0%E5%BD%95%EF%BC%88%E4%BA%8C%EF%BC%89/"/>
+    <published>2026-09-19T14:07:39.000Z</published>
+    <summary>
+      <![CDATA[<p>往期回顾<br>[[考研记录（一）]]</p>
+<h3 id="写在前面"><a href="#写在前面" class="headerlink" title="写在前面"></a>写在前面</h3><p>已经是第二期了，距离考研还剩下90天。<br>计划这10天搞定概率论和]]>
+    </summary>
+    <title>考研记录（二）</title>
+    <updated>2026-09-29T16:24:31.214Z</updated>
+  </entry>
+  <entry>
+    <author>
+      <name>Fanbo</name>
+    </author>
+    <category term="工具" scheme="https://lop-x.github.io/categories/%E5%B7%A5%E5%85%B7/"/>
+    <category term="obsidian" scheme="https://lop-x.github.io/tags/obsidian/"/>
+    <id>https://lop-x.github.io/%E5%B7%A5%E5%85%B7/%E4%BD%BF%E7%94%A8obsidian%E7%BC%96%E8%BE%91%E7%AC%94%E8%AE%B0/</id>
+    <link href="https://lop-x.github.io/%E5%B7%A5%E5%85%B7/%E4%BD%BF%E7%94%A8obsidian%E7%BC%96%E8%BE%91%E7%AC%94%E8%AE%B0/"/>
+    <published>2026-09-18T09:58:40.000Z</published>
+    <summary>
+      <![CDATA[<p>使用Vscode编辑markdown显示效果不好，使用Typora编辑只能一次打开一篇文章，<br>为了解决编辑文章的痛点，可以使用obsidian。</p>
+<h3 id="obsidian下载"><a href="#obsidian下载" class="headerli]]>
+    </summary>
+    <title>使用 Obsidian 编辑笔记</title>
+    <updated>2026-09-29T15:32:45.679Z</updated>
+  </entry>
+  <entry>
+    <author>
+      <name>Fanbo</name>
+    </author>
+    <category term="游戏开发" scheme="https://lop-x.github.io/categories/%E6%B8%B8%E6%88%8F%E5%BC%80%E5%8F%91/"/>
+    <category term="EasyX" scheme="https://lop-x.github.io/tags/EasyX/"/>
+    <id>https://lop-x.github.io/%E6%B8%B8%E6%88%8F%E5%BC%80%E5%8F%91/%E7%94%A8easyX%E5%88%B6%E4%BD%9CSnake-Game/</id>
+    <link href="https://lop-x.github.io/%E6%B8%B8%E6%88%8F%E5%BC%80%E5%8F%91/%E7%94%A8easyX%E5%88%B6%E4%BD%9CSnake-Game/"/>
+    <published>2026-09-14T16:03:56.000Z</published>
+    <summary>
+      <![CDATA[<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><h2 id="1-基础配置部分"><a href="#1-基础配置部分" class="headerlink" title="1 基础配置部分"]]>
+    </summary>
+    <title>用 EasyX 制作 Snake Game 记录</title>
+    <updated>2026-09-30T04:31:55.576Z</updated>
+  </entry>
+  <entry>
+    <author>
+      <name>Fanbo</name>
+    </author>
+    <category term="Git" scheme="https://lop-x.github.io/categories/Git/"/>
+    <category term="Git" scheme="https://lop-x.github.io/tags/Git/"/>
+    <id>https://lop-x.github.io/Git/%E5%B8%B8%E8%A7%81Git%E5%91%BD%E4%BB%A4%E5%AD%A6%E4%B9%A0/</id>
+    <link href="https://lop-x.github.io/Git/%E5%B8%B8%E8%A7%81Git%E5%91%BD%E4%BB%A4%E5%AD%A6%E4%B9%A0/"/>
+    <published>2026-09-11T16:01:07.000Z</published>
+    <summary>
+      <![CDATA[<h1 id="Git-基础使用"><a href="#Git-基础使用" class="headerlink" title="Git 基础使用"></a>Git 基础使用</h1><p>Git 是本地代码版本管理工具，用来记录修改历史、恢复旧版本。<br>GitHub 是把 G]]>
+    </summary>
+    <title>常见 Git 命令学习使用</title>
+    <updated>2026-09-29T15:32:45.691Z</updated>
+  </entry>
+  <entry>
+    <author>
+      <name>Fanbo</name>
+    </author>
+    <category term="建站" scheme="https://lop-x.github.io/categories/%E5%BB%BA%E7%AB%99/"/>
+    <category term="hexo" scheme="https://lop-x.github.io/tags/hexo/"/>
+    <category term="bangumi" scheme="https://lop-x.github.io/tags/bangumi/"/>
+    <id>https://lop-x.github.io/%E5%BB%BA%E7%AB%99/hexo%E9%85%8D%E7%BD%AEbangumi%E8%BF%BD%E7%95%AA%E9%A1%B5%E9%9D%A2/</id>
+    <link href="https://lop-x.github.io/%E5%BB%BA%E7%AB%99/hexo%E9%85%8D%E7%BD%AEbangumi%E8%BF%BD%E7%95%AA%E9%A1%B5%E9%9D%A2/"/>
+    <published>2026-09-09T15:07:41.000Z</published>
+    <summary>
+      <![CDATA[<h2 id="终于成功啦"><a href="#终于成功啦" class="headerlink" title="终于成功啦"></a>终于成功啦</h2><p><strong>Todo 目前不挂梯子无法显示封面，待解决！！！</strong></p>
+<p>使用插件<br><]]>
+    </summary>
+    <title>Hexo 配置 Bangumi 追番页面</title>
+    <updated>2026-09-29T15:32:45.677Z</updated>
+  </entry>
+  <entry>
+    <author>
+      <name>Fanbo</name>
+    </author>
+    <category term="考研" scheme="https://lop-x.github.io/categories/%E8%80%83%E7%A0%94/"/>
+    <category term="考研" scheme="https://lop-x.github.io/tags/%E8%80%83%E7%A0%94/"/>
+    <id>https://lop-x.github.io/%E8%80%83%E7%A0%94/%E8%80%83%E7%A0%94%E8%AE%B0%E5%BD%95%EF%BC%88%E4%B8%80%EF%BC%89/</id>
+    <link href="https://lop-x.github.io/%E8%80%83%E7%A0%94/%E8%80%83%E7%A0%94%E8%AE%B0%E5%BD%95%EF%BC%88%E4%B8%80%EF%BC%89/"/>
+    <published>2026-09-08T14:07:39.000Z</published>
+    <summary>考研复习的第一期记录。</summary>
+    <title>考研记录（一）</title>
+    <updated>2026-10-01T11:56:20.378Z</updated>
+  </entry>
+  <entry>
+    <author>
+      <name>Fanbo</name>
+    </author>
+    <category term="建站" scheme="https://lop-x.github.io/categories/%E5%BB%BA%E7%AB%99/"/>
+    <category term="hexo" scheme="https://lop-x.github.io/tags/hexo/"/>
+    <category term="网站" scheme="https://lop-x.github.io/tags/%E7%BD%91%E7%AB%99/"/>
+    <category term="记录" scheme="https://lop-x.github.io/tags/%E8%AE%B0%E5%BD%95/"/>
+    <id>https://lop-x.github.io/%E5%BB%BA%E7%AB%99/%E7%BD%91%E7%AB%99%E8%A3%85%E4%BF%AE%E8%AE%B0%E5%BD%95/</id>
+    <link href="https://lop-x.github.io/%E5%BB%BA%E7%AB%99/%E7%BD%91%E7%AB%99%E8%A3%85%E4%BF%AE%E8%AE%B0%E5%BD%95/"/>
+    <published>2026-09-07T15:58:26.000Z</published>
+    <summary>
+      <![CDATA[<p><strong>[2026-09-30]</strong><br>统一了三个空间的页面宽度：容器一律 1160、列表与正文一律 900，内容左边缘对齐，不再左右错位<br>标题按层级分档：空间主页大、列表页小<br>Garden 列表补回了日期（之前只剩标题）<br>文章页]]>
+    </summary>
+    <title>网站装修记录</title>
+    <updated>2026-09-30T03:24:02.658Z</updated>
+  </entry>
+  <entry>
+    <author>
+      <name>Fanbo</name>
+    </author>
+    <category term="建站" scheme="https://lop-x.github.io/categories/%E5%BB%BA%E7%AB%99/"/>
+    <category term="hexo" scheme="https://lop-x.github.io/tags/hexo/"/>
+    <category term="网站" scheme="https://lop-x.github.io/tags/%E7%BD%91%E7%AB%99/"/>
+    <category term="复活" scheme="https://lop-x.github.io/tags/%E5%A4%8D%E6%B4%BB/"/>
+    <id>https://lop-x.github.io/%E5%BB%BA%E7%AB%99/%E5%B7%B2%E5%A4%8D%E6%B4%BB/</id>
+    <link href="https://lop-x.github.io/%E5%BB%BA%E7%AB%99/%E5%B7%B2%E5%A4%8D%E6%B4%BB/"/>
+    <published>2026-09-07T03:48:48.000Z</published>
+    <summary>
+      <![CDATA[<p>老站随着我坏掉的硬盘一起无了，虽然旧blog也没有写过文章，但还是有点心疼的，简记记录一下新blog简要搭建步骤</p>
+<h3 id="基于hexo的blog搭建流程"><a href="#基于hexo的blog搭建流程" class="headerlink" title]]>
+    </summary>
+    <title>个人网站已复活</title>
+    <updated>2026-09-29T15:32:45.680Z</updated>
+  </entry>
+</feed>

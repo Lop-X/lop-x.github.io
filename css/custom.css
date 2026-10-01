@@ -4,7 +4,7 @@
   --lopx-css-loaded: 1;
   --lopx-accent: #3a7aa0;
   --lopx-ink: #1e262c;
-  --lopx-muted: #6f7a81;
+  --lopx-muted: #68727a;
   --lopx-line: #e2e8ec;
   --lopx-surface: #ffffff;
   max-width: 1160px;
@@ -44,7 +44,7 @@
 
 /* 自我介绍卡片的 hover：与技术方向 / About Me 卡片保持一致 */
 #lopx-home #about-page .author-content-item.myInfoAndSayHello {
-  transition: transform 200ms ease, border-color 180ms ease, box-shadow 180ms ease;
+  transition: transform var(--lopx-dur-fast) ease, border-color var(--lopx-dur-fast) ease, box-shadow var(--lopx-dur-fast) ease;
 }
 
 #lopx-home #about-page .author-content-item.myInfoAndSayHello:hover {
@@ -78,7 +78,7 @@
   border-radius: 12px;
   background: var(--lopx-surface);
   box-shadow: 0 4px 16px rgba(30, 38, 44, 0.04);
-  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  transition: transform var(--lopx-dur-mid) ease, box-shadow var(--lopx-dur-mid) ease;
 }
 
 #home-projects .project-card:hover {
@@ -120,7 +120,7 @@
 
 #home-projects .project-card h3 a {
   color: var(--lopx-ink);
-  transition: color 0.25s ease;
+  transition: color var(--lopx-dur-mid) ease;
 }
 
 #home-projects .project-card h3 a:hover {
@@ -146,6 +146,34 @@
 /* Recent Writing */
 #recent-writing {
   max-width: 900px;
+}
+
+/* Recent Writing 标题行右侧的订阅入口（RSS，2026-10-01） */
+#lopx-home #recent-writing .section-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+#lopx-home #recent-writing .section-head h2 {
+  margin: 0 0 20px;
+}
+
+#lopx-home .rss-link {
+  flex-shrink: 0;
+  padding: 3px 12px;
+  border: 1px solid var(--lopx-line);
+  border-radius: 999px;
+  font-size: 0.78rem;
+  color: var(--lopx-muted);
+  text-decoration: none;
+  transition: color var(--lopx-dur-fast) ease, border-color var(--lopx-dur-fast) ease;
+}
+
+#lopx-home .rss-link:hover {
+  color: var(--lopx-accent);
+  border-color: var(--lopx-accent);
 }
 
 #recent-writing ul {
@@ -174,7 +202,7 @@
   color: var(--lopx-ink);
   font-size: 1rem;
   line-height: 1.5;
-  transition: color 0.25s ease;
+  transition: color var(--lopx-dur-mid) ease;
 }
 
 #recent-writing li a:hover {
@@ -261,7 +289,7 @@
   color: var(--hardware-accent);
   font-size: 0.85rem;
   font-weight: 650;
-  transition: color 0.25s ease, border-color 0.25s ease;
+  transition: color var(--lopx-dur-mid) ease, border-color var(--lopx-dur-mid) ease;
 }
 
 #hardware-soft-space > nav a:hover {
@@ -294,7 +322,7 @@
   border-radius: 10px;
   background: var(--lopx-surface);
   box-shadow: 0 4px 16px rgba(32, 42, 49, 0.045);
-  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  transition: transform var(--lopx-dur-mid) ease, box-shadow var(--lopx-dur-mid) ease;
 }
 
 #hardware-soft-space .project-list article:hover,
@@ -340,7 +368,7 @@
 
 #hardware-soft-projects > article > h2 a {
   color: var(--hardware-ink);
-  transition: color 0.25s ease;
+  transition: color var(--lopx-dur-mid) ease;
 }
 
 #hardware-soft-projects > article > h2 a:hover {
@@ -410,7 +438,7 @@
 #hardware-soft-space section:last-child article h2 a,
 #hardware-soft-notes > article h2 a {
   color: var(--hardware-ink);
-  transition: color 0.25s ease;
+  transition: color var(--lopx-dur-mid) ease;
 }
 
 #hardware-soft-space section:last-child article h2 a:hover,
@@ -520,7 +548,7 @@
   color: var(--indie-accent);
   font-size: 0.85rem;
   font-weight: 650;
-  transition: color 0.25s ease, border-color 0.25s ease;
+  transition: color var(--lopx-dur-mid) ease, border-color var(--lopx-dur-mid) ease;
 }
 
 #indie-space > nav a:hover {
@@ -553,7 +581,7 @@
   border-radius: 10px;
   background: var(--lopx-surface);
   box-shadow: 0 4px 16px rgba(40, 37, 47, 0.045);
-  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  transition: transform var(--lopx-dur-mid) ease, box-shadow var(--lopx-dur-mid) ease;
 }
 
 #indie-space section:first-of-type > article:hover,
@@ -598,7 +626,7 @@
 
 #indie-projects > article > h2 a {
   color: var(--indie-ink);
-  transition: color 0.25s ease;
+  transition: color var(--lopx-dur-mid) ease;
 }
 
 #indie-projects > article > h2 a:hover {
@@ -669,7 +697,7 @@
 #indie-space section:last-of-type > article h2 a,
 #indie-devlog > article h2 a {
   color: var(--indie-ink);
-  transition: color 0.25s ease;
+  transition: color var(--lopx-dur-mid) ease;
 }
 
 #indie-space section:last-of-type > article h2 a:hover,
@@ -749,7 +777,7 @@
 #garden-space,
 #garden-category {
   --garden-ink: #1e262c;
-  --garden-muted: #6f7a81;
+  --garden-muted: #68727a;
   --garden-line: var(--lopx-line);
   --garden-accent: #3a7aa0;
   max-width: 1160px;
@@ -794,7 +822,7 @@
   color: var(--garden-accent);
   font-size: 0.86rem;
   line-height: 1.4;
-  transition: color 0.25s ease, background-color 0.25s ease, border-color 0.25s ease;
+  transition: color var(--lopx-dur-mid) ease, background-color var(--lopx-dur-mid) ease, border-color var(--lopx-dur-mid) ease;
 }
 
 #garden-space > nav a:hover {
@@ -874,7 +902,7 @@
   font-size: 1rem;
   font-weight: 600;
   line-height: 1.5;
-  transition: color 0.25s ease;
+  transition: color var(--lopx-dur-mid) ease;
   /* 覆盖主题：解除单行截断与百分比高度，避免标题只显示一半 */
   display: block;
   height: auto;
@@ -1263,7 +1291,7 @@
 
 /* Home */
 #home-projects .project-card {
-  transition: transform 200ms ease, border-color 180ms ease, box-shadow 180ms ease;
+  transition: transform var(--lopx-dur-fast) ease, border-color var(--lopx-dur-fast) ease, box-shadow var(--lopx-dur-fast) ease;
 }
 
 #home-projects .project-card:hover {
@@ -1272,7 +1300,7 @@
 }
 
 #home-projects .project-card img {
-  transition: opacity 200ms ease;
+  transition: opacity var(--lopx-dur-fast) ease;
 }
 
 #home-projects .project-card:hover img {
@@ -1280,12 +1308,12 @@
 }
 
 #home-projects .project-card h3 a {
-  transition: color 180ms ease;
+  transition: color var(--lopx-dur-fast) ease;
 }
 
 #recent-writing li a,
 #recent-writing time {
-  transition: color 180ms ease;
+  transition: color var(--lopx-dur-fast) ease;
 }
 
 #recent-writing li:hover time {
@@ -1294,7 +1322,7 @@
 
 /* Hardware & Soft */
 #hardware-soft-projects > article {
-  transition: transform 200ms ease, border-color 180ms ease, box-shadow 180ms ease;
+  transition: transform var(--lopx-dur-fast) ease, border-color var(--lopx-dur-fast) ease, box-shadow var(--lopx-dur-fast) ease;
 }
 
 #hardware-soft-projects > article:hover {
@@ -1303,7 +1331,7 @@
 }
 
 #hardware-soft-projects > article img {
-  transition: opacity 200ms ease;
+  transition: opacity var(--lopx-dur-fast) ease;
 }
 
 #hardware-soft-projects > article:hover img {
@@ -1313,7 +1341,7 @@
 #hardware-soft-projects > article > h2 a,
 #hardware-soft-notes > article h2 a,
 #hardware-soft-space section article > a {
-  transition: color 180ms ease;
+  transition: color var(--lopx-dur-fast) ease;
 }
 
 #hardware-soft-space section article > a:hover {
@@ -1321,7 +1349,7 @@
 }
 
 #hardware-soft-notes > article time {
-  transition: color 180ms ease;
+  transition: color var(--lopx-dur-fast) ease;
 }
 
 #hardware-soft-notes > article:hover time {
@@ -1331,7 +1359,7 @@
 /* Indie */
 #indie-projects > article,
 #indie-space section:first-of-type > article {
-  transition: transform 200ms ease, border-color 180ms ease, box-shadow 180ms ease;
+  transition: transform var(--lopx-dur-fast) ease, border-color var(--lopx-dur-fast) ease, box-shadow var(--lopx-dur-fast) ease;
 }
 
 #indie-projects > article:hover,
@@ -1341,7 +1369,7 @@
 }
 
 #indie-projects > article img {
-  transition: opacity 200ms ease;
+  transition: opacity var(--lopx-dur-fast) ease;
 }
 
 #indie-projects > article:hover img {
@@ -1351,7 +1379,7 @@
 #indie-projects > article > h2 a,
 #indie-space section:first-of-type > article > a,
 #indie-space section:last-of-type > article > a {
-  transition: color 180ms ease;
+  transition: color var(--lopx-dur-fast) ease;
 }
 
 #indie-space section:first-of-type > article > a:hover,
@@ -1361,7 +1389,7 @@
 
 /* Garden */
 #garden-space > nav a {
-  transition: color 180ms ease, background-color 180ms ease, border-color 180ms ease, transform 180ms ease;
+  transition: color var(--lopx-dur-fast) ease, background-color var(--lopx-dur-fast) ease, border-color var(--lopx-dur-fast) ease, transform var(--lopx-dur-fast) ease;
 }
 
 #garden-space > nav a:hover {
@@ -1370,13 +1398,13 @@
 
 #garden-space .article-sort .article-sort-item-title,
 #garden-category .article-sort .article-sort-item-title {
-  transition: color 180ms ease;
+  transition: color var(--lopx-dur-fast) ease;
 }
 
 /* About */
 #about-page .author-content-item.skills,
 #about-page .author-content-item.buff {
-  transition: transform 200ms ease, border-color 180ms ease, box-shadow 180ms ease;
+  transition: transform var(--lopx-dur-fast) ease, border-color var(--lopx-dur-fast) ease, box-shadow var(--lopx-dur-fast) ease;
 }
 
 #about-page .author-content-item.skills:hover,
@@ -1390,14 +1418,14 @@
 #page-header #nav #menus .menus_item > a.site-page,
 #page-header #nav #menus .menus_item > a.site-page:hover {
   /* 主题对此处强制 transition: color 0s !important，需要同等重要性才能覆盖 */
-  transition: color 160ms ease, background-color 160ms ease, box-shadow 160ms ease !important;
+  transition: color var(--lopx-dur-fast) ease, background-color var(--lopx-dur-fast) ease, box-shadow var(--lopx-dur-fast) ease !important;
 }
 
 #page-header #nav #nav-right .nav-button a,
 #page-header #nav #nav-right .nav-button a:hover,
 #page-header #nav #nav-right #toggle-menu > a,
 #page-header #nav #nav-right #toggle-menu > a:hover {
-  transition: color 160ms ease, background-color 160ms ease, box-shadow 160ms ease, opacity 160ms ease;
+  transition: color var(--lopx-dur-fast) ease, background-color var(--lopx-dur-fast) ease, box-shadow var(--lopx-dur-fast) ease, opacity var(--lopx-dur-fast) ease;
 }
 
 /* Reduced Motion */
@@ -1505,7 +1533,7 @@
   /* 覆盖主题正文中的链接样式 */
   color: inherit;
   text-decoration: none;
-  transition: transform 220ms ease, box-shadow 220ms ease;
+  transition: transform var(--lopx-dur-fast) ease, box-shadow var(--lopx-dur-fast) ease;
 }
 
 #article-container .anime-gallery-card:hover {
@@ -1693,8 +1721,16 @@
   --lopx-accent: #3a7aa0;
   --lopx-ink: #1e262c;
   --lopx-body: #3d464e;
-  --lopx-muted: #6f7a81;
+  --lopx-muted: #68727a;
   --lopx-line: #e2e8ec;
+
+  /* 动效节奏 token（2026-10-01）—— fast 微反馈 / mid 卡片位移 / slow 入场；
+     ease 只给位移与入场用，颜色/描边类小过渡用默认 ease 即可。
+     收敛历史：此前并存 160/180/200/220ms 与 0.25/0.28/0.32s 两族杂值。 */
+  --lopx-dur-fast: 180ms;
+  --lopx-dur-mid: 0.25s;
+  --lopx-dur-slow: 0.5s;
+  --lopx-ease: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 /* ---- 9. 首页横幅（index_img 启用后）----
@@ -1915,7 +1951,7 @@
 }
 
 #lopx-home > section {
-  animation: lopx-fade-up 0.55s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+  animation: lopx-fade-up var(--lopx-dur-slow) var(--lopx-ease) backwards;
 }
 
 #lopx-home > section:nth-of-type(1) {
@@ -1933,7 +1969,7 @@
 /* 首页项目卡片 / 列表项：逐条错开，避免整体同时出现 */
 #lopx-home .project-list > article,
 #lopx-home #recent-writing li {
-  animation: lopx-fade-up 0.5s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+  animation: lopx-fade-up var(--lopx-dur-slow) var(--lopx-ease) backwards;
 }
 
 #lopx-home .project-list > article:nth-child(1),
@@ -1982,9 +2018,9 @@
   border-radius: 16px;
   background: var(--lopx-surface);
   box-shadow: 0 2px 10px rgba(30, 38, 44, 0.04);
-  transition: box-shadow 0.32s cubic-bezier(0.22, 1, 0.36, 1),
-    transform 0.32s cubic-bezier(0.22, 1, 0.36, 1),
-    border-color 0.32s ease;
+  transition: box-shadow var(--lopx-dur-mid) var(--lopx-ease),
+    transform var(--lopx-dur-mid) var(--lopx-ease),
+    border-color var(--lopx-dur-mid) ease;
 }
 
 #hardware-soft-space > section:hover,
@@ -2012,7 +2048,7 @@
 #garden-space .article-sort-item,
 #garden-category .article-sort-item {
   border-radius: 10px;
-  transition: background-color 0.25s ease;
+  transition: background-color var(--lopx-dur-mid) ease;
 }
 
 #hardware-soft-notes > article:hover,
@@ -2128,8 +2164,8 @@
   font-weight: 600;
   line-height: 1.35;
   box-shadow: 0 2px 10px rgba(15, 23, 42, 0.08);
-  transition: transform 0.32s cubic-bezier(0.22, 1, 0.36, 1),
-    box-shadow 0.32s cubic-bezier(0.22, 1, 0.36, 1);
+  transition: transform var(--lopx-dur-mid) var(--lopx-ease),
+    box-shadow var(--lopx-dur-mid) var(--lopx-ease);
 }
 
 #garden-space > nav a:hover {
@@ -2190,9 +2226,9 @@
   border-radius: 16px;
   background: var(--lopx-surface);
   box-shadow: 0 2px 10px rgba(15, 23, 42, 0.05);
-  transition: transform 0.32s cubic-bezier(0.22, 1, 0.36, 1),
-    box-shadow 0.32s cubic-bezier(0.22, 1, 0.36, 1),
-    border-color 0.3s ease;
+  transition: transform var(--lopx-dur-mid) var(--lopx-ease),
+    box-shadow var(--lopx-dur-mid) var(--lopx-ease),
+    border-color var(--lopx-dur-mid) ease;
 }
 
 #article-container .anime-gallery-card:hover {
@@ -2277,7 +2313,7 @@
   border-radius: 8px;
   background: transparent;
   box-shadow: none;
-  transition: background-color 0.25s ease;
+  transition: background-color var(--lopx-dur-mid) ease;
 }
 
 #lopx-home #recent-writing li:hover {
@@ -2486,7 +2522,7 @@
   color: #ffffff;
   -webkit-backdrop-filter: blur(8px);
   backdrop-filter: blur(8px);
-  transition: background-color 0.25s ease, border-color 0.25s ease;
+  transition: background-color var(--lopx-dur-mid) ease, border-color var(--lopx-dur-mid) ease;
 }
 
 :root:root:not([data-theme='dark']) :is(#hardware-soft-space, #indie-space) > nav a:hover {
@@ -2866,5 +2902,230 @@
     width: 1096px;
     padding-left: 0;
     padding-right: 0;
+  }
+}
+
+/* ============================================================
+   25. 正文阅读体验（2026-10-01）
+   只作用于 #article-container，不动 --global-font-size，
+   避免整站 UI（导航/侧栏/卡片）跟着一起缩放。
+   中文的"美化"核心是正文：17px / 行高 1.85 / 段距呼吸感。
+   ============================================================ */
+#article-container {
+  font-size: 17px;
+  line-height: 1.85;
+}
+
+#article-container p {
+  margin: 0 0 1.25em;
+  line-height: 1.85;
+}
+
+#article-container li {
+  line-height: 1.8;
+}
+
+#article-container ul,
+#article-container ol {
+  margin: 1.25em 0;
+  padding-left: 1.6em;
+}
+
+#article-container blockquote {
+  margin: 1.5em 0;
+  line-height: 1.8;
+}
+
+#article-container figure {
+  margin: 1.75em auto;
+}
+
+/* 窄屏回落：17px 在 375px 宽下换行太碎 */
+@media (max-width: 768px) {
+  #article-container {
+    font-size: 16px;
+  }
+}
+
+/* ============================================================
+   26. 首页三空间入口带 —— 2026-10-01
+   背景：首页此前只有 About / Projects / Recent Writing 三段，
+        三个 space 的存在感全靠导航，进首页扫不到「这站有什么」。
+   处理：About 与 Projects 之间加三条色卡（Tech/Indie/Garden），
+        各带身份色小方块 + 一句话 + 最新一篇。
+   配色与第 20 节 space 色带同源（tech 深蓝 / indie 深紫 / garden 深绿），
+        亮色取 600 阶（描边/小方块），暗色取 200 阶。
+   ⚠️ 插入后 #home-projects 变成第 4 个 section，第 14 节只定义到
+        nth-of-type(3) 的入场延迟，须补 (4)，否则 Recent Writing 比
+        Projects 先出现。
+   ============================================================ */
+#lopx-home > section:nth-of-type(4) {
+  animation-delay: 0.37s;
+}
+
+#lopx-home .space-list {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+/* ⚠️ pangu（_config.anzhiyu.yml 中已启用）会在中英文之间注入 <pangu> </pangu>，
+   它落在 flex/grid 容器里会被当成一个布局项：
+     · 首页 .space-list（grid）→ 实测把三张卡挤成「两行 3+2」
+     · 文章页侧栏 .card-tag-cloud（flex-wrap）→ 每个标签链接之间多出 4 个占位项
+   注入元素本身只承载一个空格，在这些容器里纯粹是噪声，直接隐藏。
+   跨页扫描脚本见下方注释；新增 flex/grid 组件后应重跑一次污染扫描。 */
+#lopx-home .space-list > pangu,
+#article-container :is(.anime-gallery, .project-list) > pangu,
+.card-tag-cloud > pangu {
+  display: none;
+}
+
+#lopx-home .space-card {
+  --lopx-space-accent: #3a7aa0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 18px 20px 16px;
+  border: 1px solid var(--lopx-line);
+  border-radius: 12px;
+  background: var(--lopx-surface);
+  text-decoration: none;
+  color: inherit;
+  transition:
+    transform var(--lopx-dur-mid, 0.28s) var(--lopx-ease, ease),
+    border-color var(--lopx-dur-mid, 0.28s) ease,
+    box-shadow var(--lopx-dur-mid, 0.28s) ease;
+}
+
+#lopx-home .space-card-tech {
+  --lopx-space-accent: #185FA5;
+}
+
+#lopx-home .space-card-indie {
+  --lopx-space-accent: #534AB7;
+}
+
+#lopx-home .space-card-garden {
+  --lopx-space-accent: #0F6E56;
+}
+
+#lopx-home .space-card-top {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+}
+
+#lopx-home .space-name {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--lopx-ink);
+}
+
+/* 身份色小方块：与 space 色带同源的识别符，不占额外 DOM */
+#lopx-home .space-name::before {
+  content: '';
+  display: inline-block;
+  width: 9px;
+  height: 9px;
+  margin-right: 9px;
+  border-radius: 2px;
+  background: var(--lopx-space-accent);
+}
+
+#lopx-home .space-label {
+  font-size: 0.78rem;
+  color: var(--lopx-muted);
+}
+
+#lopx-home .space-description {
+  margin: 0;
+  font-size: 0.82rem;
+  line-height: 1.6;
+  color: var(--lopx-muted);
+}
+
+#lopx-home .space-latest {
+  display: flex;
+  gap: 8px;
+  align-items: baseline;
+  margin-top: 2px;
+  padding-top: 12px;
+  border-top: 1px dashed var(--lopx-line);
+}
+
+#lopx-home .space-latest-caption {
+  flex-shrink: 0;
+  padding: 1px 8px;
+  border: 1px solid var(--lopx-space-accent);
+  border-radius: 999px;
+  font-size: 0.68rem;
+  color: var(--lopx-space-accent);
+}
+
+#lopx-home .space-latest-title {
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  font-size: 0.85rem;
+  color: var(--lopx-ink);
+}
+
+/* hover：与第 15 节卡片同一套语言（上浮 + 描边靠近身份色） */
+#lopx-home .space-card:hover {
+  transform: translateY(-3px);
+  border-color: var(--lopx-space-accent);
+  box-shadow: 0 10px 24px -10px rgba(30, 38, 44, 0.25);
+}
+
+/* 入场逐卡错开（section 延迟 0.15s 之后起排） */
+#lopx-home .space-list > .space-card {
+  animation: lopx-fade-up var(--lopx-dur-slow, 0.5s) var(--lopx-ease, cubic-bezier(0.22, 1, 0.36, 1)) backwards;
+}
+
+#lopx-home .space-list > .space-card:nth-child(1) {
+  animation-delay: 0.23s;
+}
+
+#lopx-home .space-list > .space-card:nth-child(2) {
+  animation-delay: 0.29s;
+}
+
+#lopx-home .space-list > .space-card:nth-child(3) {
+  animation-delay: 0.35s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #lopx-home .space-list > .space-card {
+    animation: none;
+  }
+
+  #lopx-home .space-card:hover {
+    transform: none;
+  }
+}
+
+/* 暗色：卡面沿用 token，身份色换 200 阶，hover 阴影加深 */
+[data-theme='dark'] #lopx-home .space-card-tech {
+  --lopx-space-accent: #85B7EB;
+}
+
+[data-theme='dark'] #lopx-home .space-card-indie {
+  --lopx-space-accent: #AFA9EC;
+}
+
+[data-theme='dark'] #lopx-home .space-card-garden {
+  --lopx-space-accent: #5DCAA5;
+}
+
+[data-theme='dark'] #lopx-home .space-card:hover {
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.5);
+}
+
+/* 窄屏：三卡纵排，最新一行给足换行空间 */
+@media (max-width: 768px) {
+  #lopx-home .space-list {
+    grid-template-columns: 1fr;
   }
 }
