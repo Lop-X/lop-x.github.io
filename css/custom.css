@@ -292,7 +292,7 @@
   overflow: hidden;
   border: 1px solid var(--hardware-line);
   border-radius: 10px;
-  background: #fff;
+  background: var(--lopx-surface);
   box-shadow: 0 4px 16px rgba(32, 42, 49, 0.045);
   transition: transform 0.25s ease, box-shadow 0.25s ease;
 }
@@ -551,7 +551,7 @@
   overflow: hidden;
   border: 1px solid var(--indie-line);
   border-radius: 10px;
-  background: #fff;
+  background: var(--lopx-surface);
   box-shadow: 0 4px 16px rgba(40, 37, 47, 0.045);
   transition: transform 0.25s ease, box-shadow 0.25s ease;
 }
@@ -750,7 +750,7 @@
 #garden-category {
   --garden-ink: #1e262c;
   --garden-muted: #6f7a81;
-  --garden-line: #e2e8ec;
+  --garden-line: var(--lopx-line);
   --garden-accent: #3a7aa0;
   max-width: 1160px;
   margin: 0 auto;
@@ -997,7 +997,7 @@
   padding: 5px 10px;
   border: 1px solid #d9e1e3;
   border-radius: 6px;
-  background: #f7fafc;
+  background: var(--lopx-surface);
   box-shadow: none;
   color: #64737a;
   font-size: 0.78rem;
@@ -1055,9 +1055,9 @@
   box-sizing: border-box;
   min-height: 172px;
   padding: 28px 32px;
-  border: 1px solid #e2e8ec;
+  border: 1px solid var(--lopx-line);
   border-radius: 10px;
-  background: #f7fafc;
+  background: var(--lopx-surface);
   box-shadow: 0 5px 18px rgba(39, 50, 57, 0.04);
 }
 
@@ -1086,14 +1086,14 @@
   box-sizing: border-box;
   min-height: 260px;
   padding: 0;
-  border: 1px solid #e2e8ec;
+  border: 1px solid var(--lopx-line);
   border-radius: 10px;
-  background: #fff;
+  background: var(--lopx-surface);
   box-shadow: 0 5px 18px rgba(39, 50, 57, 0.04);
 }
 
 #about-page .author-content-item.skills {
-  background: #fff;
+  background: var(--lopx-surface);
 }
 
 #about-page .author-content-item.skills .card-content,
@@ -1130,7 +1130,7 @@
   padding: 7px 11px;
   border: 1px solid #d9e1e3;
   border-radius: 6px;
-  background: #f7fafc;
+  background: var(--lopx-surface);
   box-shadow: none;
   color: #52656d;
   font-size: 0.82rem;
@@ -1139,7 +1139,7 @@
 }
 
 #about-page .skills .skill-info:nth-child(n) {
-  background: #f7fafc;
+  background: var(--lopx-surface);
   box-shadow: none;
   color: #52656d;
 }
@@ -1999,7 +1999,7 @@
   padding: 22px 26px;
   border: 1px solid var(--lopx-line);
   border-radius: 16px;
-  background: #fff;
+  background: var(--lopx-surface);
   box-shadow: 0 2px 10px rgba(30, 38, 44, 0.04);
   transition: box-shadow 0.32s cubic-bezier(0.22, 1, 0.36, 1),
     transform 0.32s cubic-bezier(0.22, 1, 0.36, 1),
@@ -2049,7 +2049,7 @@
 #garden-category {
   border: 1px solid var(--lopx-line);
   border-radius: 18px;
-  background: #fff;
+  background: var(--lopx-surface);
   box-shadow: 0 2px 12px rgba(30, 38, 44, 0.045);
 }
 
@@ -2084,11 +2084,14 @@
   --anzhiyu-border-radius: 12px;
   --anzhiyu-shadow-border: 0 2px 10px rgba(15, 23, 42, 0.04);
 
-  /* 站内统一 token */
+  /* 站内统一 token（2026-10-01：卡片底色与强调色提升为全站 token，
+     便于第 22 节用一条暗色覆盖统一处理，不必逐个选择器重写） */
   --lopx-ink: #171717;
   --lopx-body: #3d4149;
   --lopx-muted: #8a8f98;
   --lopx-line: #e6e8ee;
+  --lopx-surface: #ffffff;
+  --lopx-accent: #3a7aa0;
   --lopx-radius: 16px;
 }
 
@@ -2204,7 +2207,7 @@
   overflow: hidden;
   border: 1px solid var(--lopx-line);
   border-radius: 16px;
-  background: #fff;
+  background: var(--lopx-surface);
   box-shadow: 0 2px 10px rgba(15, 23, 42, 0.05);
   transition: transform 0.32s cubic-bezier(0.22, 1, 0.36, 1),
     box-shadow 0.32s cubic-bezier(0.22, 1, 0.36, 1),
@@ -2235,49 +2238,86 @@
 }
 
 /* ============================================================
-   18. 首页卡片毛玻璃 + 滚动浮起 —— 2026-09-30
-   参考 blog.fqzlr.top 的观感：卡片半透明、可透出背景层次；
-   滚动进入视口时卡片自下浮起，而非静止出现。
-   实现要点：
-     ① 纯 CSS 径向光斑铺底，给 backdrop-filter 一个可折射的层次
-        （纯色底上毛玻璃是看不出效果的）；
-     ② 卡片改半透明白 + backdrop-filter；
-     ③ 滚动浮起用 animation-timeline: view()（Chrome 115+ 原生支持），
-        不引入 JS。不支持该特性的浏览器自动回落为静态显示。
+   18. 首页卡片：极简化 —— 2026-10-01 重构
+   参考 ragnote.top 的卡片语言（自其线上 CSS 提取）：
+     .article-card       { background:#fff; border:1px solid #e4e6e9;
+                           box-shadow:0 1px 2px rgba(0,0,0,.05) }
+     .article-card:hover { background:#f2f3f5; border-color:#0ea5e9;
+                           box-shadow:0 4px 6px rgba(0,0,0,.07) }
+   即「实色底 + 1px 描边 + 贴边浅阴影」，没有毛玻璃、位移与渐变。
+   改前本站首页叠了三层：主题给 #lopx-home 的白卡 → 两团径向光斑
+   → rgba(255,255,255,.68) + blur(18px) 的玻璃卡。白上叠白、边界发糊。
+   本次拆到只剩一层：页面铺 #fafafa，每个内容区块是一张白卡。
    ============================================================ */
 
-/* 18.1 首页内容区底纹：两团极淡光斑 */
+/* 18.1 摘掉主题给 #lopx-home 的「外层大白卡」
+   来源：.layout > div:first-child:not(.recent-posts)，它会给首个子 div 加上
+   background: var(--anzhiyu-card-bg) + 12px 圆角 + 描边投影。
+   与内部区块叠在一起就是「卡套卡」，这里把它还原成透明容器。
+   左右内边距同时归零，使卡片与 /tech/ 等页面共用同一条 1160 容器轴线。 */
 #lopx-home {
-  background-image:
-    radial-gradient(560px circle at 8% 10%, rgba(58, 122, 160, 0.1), transparent 62%),
-    radial-gradient(680px circle at 94% 76%, rgba(88, 132, 196, 0.08), transparent 62%);
-  background-repeat: no-repeat;
+  padding: 56px 0 72px;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  background-image: none;
+  box-shadow: none;
 }
 
-/* 18.2 卡片毛玻璃 */
-#lopx-home > section,
-#lopx-home .project-card,
+/* 18.2 区块卡片：只有一层，实色底 + 贴边浅阴影 */
+#lopx-home > section {
+  padding: 24px 26px;
+  border: 1px solid var(--lopx-line);
+  border-radius: 12px;
+  background: var(--lopx-surface);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+
+/* 18.3 拆掉区块内的第二层卡片
+   #about-page 的 .author-content-item.myInfoAndSayHello 自带 #f7fafc 底、
+   10px 圆角、#e2e8ec 描边与投影，另有 hover 上浮，与 18.2 构成二级层次。
+   首页语境下摊平为普通内容块（含 hover 一并去掉）。
+   /about/ 页面的同名元素不受影响（选择器带 #lopx-home 前缀）。
+   注：此处必须带上 .myInfoAndSayHello 类名，否则特异性低于上方既有规则。 */
+#lopx-home #about-page .author-content-item.myInfoAndSayHello,
+#lopx-home #about-page .author-content-item.myInfoAndSayHello:hover {
+  padding: 4px 0 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  transform: none;
+}
+
+/* 18.4 文章列表行：去掉半透明底，改由分隔线与 hover 划分 */
 #lopx-home #recent-writing li {
-  border: 1px solid rgba(255, 255, 255, 0.75);
-  background: rgba(255, 255, 255, 0.68);
-  box-shadow: 0 6px 24px rgba(15, 23, 42, 0.06);
-  -webkit-backdrop-filter: blur(18px) saturate(180%);
-  backdrop-filter: blur(18px) saturate(180%);
+  border-radius: 8px;
+  background: transparent;
+  box-shadow: none;
+  transition: background-color 0.25s ease;
 }
 
-#lopx-home .project-card:hover,
-#lopx-home > section:hover {
-  background: rgba(255, 255, 255, 0.82);
-  border-color: rgba(58, 122, 160, 0.28);
+#lopx-home #recent-writing li:hover {
+  background-color: rgba(58, 122, 160, 0.05);
 }
 
-/* 18.3 滚动浮起（滚动驱动动画，覆盖第 14 节的固定延迟入场） */
+/* 18.5 首页 Projects 空块
+   没有 type: project 的文章时，这一块只剩一张空白卡 + 「No projects yet.」，
+   约 187px 高、两条分隔线，是首页最后一块结构性冗余。
+   用 :has() 判断真实有无项目卡，将来加了 project 文章会自动恢复显示。 */
+#home-projects:not(:has(.project-card)) {
+  display: none;
+}
+
+/* 18.6 滚动浮起：保留（进入视口时自下浮起），去掉缩放让位移更克制 */
 @supports (animation-timeline: view()) {
 
   @keyframes lopx-rise {
     from {
       opacity: 0;
-      transform: translateY(26px) scale(0.985);
+      transform: translateY(20px);
     }
 
     to {
@@ -2299,6 +2339,17 @@
   #lopx-home .project-list > article:nth-child(n),
   #lopx-home #recent-writing li:nth-child(n) {
     animation-delay: 0s;
+  }
+}
+
+/* 18.6 窄屏：左右留一点边距，卡片不贴屏边 */
+@media screen and (max-width: 768px) {
+  #lopx-home {
+    padding: 40px 16px 56px;
+  }
+
+  #lopx-home > section {
+    padding: 20px 18px;
   }
 }
 /* ============================================================
@@ -2535,4 +2586,118 @@
     border-radius: 12px;
     box-shadow: 0 8px 30px rgba(20, 26, 32, 0.16);
   }
+}
+
+/* ============================================================
+   22. 浮游菜单下线 + 导航栏暗色切换 + 暗色模式收口 —— 2026-10-01
+   三件事：
+     ① 右下角 #rightside 浮游菜单隐藏（入口挪位）
+     ② 暗色切换按钮移到导航栏（样式）
+     ③ 暗色 token 收口 —— 第 16 节把底色/文字/描边写成了亮色常量，
+        暗色下首页与各 space 卡片仍是死白，本段整套换掉
+   ============================================================ */
+
+/* 22.1 隐藏右下角浮游菜单
+   原 #rightside 承载：设置齿轮、阅读模式、繁简、暗色、隐藏侧栏、目录、评论、回到顶部。
+   · 「回到顶部」导航栏本来就有（#nav-totop，带百分比），功能不丢；
+   · 「暗色切换」由 /js/nav-darkmode.js 挪到导航栏右侧。
+   注意：此处只隐藏、不删 DOM —— 主题对 #rightside 用的是事件委托
+   （main.js 在 #rightside 上监听 click，再按 e.target.id 派发到 rightSideFn），
+   #darkmode 必须留在容器内，转发点击才生效。 */
+#rightside {
+  display: none !important;
+}
+
+/* 22.2 导航栏暗色按钮：沿用 #nav-right .nav-button 的既有观感 */
+#page-header #nav #nav-right .lopx-darkmode-btn a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#page-header #nav #nav-right .lopx-darkmode-btn i {
+  font-size: 1.05rem;
+}
+
+#page-header #nav #nav-right .lopx-darkmode-btn a:hover {
+  color: var(--anzhiyu-main);
+}
+
+/* 22.3 暗色 token（全站）
+   两条线要一起修：
+   a) 本站 token。取值对齐主题自身的暗色体系（底 #18171d / 卡 #1d1e22 / 描边 #42444a），
+      避免「我的卡片」与「主题组件」两套暗度。强调色在暗底上必须提亮：
+      #3a7aa0 压 #1d1e22 只有约 3.5:1，换成 ragnote 暗色所用的 #67b2d0（约 7.1:1）。
+   b) 主题 token。⚠️ 关键坑：第 16 节的 `:root:root`（特异性 0,2,0）**高于**
+      主题的 `[data-theme="dark"]`（0,1,0），于是第 16 节写下的亮色值在暗色下依然生效，
+      主题自己的暗色定义被整体压掉 —— 最直观的症状是 #web_bg 一直是 #fafafa，
+      页面底色根本没变暗。必须用 (0,3,0) 的 `:root:root[data-theme='dark']` 才拿得回来。 */
+:root:root[data-theme='dark'] {
+  /* a) 本站 token */
+  --lopx-ink: #f7f7fa;
+  --lopx-body: #c9cad6;
+  --lopx-muted: #a1a2b8;
+  --lopx-line: #42444a;
+  --lopx-surface: #1d1e22;
+  --lopx-accent: #67b2d0;
+  --style-border-hover: 1px solid rgba(103, 178, 208, 0.42);
+  --hr-border: rgba(103, 178, 208, 0.2);
+
+  /* b) 主题 token —— 把第 16 节锁死的亮色值在暗色下换回来（取值同主题 [data-theme="dark"]） */
+  --anzhiyu-background: #18171d;
+  --anzhiyu-card-bg: #1d1e22;
+  --anzhiyu-fontcolor: #f7f7fa;
+  --anzhiyu-secondtext: #a1a2b8;
+  --anzhiyu-shadow-border: 0 2px 10px rgba(0, 0, 0, 0.4);
+}
+
+/* 22.4 首页在第 1 节里另定义了一套同名 token，作用域是 #lopx-home（特异性 1,0,0
+   高于 :root），22.3 到不了它，需按同等选择器权重再写一遍。 */
+[data-theme='dark'] #lopx-home {
+  --lopx-ink: #f7f7fa;
+  --lopx-muted: #a1a2b8;
+  --lopx-line: #42444a;
+  --lopx-surface: #1d1e22;
+  --lopx-accent: #67b2d0;
+}
+
+/* 22.5 卡片阴影：亮色用弥散浅影，暗色要更深才看得出层次 */
+[data-theme='dark'] #lopx-home > section,
+[data-theme='dark'] #hardware-soft-space > section,
+[data-theme='dark'] #indie-space > section,
+[data-theme='dark'] #garden-space > section,
+[data-theme='dark'] #hardware-soft-notes,
+[data-theme='dark'] #indie-devlog,
+[data-theme='dark'] #hardware-soft-projects,
+[data-theme='dark'] #indie-projects,
+[data-theme='dark'] #garden-category,
+[data-theme='dark'] #article-container .anime-gallery-card {
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+/* 22.6 hover 反馈：亮色的淡主色底在暗色下几乎看不见，提高不透明度 */
+[data-theme='dark'] #lopx-home #recent-writing li:hover,
+[data-theme='dark'] #hardware-soft-notes > article:hover,
+[data-theme='dark'] #indie-devlog > article:hover,
+[data-theme='dark'] #garden-space .article-sort-item:hover,
+[data-theme='dark'] #garden-category .article-sort-item:hover {
+  background-color: rgba(103, 178, 208, 0.1);
+}
+
+/* 22.7 目录：第 21 节的 #4a5058 是亮色专用，暗底上读不出来 */
+[data-theme='dark'] #aside-content #card-toc .toc-content .toc-link {
+  color: #b8bcc8;
+}
+
+[data-theme='dark'] #aside-content #card-toc .toc-content .toc-link.active {
+  background-color: rgba(103, 178, 208, 0.14);
+}
+
+/* 22.8 Garden 分类彩卡：暗色下渐变底过亮，压暗一档 */
+[data-theme='dark'] #garden-space > nav a {
+  filter: brightness(0.78) saturate(0.9);
+}
+
+[data-theme='dark'] #garden-space > nav a:hover {
+  filter: brightness(0.95) saturate(1);
 }
