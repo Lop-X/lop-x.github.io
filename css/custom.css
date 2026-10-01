@@ -975,7 +975,7 @@
 
 /* About */
 #about-page {
-  max-width: 1060px;
+  max-width: 1160px;
   margin: 0 auto;
   padding: 24px 32px 72px;
   color: var(--lopx-ink);
@@ -1888,9 +1888,15 @@
         卡片由三列 32% 改两列 48%，单条时也足够饱满。
    ============================================================ */
 #essay_page {
-  max-width: 900px;
+  max-width: 1160px;
   margin-left: auto;
   margin-right: auto;
+  padding: 0 32px;
+}
+
+/* 横幅收到内容列宽，与下方短文列表同宽同轴（172 → 1072） */
+#essay_page .essayPage {
+  max-width: 900px;
 }
 
 #bber,
@@ -2700,4 +2706,194 @@
 
 [data-theme='dark'] #garden-space > nav a:hover {
   filter: brightness(0.95) saturate(1);
+}
+
+/* ============================================================
+   23. 暗色走查修正 —— 2026-10-01
+   方法：对首页 / 三个 space / 列表页 / 动态 / About / 追番 / 文章 / 404
+        共 13 个页面，在亮暗两态下跑「对比度探针」——遍历 main 内所有文本叶子，
+        沿父链找到最近的不透明底色，按 WCAG 公式算对比度，列出 < 4.5:1 的项。
+        下面是这份客观清单对应的修复。
+   注意：截图看「文字发灰/看不见」有一种假象——首页 section 带 lopx-rise 入场动画，
+        用整页截图（captureBeyondViewport）会在动画中途光栅化，把白字拍成灰字。
+        首页「你好，我是 Fanbo」实测计算色是 rgb(247,247,250)，属于该假象，非缺陷。
+   ============================================================ */
+
+/* 23.1 Garden 是全站唯一把 ink/muted/accent 写成字面量色值的 space
+   （tech 是 --hardware-ink: var(--lopx-ink)，indie 同理，所以它们暗色下自动跟随）。
+   探针实测：/garden/ 的 h1、h2、「Recent Garden」、列表文章标题在暗色下
+   color 仍是 #1e262c，压在 #1d1e22 卡片上只有 1.09:1 —— 等于完全不可见。 */
+[data-theme='dark'] #garden-space,
+[data-theme='dark'] #garden-category {
+  --garden-ink: var(--lopx-ink);
+  --garden-muted: var(--lopx-muted);
+  --garden-line: var(--lopx-line);
+  --garden-accent: var(--lopx-accent);
+}
+
+/* 23.2 代码块：mac light 的语法配色是为白底设计的，而主题在 mac light 下把
+   代码块底色取成 var(--anzhiyu-card-bg)（暗色下自动变暗卡色）——
+   于是「深色字 + 深色底」，探针实测每一行 .line 只有 1.83:1。
+   这里在暗色下换一套暗底可读的 token 配色，底色仍沿用主题的卡片色。 */
+[data-theme='dark'] #article-container figure.highlight .line {
+  color: #c9d1d9;
+}
+
+[data-theme='dark'] #article-container figure.highlight .gutter,
+[data-theme='dark'] #article-container figure.highlight .gutter .line,
+[data-theme='dark'] #article-container figure.highlight .line-numbers {
+  color: #6e7681;
+}
+
+[data-theme='dark'] #article-container figure.highlight :is(.comment, .quote) {
+  color: #8b949e;
+}
+
+[data-theme='dark'] #article-container figure.highlight :is(.keyword, .selector-tag, .built_in, .type) {
+  color: #79b8ff;
+}
+
+[data-theme='dark'] #article-container figure.highlight :is(.string, .attr, .addition, .regexp) {
+  color: #9ecb9b;
+}
+
+[data-theme='dark'] #article-container figure.highlight :is(.number, .literal, .symbol, .bullet, .meta .number) {
+  color: #e6a06a;
+}
+
+[data-theme='dark'] #article-container figure.highlight :is(.title, .function, .section, .name) {
+  color: #c9a7f5;
+}
+
+[data-theme='dark'] #article-container figure.highlight :is(.variable, .template-variable, .selector-id, .selector-class) {
+  color: #e3b341;
+}
+
+[data-theme='dark'] #article-container figure.highlight :is(.meta, .deletion, .tag) {
+  color: #ff8a80;
+}
+
+/* 23.3 About / 首页的胶囊标签与次要文字：亮色下用的 #64737a / #52656d / #66757a
+   都是压白底用的中间灰，压在 #1d1e22 上只有 2.7–3.5:1。 */
+[data-theme='dark'] #about-page :is(.author-tag-left, .author-tag-right) .author-tag {
+  border-color: var(--lopx-line);
+  color: #c9cad6;
+}
+
+[data-theme='dark'] #about-page .skills .skill-info,
+[data-theme='dark'] #about-page .skills .skill-info:nth-child(n) {
+  border-color: var(--lopx-line);
+  color: #c9cad6;
+}
+
+[data-theme='dark'] #about-page .buff .buff-text {
+  color: var(--lopx-body);
+}
+
+[data-theme='dark'] #about-page .title1 {
+  color: var(--lopx-muted);
+}
+
+/* 23.4 文章页通栏封面：第 19 节整段是 :root:not([data-theme='dark'])，暗色下不生效，
+   文章头部会退回主题默认（纯黑底、无图）。这里给暗色补同一套三层背景，
+   只把压暗层加重一档 —— 暗色页面里封面要更沉，白字才压得住。 */
+[data-theme='dark'] #page-header.post-bg {
+  height: 26rem;
+  background-color: #0f1419;
+  background-image: linear-gradient(
+      100deg,
+      rgba(6, 10, 14, 0.86) 0%,
+      rgba(6, 10, 14, 0.6) 38%,
+      rgba(6, 10, 14, 0.26) 66%,
+      rgba(6, 10, 14, 0.36) 100%
+    ),
+    linear-gradient(180deg, rgba(6, 10, 14, 0.62) 0%, rgba(6, 10, 14, 0.3) 42%, rgba(6, 10, 14, 0.78) 100%),
+    url('/img/post-cover.webp');
+  background-repeat: no-repeat, no-repeat, no-repeat;
+  background-size: cover, cover, cover;
+  background-position: center center, center center, center 34%;
+}
+
+[data-theme='dark'] #page-header.post-bg #post-top-cover {
+  display: none;
+}
+
+@media screen and (max-width: 768px) {
+  [data-theme='dark'] #page-header.post-bg {
+    height: 22rem;
+    min-height: 0;
+    background-position: center center, center center, center 28%;
+  }
+}
+
+/* 23.5 动态页横幅：essay-cover 是高饱和青蓝插画，暗色下是一整块发光的亮色矩形。
+   用 filter 整流压暗 —— 文字与底图等比缩放，对比度基本不变。
+   ⚠️ 容器 id 是下划线写法 `#essay_page`，写成 `#essay-page` 不匹配（第 13 节沿用）。 */
+[data-theme='dark'] #essay_page .essayPage {
+  filter: brightness(0.72) saturate(0.85);
+}
+
+[data-theme='dark'] #essay_page .essayPage:hover {
+  filter: brightness(0.82) saturate(0.92);
+}
+
+/* 23.6 404：左侧是「红黑线稿 + 浅灰底」的 gif，暗色下是一块刺眼的白方块。
+   反相（invert）会把线稿反成粉红，配色与站点冲突，因此改为压暗 + 降饱和，
+   保留原插画色相，只让它沉进暗底。 */
+[data-theme='dark'] .error-img {
+  filter: brightness(0.45) saturate(0.5) contrast(1.08);
+}
+
+/* 23.7 小标签与「原创」胶囊的残留项（探针 4.35–4.38:1，属临界值，顺手补齐） */
+[data-theme='dark'] :is(#about-page, #lopx-home) .author-content-item-tips {
+  color: var(--lopx-muted);
+}
+
+[data-theme='dark'] #article-container .post-copyright__original {
+  background: #2c6280;
+}
+
+/* ============================================================
+   24. 文章页并入站内统一轴线 —— 2026-10-01（版式对齐收尾）
+   量到的事实（1440 视口，探针实测）：
+     · space 页：容器 x=140 / 宽 1160，内容左缘 172 / 宽 900
+     · About 页：容器原 1060 / x=190 → 已并入 1160（见「About」段）
+     · 动态页  ：容器原 900 / x=270 → 已并入 1160，内容 900 靠左
+     · 文章页  ：容器 x=44 / 宽 1400；标题左缘 44、正文左缘 85（宽 970）
+                 —— 页内标题与正文差 41px，跨页又比 space 页左移 128px；
+                 无侧栏的那篇正文宽 1270，是第三套宽度
+   处理：文章页收进同一轴线 —— 容器 1224（= 1160 内容 + 双侧 32 padding），
+        正文卡片内边距 40 → 32（右移 8px），使正文左缘正好落在 172；
+        头部标题区同轴右移，与正文左缘对齐。
+   两栏宽度：1160 - 300(侧栏) = 860 卡片 → 正文 796px（约 50 汉字/行）；
+        无侧栏时把卡片锁到 860，避免正文独自拉宽到 1270。
+   断点：仅 ≥1225px 生效。1224 以下容器已无左右余量，
+        此时交回主题自身规则（≤1400 时主题把头部改成 left:0 + padding 56px），
+        否则 calc 会算出负偏移。
+   ============================================================ */
+@media screen and (min-width: 1225px) {
+  #content-inner.layout {
+    max-width: 1224px;
+    padding: 1.25rem 32px;
+  }
+
+  /* 正文左缘 = 容器内容左缘(140) + 32 = 172，与 space 页内容列对齐 */
+  #content-inner #post {
+    padding: 2rem;
+  }
+
+  /* 无侧栏文章（front-matter 写了 aside: false）：卡片与两栏时同宽。
+     ⚠️ 主题 .layout 是 justify-content: center，限宽后卡片会被居中飘走，必须拉回左缘 */
+  #content-inner:not(:has(#aside-content)) #post {
+    max-width: 860px;
+    margin-right: auto;
+  }
+
+  /* 头部标题区：从主题的 1400 轴线移到 1224 轴线，再内缩 32px 与正文同左缘 */
+  #page-header #post-info {
+    left: calc((100% - 1224px) / 2 + 64px);
+    width: 1096px;
+    padding-left: 0;
+    padding-right: 0;
+  }
 }

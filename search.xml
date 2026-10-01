@@ -1,0 +1,404 @@
+<?xml version="1.0" encoding="utf-8"?>
+<search>
+  <entry>
+    <title>Hexo 配置 Bangumi 追番页面</title>
+    <url>/%E5%BB%BA%E7%AB%99/hexo%E9%85%8D%E7%BD%AEbangumi%E8%BF%BD%E7%95%AA%E9%A1%B5%E9%9D%A2/</url>
+    <content><![CDATA[<h2 id="终于成功啦"><a href="#终于成功啦" class="headerlink" title="终于成功啦"></a>终于成功啦</h2><p><strong>Todo 目前不挂梯子无法显示封面，待解决！！！</strong></p>
+<p>使用插件<br><a href="https://github.com/HCLonely/hexo-bilibili-bangumi">HCLonely&#x2F;hexo-bilibili-bangumi: hexo 番剧页面插件，可选数据源：Bilibili, Bangumi</a></p>
+<h3 id="第一步安装插件"><a href="#第一步安装插件" class="headerlink" title="第一步安装插件"></a>第一步安装插件</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">npm install hexo-bilibili-bangumi --save</span><br></pre></td></tr></table></figure>
+<h3 id="第二步安配置设置"><a href="#第二步安配置设置" class="headerlink" title="第二步安配置设置"></a>第二步安配置设置</h3><p><strong>在_config.yml里面添加如下代码，注意是hexo配置不是主题配置</strong></p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">bangumi: <span class="comment"># 追番设置</span></span><br><span class="line">  <span class="built_in">enable</span>: <span class="literal">true</span></span><br><span class="line">  <span class="built_in">source</span>: bangumi</span><br><span class="line">  path: bangumis/index.html</span><br><span class="line">  vmid: 956578 <span class="comment">#注意此处换成自己的bangumi ID 主页名字旁边有个 @XXXXX数字的那个</span></span><br><span class="line">  title: <span class="string">&quot;追番列表&quot;</span></span><br><span class="line">  quote: <span class="string">&quot;生命不息，追番不止！&quot;</span></span><br><span class="line">  show: 1</span><br><span class="line">  lazyload: <span class="literal">false</span></span><br><span class="line">  loading:</span><br><span class="line">  showMyComment: <span class="literal">false</span></span><br><span class="line">  pagination: <span class="literal">false</span></span><br><span class="line">  metaColor:</span><br><span class="line">  color:</span><br><span class="line">  webp:</span><br><span class="line">  progress:</span><br><span class="line">  extraOrder:</span><br><span class="line">  proxy:</span><br><span class="line">    host: <span class="string">&quot;127.0.0.1&quot;</span>   <span class="comment">#换成自己代理的地址</span></span><br><span class="line">    port: <span class="string">&quot;7897&quot;</span>        <span class="comment">#换成自己代理的端口</span></span><br><span class="line">  extra_options:</span><br><span class="line">    top_img: <span class="literal">false</span></span><br><span class="line">    lazyload:</span><br><span class="line">      <span class="built_in">enable</span>: <span class="literal">false</span></span><br></pre></td></tr></table></figure>
+
+<p>把vmid 换成自己bangumi的 </p>
+<p>proxy代理换成自己的地址（自己去小软件里面查），众所周知bangumi现在不能直连了</p>
+<p>规则代理可能会绕过梯子，导致无法更新bangumi数据，</p>
+<h3 id="第三步同步数据"><a href="#第三步同步数据" class="headerlink" title="第三步同步数据"></a>第三步同步数据</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 更新追番数据</span></span><br><span class="line">hexo bangumi -u</span><br><span class="line"></span><br><span class="line"><span class="comment"># 删除追番数据</span></span><br><span class="line">hexo bangumi -d</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>连接正常的话会看到</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">INFO  Getting bangumis, please <span class="built_in">wait</span>...</span><br><span class="line">正在获取 [想看] 番剧 [██] 100% 0.0s</span><br><span class="line">正在获取 [在看] 番剧 [█] 100% 0.0s</span><br><span class="line">正在获取 [已看] 番剧 [█████████████] 100% 33.6s</span><br></pre></td></tr></table></figure>
+<p>之后就可以正常部署啦</p>
+]]></content>
+      <categories>
+        <category>建站</category>
+      </categories>
+      <tags>
+        <tag>hexo</tag>
+        <tag>bangumi</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>使用 Obsidian 编辑笔记</title>
+    <url>/%E5%B7%A5%E5%85%B7/%E4%BD%BF%E7%94%A8obsidian%E7%BC%96%E8%BE%91%E7%AC%94%E8%AE%B0/</url>
+    <content><![CDATA[<p>使用Vscode编辑markdown显示效果不好，使用Typora编辑只能一次打开一篇文章，<br>为了解决编辑文章的痛点，可以使用obsidian。</p>
+<h3 id="obsidian下载"><a href="#obsidian下载" class="headerlink" title="obsidian下载"></a>obsidian下载</h3><p><a href="https://obsidian.md/download">Download - Obsidian</a></p>
+<h3 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h3><p>选择hexo现有的 <code>_post</code>文件夹作为obsidian地址，<br>可以看到本地生成了 <code>.obsidian</code>文件夹，<br>就可以愉快的管理编辑笔记啦</p>
+<h3 id="模版"><a href="#模版" class="headerlink" title="模版"></a>模版</h3><p>在<code>_post</code>文件夹下面新建文件夹<code>_templates</code>,里面直接添加<code>XX.md</code>作为模版，<br>将需要的属性模版打上去，注意日期要按照格式，详见obsidian设置页面<code>模版</code><br>将文件夹<code>_templates</code>添加进去，注意是相对地址，即可使用模版。</p>
+<h3 id="复制设置"><a href="#复制设置" class="headerlink" title="复制设置"></a>复制设置</h3><p>根目录下<code>.obsidian</code>文件夹保存着obsidian的所有设置，包括插件和主题，<br><strong>记得复制的时候删除<code>workspace.json</code>文件，里面保存的当前界面布局</strong></p>
+]]></content>
+      <categories>
+        <category>工具</category>
+      </categories>
+      <tags>
+        <tag>obsidian</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>网站装修记录</title>
+    <url>/%E5%BB%BA%E7%AB%99/%E7%BD%91%E7%AB%99%E8%A3%85%E4%BF%AE%E8%AE%B0%E5%BD%95/</url>
+    <content><![CDATA[<p><strong>[2026-09-30]</strong><br>统一了三个空间的页面宽度：容器一律 1160、列表与正文一律 900，内容左边缘对齐，不再左右错位<br>标题按层级分档：空间主页大、列表页小<br>Garden 列表补回了日期（之前只剩标题）<br>文章页代码块从深蓝底换成白底，并提高了文字对比度<br>动态页横幅从蓝色照片换成与站点同色的绿灰渐变<br>Tech、Indie 的项目页还是空的，加了「项目整理中」的说明</p>
+<p><strong>[2026-09-29]</strong><br>新增「动态」页面，随手记的东西以后放这里<br>恢复了关于页面<br>导航栏改成中英双语，顺手修好了图标不显示的问题<br>Hardware &amp; Soft 空间改名为 Tech，旧地址自动跳转<br>整理文章：标题统一中英文加空格，站务折腾类统一归入 Tech<br>文章分类从「笔记」改为 建站 &#x2F; Git &#x2F; 工具 &#x2F; 游戏开发 &#x2F; 考研，旧地址自动跳转<br>统一全站配色，原来的宝典蓝都换成了首页那套绿灰<br>修好了 Tech 和 Indie 页面文字错位、标题竖排的问题<br>列表的宽度、字重、行距做了统一<br>首页顶部加了一张横幅图（原图 3.6MB，压成 WebP 只有 104KB）<br>横幅上的站点标题原本压在人物脸上，挪到上方去了</p>
+<p><strong>[2026-09-23]</strong><br>首页修改<br>删除about页面</p>
+<p><strong>[2026-09-15]</strong><br>在garden中添加背单词选项卡</p>
+<p><strong>[2026-09-13]</strong><br>借助AI简单重构了一下网站<br>给网站分了三个空间：Hardware &amp; Soft、Indie、Garden<br>首页改成项目优先，只放 Projects 和 Recent Writing<br>简化网站界面，删除anzhiyu多余的动态效果</p>
+<p><strong>[2026-09-10]</strong><br>基础信息配置<br>导航栏装修<br>修改nav相关配置</p>
+<p><strong>[2026-09-09]</strong><br>追番页面配置成功</p>
+<p><strong>[2026-09-08]</strong><br>创建日记分栏，实现即可实现隐藏主页可见(配置index:false)<br>添加顶部相关配置页面，内容待填充<br>开启作者卡片(头像左下角)<br>开启字数统计，关闭部分侧边栏显示<br>添加密码功能</p>
+<p><strong>[2026-09-07]</strong><br>安装anzhiyu主题 <a href="https://docs.anheyu.com/initall.html">主题安装 | 安知鱼主题官方文档</a></p>
+]]></content>
+      <categories>
+        <category>建站</category>
+      </categories>
+      <tags>
+        <tag>hexo</tag>
+        <tag>网站</tag>
+        <tag>记录</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>用 EasyX 制作 Snake Game 记录</title>
+    <url>/%E6%B8%B8%E6%88%8F%E5%BC%80%E5%8F%91/%E7%94%A8easyX%E5%88%B6%E4%BD%9CSnake-Game/</url>
+    <content><![CDATA[<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><h2 id="1-基础配置部分"><a href="#1-基础配置部分" class="headerlink" title="1 基础配置部分"></a>1 基础配置部分</h2><h3 id="1-1-初始化"><a href="#1-1-初始化" class="headerlink" title="1.1 初始化"></a>1.1 初始化</h3><figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;graphics.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;cstdio&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="built_in">initgraph</span>(<span class="number">640</span>, <span class="number">480</span>);</span><br><span class="line"></span><br><span class="line">    <span class="built_in">setbkcolor</span>(WHITE);</span><br><span class="line">    <span class="built_in">cleardevice</span>(); <span class="comment">//用刚才设置的背景色清空 / 刷新整个画面。</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">//setlinecolor(RED);</span></span><br><span class="line">    <span class="comment">//rectangle(100, 100, 200, 200);//画方块</span></span><br><span class="line">    <span class="built_in">setfillcolor</span>(BLUE);</span><br><span class="line">    <span class="built_in">solidrectangle</span>(<span class="number">100</span>, <span class="number">100</span>, <span class="number">200</span>, <span class="number">200</span>);</span><br><span class="line">    <span class="keyword">while</span> (<span class="literal">true</span>)</span><br><span class="line">    &#123;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">closegraph</span>();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="1-2-移动效果"><a href="#1-2-移动效果" class="headerlink" title="1.2 移动效果"></a>1.2 移动效果</h3><p>尝试添加移动效果</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="type">int</span> x = <span class="number">100</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">while</span> (<span class="literal">true</span>)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="built_in">cleardevice</span>();</span><br><span class="line">    <span class="built_in">setfillcolor</span>(BLUE);</span><br><span class="line">    <span class="built_in">solidrectangle</span>(x, <span class="number">100</span>, x + <span class="number">50</span>, <span class="number">150</span>);</span><br><span class="line">    x = x + <span class="number">1</span>;</span><br><span class="line">    <span class="built_in">Sleep</span>(<span class="number">10</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>方块闪烁的主要原因是程序在刷新画面时，会先清空原来的画面，再重新绘制方块。由于屏幕刷新显示不可控制时间，屏幕可能卡在清除和绘制之前刷新显示出短暂的空白，因此产生闪烁。</strong></p>
+<p><strong><code>BeginBatchDraw()</code> 开启批量绘图后，程序先在后台完成这一帧的绘制，再通过 <code>FlushBatchDraw()</code> 一次性显示出来，从而减少闪烁。</strong></p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line">   <span class="built_in">BeginBatchDraw</span>();<span class="comment">//开启批量绘图，添加在循环之前</span></span><br><span class="line"><span class="built_in">FlushBatchDraw</span>();<span class="comment">//把这一帧一次性显示出来，在循环中使用</span></span><br></pre></td></tr></table></figure>
+<h3 id="1-3-方向控制"><a href="#1-3-方向控制" class="headerlink" title="1.3 方向控制"></a>1.3 方向控制</h3><p>添加<code>#include &lt;windows.h&gt;</code></p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">while</span> (<span class="literal">true</span>)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="built_in">cleardevice</span>();</span><br><span class="line">    <span class="built_in">setfillcolor</span>(BLUE);</span><br><span class="line">    <span class="built_in">solidrectangle</span>(x, <span class="number">100</span>, x + <span class="number">50</span>, <span class="number">150</span>);</span><br><span class="line">    <span class="keyword">if</span> (<span class="built_in">GetAsyncKeyState</span>(VK_RIGHT))<span class="comment">//读取按键，按下右方向键之后执行操作</span></span><br><span class="line">    &#123;</span><br><span class="line">        x = x + <span class="number">10</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//x = x + 1;</span></span><br><span class="line">    <span class="built_in">FlushBatchDraw</span>();</span><br><span class="line">    <span class="built_in">Sleep</span>(<span class="number">20</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>完成多方向控制</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span> (<span class="built_in">GetAsyncKeyState</span>(VK_RIGHT))</span><br><span class="line">&#123;</span><br><span class="line">    x = x + <span class="number">5</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">if</span> (<span class="built_in">GetAsyncKeyState</span>(VK_UP))</span><br><span class="line">&#123;</span><br><span class="line">    y = y - <span class="number">5</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">if</span> (<span class="built_in">GetAsyncKeyState</span>(VK_LEFT))</span><br><span class="line">&#123;</span><br><span class="line">    x = x - <span class="number">5</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">if</span> (<span class="built_in">GetAsyncKeyState</span>(VK_DOWN))</span><br><span class="line">&#123;</span><br><span class="line">    y = y + <span class="number">5</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="built_in">solidrectangle</span>(x, y, x + <span class="number">50</span>, y<span class="number">+50</span>);</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="2-理解“游戏循环”"><a href="#2-理解“游戏循环”" class="headerlink" title="2 理解“游戏循环”"></a>2 理解“游戏循环”</h2><p>核心理解是</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">更新 → 绘制 → 显示</span><br><span class="line"> ↑             ↓</span><br><span class="line"> └─────重复────┘</span><br></pre></td></tr></table></figure>
+
+<p>更新是指游戏数据的更新，比如蛇的x,y坐标位置，当前食物位置等。</p>
+<p>绘制是根据当前游戏数据，在绘图缓冲区中生成这一帧的画面。</p>
+<p>显示是把绘图缓冲区的内容显示出来，而显示的速率就是帧率。</p>
+<p><strong>修改延时函数就会使帧率变低，造成游戏卡卡的。</strong></p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="built_in">Sleep</span>(<span class="number">10</span>);</span><br></pre></td></tr></table></figure>
+
+<h2 id="3-游戏机制"><a href="#3-游戏机制" class="headerlink" title="3 游戏机制"></a>3 游戏机制</h2><h3 id="3-1-如何表示蛇的身体"><a href="#3-1-如何表示蛇的身体" class="headerlink" title="3.1 如何表示蛇的身体"></a>3.1 如何表示蛇的身体</h3><p>数组形式来表示，二维数组，每个[位置]存放一个（x,y）</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 创建一条最多 100 节的蛇</span></span><br><span class="line">SnakeBody snake[<span class="number">100</span>];</span><br><span class="line"></span><br><span class="line"><span class="comment">// 当前蛇的长度</span></span><br><span class="line"><span class="type">int</span> length = <span class="number">4</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 设置蛇的初始位置</span></span><br><span class="line">snake[<span class="number">0</span>].x = <span class="number">100</span>;</span><br><span class="line">snake[<span class="number">0</span>].y = <span class="number">100</span>;</span><br><span class="line"></span><br><span class="line">snake[<span class="number">1</span>].x = <span class="number">90</span>;</span><br><span class="line">snake[<span class="number">1</span>].y = <span class="number">100</span>;</span><br><span class="line"></span><br><span class="line">snake[<span class="number">2</span>].x = <span class="number">80</span>;</span><br><span class="line">snake[<span class="number">2</span>].y = <span class="number">100</span>;</span><br><span class="line"></span><br><span class="line">snake[<span class="number">3</span>].x = <span class="number">70</span>;</span><br><span class="line">snake[<span class="number">3</span>].y = <span class="number">100</span>;</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-2-身体移动"><a href="#3-2-身体移动" class="headerlink" title="3.2 身体移动"></a>3.2 身体移动</h3><p><strong>将尾巴的位置赋值倒数第二尾巴的位置，依次叠加数据，最后添加新的头位置。</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">移动前：</span><br><span class="line"></span><br><span class="line">蛇头     身体     身体     尾巴</span><br><span class="line"> ↓        ↓        ↓        ↓</span><br><span class="line">[0]      [1]      [2]      [3]</span><br><span class="line"></span><br><span class="line">■■■■</span><br></pre></td></tr></table></figure>
+
+<p>假设向右移动一格。</p>
+<p>我们希望移动后：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">  蛇头     身体     身体     尾巴</span><br><span class="line">    ↓        ↓        ↓        ↓</span><br><span class="line">   [0]      [1]      [2]      [3]</span><br><span class="line"></span><br><span class="line">■■■■</span><br></pre></td></tr></table></figure>
+
+<p>实际上数据变化是：</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line">移动前：</span><br><span class="line"></span><br><span class="line">snake[<span class="number">0</span>] = (<span class="number">100</span>, <span class="number">100</span>)</span><br><span class="line">snake[<span class="number">1</span>] = (<span class="number">90</span>, <span class="number">100</span>)</span><br><span class="line">snake[<span class="number">2</span>] = (<span class="number">80</span>, <span class="number">100</span>)</span><br><span class="line">snake[<span class="number">3</span>] = (<span class="number">70</span>, <span class="number">100</span>)</span><br><span class="line"></span><br><span class="line">移动后：</span><br><span class="line"></span><br><span class="line">snake[<span class="number">3</span>] = snake[<span class="number">2</span>]</span><br><span class="line">snake[<span class="number">2</span>] = snake[<span class="number">1</span>]</span><br><span class="line">snake[<span class="number">1</span>] = snake[<span class="number">0</span>]</span><br><span class="line"></span><br><span class="line">snake[<span class="number">0</span>].x += <span class="number">10</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="3-3-坐标映射"><a href="#3-3-坐标映射" class="headerlink" title="3.3 坐标映射"></a>3.3 坐标映射</h3><p>由于数组存入的是(x,y)值和实际画面不对应，可能出现一个坐标对应实际画面 20x20的像素点，为此把“逻辑坐标”和“渲染坐标”分开。</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line">   游戏逻辑</span><br><span class="line">      ↓</span><br><span class="line">snake[<span class="number">0</span>] = (<span class="number">10</span>,<span class="number">10</span>)</span><br><span class="line">      ↓</span><br><span class="line">  × blockSize</span><br><span class="line">      ↓</span><br><span class="line"> 屏幕像素坐标 = (<span class="number">100</span>,<span class="number">100</span> -&gt; <span class="number">200</span>,<span class="number">200</span>的正方形)</span><br><span class="line">      ↓</span><br><span class="line">   EasyX绘制</span><br></pre></td></tr></table></figure>
+
+<p><strong>这样能便于后续操作，也能提升代码整洁度，便于后续修改整体的显示效果。</strong></p>
+<h3 id="3-4-让蛇固定方向"><a href="#3-4-让蛇固定方向" class="headerlink" title="3.4 让蛇固定方向"></a>3.4 让蛇固定方向</h3><p>贪吃蛇是固定方向移动的，按键是改变运行方向</p>
+<p>设置标志位</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="type">int</span> direction = <span class="number">1</span>;</span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">1 → 右</span></span><br><span class="line"><span class="comment">2 → 上</span></span><br><span class="line"><span class="comment">3 → 下</span></span><br><span class="line"><span class="comment">4 → 左</span></span><br><span class="line"><span class="comment"> */</span></span><br></pre></td></tr></table></figure>
+<p>通过按键切换方向，运行代码，此处代码略</p>
+<h3 id="3-5-食物"><a href="#3-5-食物" class="headerlink" title="3.5 食物"></a>3.5 食物</h3><figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="comment">//食物初始化</span></span><br><span class="line">SnakeBody food;</span><br><span class="line"></span><br><span class="line">food.x = <span class="number">10</span>；</span><br><span class="line">food.y = <span class="number">10</span>；</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">//渲染食物</span></span><br><span class="line"><span class="built_in">setfillcolor</span>(RED);</span><br><span class="line"><span class="built_in">solidrectangle</span>(</span><br><span class="line">    food.x * blockSize,</span><br><span class="line">    food.y * blockSize,</span><br><span class="line">    food.x * blockSize + blockSize,</span><br><span class="line">    food.y * blockSize + blockSize</span><br><span class="line">);</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>随机生成</p>
+<p>添加头文件</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;cstdlib&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;ctime&gt;</span></span></span><br></pre></td></tr></table></figure>
+<p>随机生成食物</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="comment">//在最前面添加随机种子</span></span><br><span class="line"><span class="built_in">srand</span>((<span class="type">unsigned</span>)<span class="built_in">time</span>(<span class="literal">NULL</span>));</span><br><span class="line"><span class="comment">//使用种子进行数据随机</span></span><br><span class="line">    SnakeBody food;</span><br><span class="line">    food.x = <span class="built_in">rand</span>() % <span class="number">32</span>;</span><br><span class="line">    food.y = <span class="built_in">rand</span>() % <span class="number">24</span>;</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-6-吃食物"><a href="#3-6-吃食物" class="headerlink" title="3.6 吃食物"></a>3.6 吃食物</h3><p>很简答就能实现，蛇头碰到食物的位置即判定吃食物</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span> (snake[<span class="number">0</span>].x == food.x &amp;&amp; snake[<span class="number">0</span>].y == food.y)</span><br><span class="line">&#123;</span><br><span class="line">    length++;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>之后再次生成食物即可循环游戏</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="comment">//判断吃食物</span></span><br><span class="line"><span class="keyword">if</span> (snake[<span class="number">0</span>].x == food.x &amp;&amp; snake[<span class="number">0</span>].y == food.y)</span><br><span class="line">&#123;</span><br><span class="line">    length++;</span><br><span class="line">    food.x = <span class="built_in">rand</span>() % <span class="number">32</span>;</span><br><span class="line">    food.y = <span class="built_in">rand</span>() % <span class="number">24</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-7-无效输入禁止-碰撞检测"><a href="#3-7-无效输入禁止-碰撞检测" class="headerlink" title="3.7 无效输入禁止 &amp; 碰撞检测"></a>3.7 无效输入禁止 &amp; 碰撞检测</h3><p>众所周知蛇无法原地回头，即在向左运行时无法立刻切换方向向右，<br>为此方向判断更改为<code>GetAsyncKeyState(VK_RIGHT)&amp;&amp; direction!=4</code>，这样即可解决问题。</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span> (<span class="built_in">GetAsyncKeyState</span>(VK_RIGHT)&amp;&amp; direction!=<span class="number">4</span>)</span><br><span class="line">&#123;</span><br><span class="line">    direction = <span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (<span class="built_in">GetAsyncKeyState</span>(VK_UP) &amp;&amp; direction != <span class="number">3</span>)</span><br><span class="line">&#123;</span><br><span class="line">    direction = <span class="number">2</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (<span class="built_in">GetAsyncKeyState</span>(VK_DOWN) &amp;&amp; direction != <span class="number">2</span>)</span><br><span class="line">&#123;</span><br><span class="line">    direction = <span class="number">3</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (<span class="built_in">GetAsyncKeyState</span>(VK_LEFT) &amp;&amp; direction != <span class="number">1</span>)</span><br><span class="line">&#123;</span><br><span class="line">    direction = <span class="number">4</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>碰到墙壁和碰到自己都算游戏结束，</p>
+<ol>
+<li>撞墙：这个比较好解决，只要蛇头超出边界即可</li>
+<li>碰到自己：循环遍历看蛇头是否与身体重叠<br>添加<code>GameoverFlag</code>标志位，触发即代表游戏结束</li>
+</ol>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="comment">//碰撞检测</span></span><br><span class="line"><span class="keyword">if</span> (snake[<span class="number">0</span>].x &lt; <span class="number">0</span> ||</span><br><span class="line">    snake[<span class="number">0</span>].x &gt;= <span class="number">32</span> ||</span><br><span class="line">    snake[<span class="number">0</span>].y &lt; <span class="number">0</span> ||</span><br><span class="line">    snake[<span class="number">0</span>].y &gt;= <span class="number">24</span>)</span><br><span class="line">&#123;</span><br><span class="line">    GameoverFlag = <span class="number">1</span>;</span><br><span class="line">    </span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// ===== 撞自己检测 =====</span></span><br><span class="line"><span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">1</span>; i &lt; length; i++)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">if</span> (snake[<span class="number">0</span>].x == snake[i].x &amp;&amp;</span><br><span class="line">        snake[<span class="number">0</span>].y == snake[i].y)</span><br><span class="line">    &#123;</span><br><span class="line">        GameoverFlag = <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//结束游戏</span></span><br><span class="line"><span class="keyword">if</span>(GameoverFlag == <span class="number">1</span>)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">break</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="4-完整代码"><a href="#4-完整代码" class="headerlink" title="4 完整代码"></a>4 完整代码</h2><figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;graphics.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;windows.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;cstdlib&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;ctime&gt;</span></span></span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">SnakeBody</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">int</span> x;</span><br><span class="line">    <span class="type">int</span> y;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="type">bool</span> GameoverFlag = <span class="number">0</span>;</span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="built_in">srand</span>((<span class="type">unsigned</span>)<span class="built_in">time</span>(<span class="literal">NULL</span>));</span><br><span class="line">    <span class="built_in">initgraph</span>(<span class="number">640</span>, <span class="number">480</span>);</span><br><span class="line">    <span class="built_in">setbkcolor</span>(WHITE);</span><br><span class="line">    <span class="comment">// 每一个逻辑格子的像素大小</span></span><br><span class="line">    <span class="type">int</span> blockSize = <span class="number">20</span>;<span class="comment">//实际地图大小32x24</span></span><br><span class="line">    <span class="comment">// 创建一条最多 100 节的蛇</span></span><br><span class="line">    SnakeBody snake[<span class="number">100</span>];</span><br><span class="line">    <span class="comment">// 当前蛇的长度</span></span><br><span class="line">    <span class="type">int</span> length = <span class="number">4</span>;</span><br><span class="line">    <span class="type">int</span> direction = <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line">    SnakeBody food;</span><br><span class="line">    food.x = <span class="built_in">rand</span>() % <span class="number">32</span>;</span><br><span class="line">    food.y = <span class="built_in">rand</span>() % <span class="number">24</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 蛇的初始逻辑坐标</span></span><br><span class="line">    snake[<span class="number">0</span>].x = <span class="number">10</span>;</span><br><span class="line">    snake[<span class="number">0</span>].y = <span class="number">10</span>;</span><br><span class="line"></span><br><span class="line">    snake[<span class="number">1</span>].x = <span class="number">9</span>;</span><br><span class="line">    snake[<span class="number">1</span>].y = <span class="number">10</span>;</span><br><span class="line"></span><br><span class="line">    snake[<span class="number">2</span>].x = <span class="number">8</span>;</span><br><span class="line">    snake[<span class="number">2</span>].y = <span class="number">10</span>;</span><br><span class="line"></span><br><span class="line">    snake[<span class="number">3</span>].x = <span class="number">7</span>;</span><br><span class="line">    snake[<span class="number">3</span>].y = <span class="number">10</span>;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">BeginBatchDraw</span>();</span><br><span class="line">    <span class="keyword">while</span> (<span class="literal">true</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">// ===== 更新方向 =====</span></span><br><span class="line">        <span class="keyword">if</span> (<span class="built_in">GetAsyncKeyState</span>(VK_RIGHT)&amp;&amp; direction!=<span class="number">4</span>)</span><br><span class="line">            direction = <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (<span class="built_in">GetAsyncKeyState</span>(VK_UP) &amp;&amp; direction != <span class="number">3</span>)</span><br><span class="line">            direction = <span class="number">2</span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (<span class="built_in">GetAsyncKeyState</span>(VK_DOWN) &amp;&amp; direction != <span class="number">2</span>)</span><br><span class="line">            direction = <span class="number">3</span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (<span class="built_in">GetAsyncKeyState</span>(VK_LEFT) &amp;&amp; direction != <span class="number">1</span>)</span><br><span class="line">            direction = <span class="number">4</span>;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// ===== 蛇身后移 =====</span></span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> i = length - <span class="number">1</span>; i &gt; <span class="number">0</span>; i--)</span><br><span class="line">        &#123;</span><br><span class="line">            snake[i] = snake[i - <span class="number">1</span>];</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// ===== 根据方向移动蛇头 =====</span></span><br><span class="line">        <span class="keyword">switch</span> (direction)</span><br><span class="line">        &#123;</span><br><span class="line">        <span class="keyword">case</span> <span class="number">1</span>: snake[<span class="number">0</span>].x++; <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> <span class="number">2</span>: snake[<span class="number">0</span>].y--; <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> <span class="number">3</span>: snake[<span class="number">0</span>].y++; <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> <span class="number">4</span>: snake[<span class="number">0</span>].x--; <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//判断吃食物</span></span><br><span class="line">        <span class="keyword">if</span> (snake[<span class="number">0</span>].x == food.x &amp;&amp; snake[<span class="number">0</span>].y == food.y)</span><br><span class="line">        &#123;</span><br><span class="line">            length++;</span><br><span class="line">            food.x = <span class="built_in">rand</span>() % <span class="number">32</span>;</span><br><span class="line">            food.y = <span class="built_in">rand</span>() % <span class="number">24</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        <span class="comment">//碰撞检测</span></span><br><span class="line">        <span class="keyword">if</span> (snake[<span class="number">0</span>].x &lt; <span class="number">0</span> || snake[<span class="number">0</span>].x &gt;= <span class="number">32</span> || snake[<span class="number">0</span>].y &lt; <span class="number">0</span> || snake[<span class="number">0</span>].y &gt;= <span class="number">24</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            GameoverFlag = <span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// ===== 撞自己检测 =====</span></span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">1</span>; i &lt; length; i++)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">if</span> (snake[<span class="number">0</span>].x == snake[i].x &amp;&amp; snake[<span class="number">0</span>].y == snake[i].y)</span><br><span class="line">            &#123;</span><br><span class="line">                GameoverFlag = <span class="number">1</span>;</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        <span class="comment">//结束游戏</span></span><br><span class="line">        <span class="keyword">if</span>(GameoverFlag == <span class="number">1</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">break</span>;<span class="comment">//暂时使用退出代表结束游戏</span></span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// ===== 绘制 =====</span></span><br><span class="line">        <span class="built_in">cleardevice</span>();</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; length; i++)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="type">int</span> screenX = snake[i].x * blockSize;</span><br><span class="line">            <span class="type">int</span> screenY = snake[i].y * blockSize;</span><br><span class="line"></span><br><span class="line">            <span class="built_in">setfillcolor</span>(BLUE);</span><br><span class="line"></span><br><span class="line">            <span class="built_in">solidrectangle</span>(</span><br><span class="line">                screenX,</span><br><span class="line">                screenY,</span><br><span class="line">                screenX + blockSize,</span><br><span class="line">                screenY + blockSize</span><br><span class="line">            );</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//绘制食物</span></span><br><span class="line">        <span class="built_in">setfillcolor</span>(RED);</span><br><span class="line">        <span class="built_in">solidrectangle</span>(</span><br><span class="line">            food.x * blockSize,</span><br><span class="line">            food.y * blockSize,</span><br><span class="line">            food.x * blockSize + blockSize,</span><br><span class="line">            food.y * blockSize + blockSize</span><br><span class="line">        );</span><br><span class="line">        <span class="built_in">FlushBatchDraw</span>();</span><br><span class="line"></span><br><span class="line">        <span class="built_in">Sleep</span>(<span class="number">100</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">closegraph</span>();</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>第一次手写完整的贪吃蛇小游戏，总体来说比较简单的，适合初学者上手，但是还是有不少问题的，毕竟。<br>未来优化方向：<br>			1. 无法控制游戏开始&#x2F;暂停，而且死亡直接退出游戏<br>			2. 添加分数功能<br>			3. 优化手感，现在主要靠延时来控制游戏速率，速率不可调，还可能会造成吞键的情况<br>			4. 美化游戏<br>			5. 更多有意思的玩法<br>			。。。。。
+			</p>
+]]></content>
+      <categories>
+        <category>游戏开发</category>
+      </categories>
+      <tags>
+        <tag>EasyX</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>个人网站已复活</title>
+    <url>/%E5%BB%BA%E7%AB%99/%E5%B7%B2%E5%A4%8D%E6%B4%BB/</url>
+    <content><![CDATA[<p>老站随着我坏掉的硬盘一起无了，虽然旧blog也没有写过文章，但还是有点心疼的，简记记录一下新blog简要搭建步骤</p>
+<h3 id="基于hexo的blog搭建流程"><a href="#基于hexo的blog搭建流程" class="headerlink" title="基于hexo的blog搭建流程"></a>基于hexo的blog搭建流程</h3><h4 id="第一步，安装必要软件"><a href="#第一步，安装必要软件" class="headerlink" title="第一步，安装必要软件"></a>第一步，安装必要软件</h4><ol>
+<li><p>下载nodejs</p>
+</li>
+<li><p>下载git</p>
+</li>
+</ol>
+<p>​	管理员运行cmd，依次输入命令，检测是否安装到位</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">node -v</span><br><span class="line">git -v</span><br></pre></td></tr></table></figure>
+
+<h4 id="第二步，下载hexo，直接输入"><a href="#第二步，下载hexo，直接输入" class="headerlink" title="第二步，下载hexo，直接输入"></a>第二步，下载hexo，直接输入</h4><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">npm install hexo-cli -g</span><br></pre></td></tr></table></figure>
+
+<h4 id="第三步，建仓库"><a href="#第三步，建仓库" class="headerlink" title="第三步，建仓库"></a>第三步，建仓库</h4><p><strong>新建仓库名输入：</strong></p>
+<p>用户名.github.io（注意用户名必须是github的用户名）<br>勾选 Public</p>
+<p>勾选 Add a README file</p>
+<p><strong>生成SSH Keys：</strong><br>进入任意文件夹，右键空白处然后点Git bash here,输入</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">ssh-keygen -t rsa -C <span class="string">&quot;邮件地址</span></span><br></pre></td></tr></table></figure>
+<p>然后敲4次Enter⌨️</p>
+<p>然后进入C:\Users\用户名，在里面进入.ssh文件</p>
+<p>用记事本打开里面的id_rsa.pub,全选复制里面的代码</p>
+<p><strong>然后打开github</strong></p>
+<p>进入用户设置，找到SSH keys</p>
+<p>新建SSH keys，名称随意，在下面粘贴代码，</p>
+<p>然后创建</p>
+<p>测试是否成功，在git bash中输入</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">ssh -T git@github.com</span><br></pre></td></tr></table></figure>
+<p>回车，然后再输入yes</p>
+<h4 id="第四步，本地生成博客内容"><a href="#第四步，本地生成博客内容" class="headerlink" title="第四步，本地生成博客内容"></a>第四步，本地生成博客内容</h4><p>右键空白处然后点Git bash here，输入</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">hexo init </span><br></pre></td></tr></table></figure>
+<p>如果‘command not find’，就在前面加上npx，如：npx hexo init</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">hexo g</span><br><span class="line">hexo s</span><br></pre></td></tr></table></figure>
+
+<p>现在就可以复制生成的链接进入浏览器看到我们生成的本地服务器了</p>
+<p>然后回到命令行，ctrl+c关闭</p>
+<h4 id="第五步，上线博客"><a href="#第五步，上线博客" class="headerlink" title="第五步，上线博客"></a>第五步，上线博客</h4><p>进入之前的Blog文件夹，用记事本打开_config.yml</p>
+<p>拉到最下面将deploy后面的全删掉，复制粘贴这段</p>
+<figure class="highlight yml"><table><tr><td class="code"><pre><span class="line"><span class="attr">type:</span> <span class="string">git</span></span><br><span class="line"><span class="attr">repository:</span></span><br><span class="line"><span class="attr">branch:</span> <span class="string">main</span></span><br></pre></td></tr></table></figure>
+<p>注意缩进格式：每行前面都有两个空格不要删，每个冒号后面都有个空格也不要删！</p>
+<p>去github之前生成的仓库页面，点code，复制https链接，将其粘贴到我们记事本中的repository：后面</p>
+<p>然后保存退出</p>
+<p>回到博客文件夹，git bash 安装自动部署发布工具</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">npm install hexo-deployer-git --save</span><br></pre></td></tr></table></figure>
+
+<p>然后在Blog文件夹右键打开git bash，依次输入</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">hexo g</span><br><span class="line">hexo d</span><br></pre></td></tr></table></figure>
+
+<p>如果是第一次使用git的话会需要配置</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git config --global user.email <span class="string">&quot;你的邮箱&quot;</span></span><br><span class="line">git config --global user.name <span class="string">&quot;你的名字&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>配置完后再hexo d上传</p>
+<p>在跳出来的窗口内进行登录</p>
+<p>接下来我们就成功把本地内容上传到github了</p>
+<p>网址是我们之前设的仓库名：用户名.github.io</p>
+<h3 id="两种方式"><a href="#两种方式" class="headerlink" title="两种方式"></a>两种方式</h3><ol>
+<li><p>vscode进行编辑</p>
+</li>
+<li><p>直接使用PowerShell输入命令，直接用Typora写</p>
+</li>
+</ol>
+<h2 id="换电脑之后可能用到的设置"><a href="#换电脑之后可能用到的设置" class="headerlink" title="换电脑之后可能用到的设置"></a>换电脑之后可能用到的设置</h2><h3 id="🔒-在旧电脑上（提前准备，以防万一）"><a href="#🔒-在旧电脑上（提前准备，以防万一）" class="headerlink" title="🔒 在旧电脑上（提前准备，以防万一）"></a>🔒 在旧电脑上（提前准备，以防万一）</h3><p>确保你的博客源码已经推送到GitHub的私有仓库（比如 <code>my-blog-source</code>）。这一步是换电脑后能恢复的基础。</p>
+<ul>
+<li><p><strong>操作</strong>：在博客根目录下，依次执行：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git add .</span><br><span class="line">git commit -m <span class="string">&quot;最后一次提交&quot;</span></span><br><span class="line">git push</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>另外</strong>：记下你GitHub上使用的<strong>邮箱</strong>和<strong>用户名</strong>，稍后在新电脑配置需要用到。</p>
+</li>
+</ul>
+<h3 id="⚠️-如果你从来没有执行过-git-remote-add"><a href="#⚠️-如果你从来没有执行过-git-remote-add" class="headerlink" title="⚠️ 如果你从来没有执行过 git remote add"></a>⚠️ 如果你从来没有执行过 <code>git remote add</code></h3><p>  那么执行 <code>git push</code> 时会报错，因为 Git 不知道推送到哪里。你需要先在博客根目录执行：</p>
+<p>  bash</p>
+  <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git remote add origin https://github.com/你的用户名/你的源码仓库名.git</span><br></pre></td></tr></table></figure>
+
+<h3 id="🚀-在新电脑上（从零到恢复）"><a href="#🚀-在新电脑上（从零到恢复）" class="headerlink" title="🚀 在新电脑上（从零到恢复）"></a>🚀 在新电脑上（从零到恢复）</h3><p><strong>1. 安装必备软件</strong></p>
+<ul>
+<li>下载并安装 <strong>Node.js</strong>（官网下载LTS版本，一路默认安装即可）。</li>
+<li>下载并安装 <strong>Git</strong>（官网下载，安装时全部保持默认选项）。</li>
+</ul>
+<p><strong>2. 配置Git身份（重要）</strong><br>打开 <strong>Git Bash</strong>，输入以下命令（替换成你的信息）：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">git config --global user.name &quot;你的GitHub用户名&quot;</span><br><span class="line">git config --global user.email &quot;你的GitHub邮箱&quot;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>这一步是为了让Git知道你是谁，避免之前遇到的“Author identity unknown”错误。</p>
+<p><strong>3. 恢复SSH密钥（或改用HTTPS）</strong></p>
+<ul>
+<li><strong>如果能找回旧密钥</strong>：将旧电脑 <code>~/.ssh/</code> 目录下的 <code>id_rsa</code> 和 <code>id_rsa.pub</code> 文件复制到新电脑相同目录，即可直接使用。</li>
+<li><strong>如果找不回旧密钥</strong>：在Git Bash中执行 <code>ssh-keygen -t rsa -C &quot;你的邮箱&quot;</code> 生成新密钥，然后登录GitHub → Settings → SSH keys，<strong>添加新的公钥</strong>（把新 <code>id_rsa.pub</code> 的内容粘贴进去）。</li>
+<li><strong>备用方案</strong>：如果觉得配SSH麻烦，可以把博客 <code>_config.yml</code> 里的 <code>repo</code> 地址改为 <strong>HTTPS格式</strong>（如 <code>https://github.com/用户名/仓库名.git</code>），推送时会提示输入用户名和Token。</li>
+</ul>
+<p><strong>4. 克隆博客源码到新电脑</strong></p>
+<p>bash</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">cd /d/   # 切换到D盘，你也可以换到其他位置</span><br><span class="line">git clone https://github.com/你的用户名/你的源码仓库名.git blog2026-new</span><br><span class="line">cd blog2026-new</span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong>5. 安装依赖（关键一步）</strong></p>
+<p>bash</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">npm install</span><br></pre></td></tr></table></figure>
+
+
+
+<p>这条命令会根据 <code>package.json</code> 自动安装Hexo及其所有插件，无需手动逐个安装。</p>
+<p><strong>6. 恢复主题配置（重要提醒）</strong></p>
+<ul>
+<li>如果你之前修改过<strong>主题源码</strong>（比如 <code>themes/anzhiyu</code> 里的文件），且没有单独备份，这部分修改会丢失，需要重新应用。</li>
+<li><strong>建议的做法</strong>：以后修改主题时，尽量使用主题支持的 <strong>“覆盖配置”功能</strong>（即在根目录下创建 <code>_config.anzhiyu.yml</code> 这样的文件），这样源码提交时就会包含这些自定义配置，换电脑后自动生效。</li>
+</ul>
+<p><strong>7. 验证并开始写作</strong></p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">hexo s   <span class="comment"># 本地预览，检查是否正常</span></span><br><span class="line">hexo g -d   <span class="comment"># 生成并部署，确认能正常发布</span></span><br></pre></td></tr></table></figure>
+
+<p>如果一切顺利，你的博客就完整恢复到了新电脑上。</p>
+<h3 id="📋-总结：需要备份的核心文件"><a href="#📋-总结：需要备份的核心文件" class="headerlink" title="📋 总结：需要备份的核心文件"></a>📋 总结：需要备份的核心文件</h3><p>只要确保以下内容在源码仓库中，换电脑就能恢复：</p>
+<ul>
+<li><code>source/</code> 文件夹（所有文章和页面）</li>
+<li><code>themes/</code> 文件夹（主题文件）</li>
+<li><code>_config.yml</code>（站点配置）</li>
+<li><code>package.json</code>（依赖列表）</li>
+<li>（如果是用覆盖配置）<code>_config.anzhiyu.yml</code> 等自定义文件</li>
+</ul>
+]]></content>
+      <categories>
+        <category>建站</category>
+      </categories>
+      <tags>
+        <tag>hexo</tag>
+        <tag>网站</tag>
+        <tag>复活</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>常见 Git 命令学习使用</title>
+    <url>/Git/%E5%B8%B8%E8%A7%81Git%E5%91%BD%E4%BB%A4%E5%AD%A6%E4%B9%A0/</url>
+    <content><![CDATA[<h1 id="Git-基础使用"><a href="#Git-基础使用" class="headerlink" title="Git 基础使用"></a>Git 基础使用</h1><p>Git 是本地代码版本管理工具，用来记录修改历史、恢复旧版本。<br>GitHub 是把 Git 仓库托管到网上的平台。</p>
+<h2 id="1-第一次配置"><a href="#1-第一次配置" class="headerlink" title="1. 第一次配置"></a>1. 第一次配置</h2><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git config --global user.name <span class="string">&quot;Fanbo&quot;</span></span><br><span class="line">git config --global user.email <span class="string">&quot;你的GitHub邮箱&quot;</span></span><br><span class="line">git config --global --list</span><br></pre></td></tr></table></figure>
+<p>可以使用下面的命令检查配置：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git config --global --list</span><br></pre></td></tr></table></figure>
+
+<p>如果看到类似：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">user.name=Fanbo</span><br><span class="line">user.email=xxxx@example.com</span><br></pre></td></tr></table></figure>
+
+<p>就说明配置成功了。</p>
+<h2 id="2-创建仓库"><a href="#2-创建仓库" class="headerlink" title="2. 创建仓库"></a>2. 创建仓库</h2><p>在项目文件夹中执行：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git init</span><br></pre></td></tr></table></figure>
+
+<p>会生成隐藏的 <code>.git</code> 文件夹，不要删除。</p>
+<p>先创建 <code>.gitignore</code>，告诉 Git 哪些文件不管理，列如：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">node_modules/</span><br><span class="line">.env</span><br><span class="line">*.log</span><br><span class="line">.DS_Store</span><br></pre></td></tr></table></figure>
+
+<p>如果某个文件不想被忽略，用 <code>!</code>：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">!important.log</span><br></pre></td></tr></table></figure>
+
+<h2 id="3-第一次提交并上传-GitHub"><a href="#3-第一次提交并上传-GitHub" class="headerlink" title="3. 第一次提交并上传 GitHub"></a>3. 第一次提交并上传 GitHub</h2><p>在 GitHub 新建仓库，然后本地执行：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git add .</span><br><span class="line">git commit -m <span class="string">&quot;Initial commit&quot;</span></span><br><span class="line">git branch -M main</span><br><span class="line">git remote add origin 你的仓库地址</span><br><span class="line">git push -u origin main</span><br></pre></td></tr></table></figure>
+
+<p>如果提示 <code>src refspec main does not match any</code>，通常是还没提交，或分支不是 <code>main</code>。先执行：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git add .</span><br><span class="line">git commit -m <span class="string">&quot;Initial commit&quot;</span></span><br><span class="line">git branch -M main</span><br></pre></td></tr></table></figure>
+
+<p>如果远程仓库已有 README，先合并再推送：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git pull origin main --allow-unrelated-histories</span><br><span class="line">git push -u origin main</span><br></pre></td></tr></table></figure>
+
+<h2 id="4-以后每次修改"><a href="#4-以后每次修改" class="headerlink" title="4. 以后每次修改"></a>4. 以后每次修改</h2><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git add .</span><br><span class="line">git commit -m <span class="string">&quot;说明修改内容&quot;</span></span><br><span class="line">git push</span><br></pre></td></tr></table></figure>
+
+<p>记住这三条即可。</p>
+<h2 id="5-常用命令"><a href="#5-常用命令" class="headerlink" title="5. 常用命令"></a>5. 常用命令</h2><table>
+<thead>
+<tr>
+<th>命令</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>git init</code></td>
+<td>创建 Git 仓库</td>
+</tr>
+<tr>
+<td><code>git status</code></td>
+<td>查看当前状态</td>
+</tr>
+<tr>
+<td><code>git add .</code></td>
+<td>暂存所有修改</td>
+</tr>
+<tr>
+<td><code>git commit -m &quot;...&quot;</code></td>
+<td>创建新版本</td>
+</tr>
+<tr>
+<td><code>git push</code></td>
+<td>上传到 GitHub</td>
+</tr>
+<tr>
+<td><code>git pull</code></td>
+<td>获取远程最新代码</td>
+</tr>
+<tr>
+<td><code>git log</code></td>
+<td>查看提交历史</td>
+</tr>
+<tr>
+<td><code>git remote -v</code></td>
+<td>查看远程仓库</td>
+</tr>
+</tbody></table>
+]]></content>
+      <categories>
+        <category>Git</category>
+      </categories>
+      <tags>
+        <tag>Git</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>考研记录（二）</title>
+    <url>/%E8%80%83%E7%A0%94/%E8%80%83%E7%A0%94%E8%AE%B0%E5%BD%95%EF%BC%88%E4%BA%8C%EF%BC%89/</url>
+    <content><![CDATA[<p>往期回顾<br>[[考研记录（一）]]</p>
+<h3 id="写在前面"><a href="#写在前面" class="headerlink" title="写在前面"></a>写在前面</h3><p>已经是第二期了，距离考研还剩下90天。<br>计划这10天搞定概率论和现控，争取国庆节开真题。</p>
+<p><strong>[2026-9-29]</strong><br>不想写了，明天加油。</p>
+<p><strong>[2026-9-28]</strong><br>现在单词改成了背诵450个。<br>概率论第二章完成，明天开第三章。<br>专业课第二章结束，明天搞第三章。</p>
+<p><strong>[2026-9-27]</strong><br>中秋假期结束，明天开始学习</p>
+<p><strong>[2026-9-23]</strong><br>单词400，阅读把昨天那两篇顺了一遍，单纯难好吧，不是我菜。<br>数学过完了概率论的第一章，最简单的一集。<br>专业晚上没学，明天继续吧。</p>
+<p><strong>[2026-9-22]</strong><br>单词依旧400，2013年完型爆炸，20个错14个，t1错两个，明天再精读一下吧。<br>数学算是收尾了线面和二次型，只写了对应880的基础习题，赶一赶进度，毕竟概率论还一点没看呢。<br>专业课听完第二章了，还剩下习题没写，明天搞上。</p>
+<p><strong>[2026-9-21]</strong><br>今天背诵单词的数量调整到了400个，真题结束了2012年，明天写2013。<br>数学依旧卡在线面和二次型，明天最后收尾了，写不完就不写了。<br>专业课推进了一点，明天应该能结束第二章。</p>
+<p><strong>[2026-9-20]</strong><br>今天起的也不早，就没写阅读，复习 + 背单词300个，单词还是不能断啊。<br>还在写线面积分的880，这块还需要整理，很多地方不太熟练，回忆去年好像是狂写真题分类才把这块搞会的。<br>专业课明天应该就能搞定第二章了</p>
+<p><strong>[2026-9-19]</strong><br>结束线代的二次型，还没写题。<br>英语2012做的奇差，10&#x2F;20的阅读正确率也是没谁了。<br>线面写题不会，还得下功夫拿下这个板块。</p>
+]]></content>
+      <categories>
+        <category>考研</category>
+      </categories>
+      <tags>
+        <tag>考研</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>考研记录（一）</title>
+    <url>/%E8%80%83%E7%A0%94/%E8%80%83%E7%A0%94%E8%AE%B0%E5%BD%95%EF%BC%88%E4%B8%80%EF%BC%89/</url>
+    <content><![CDATA[<h4 id="写在前面"><a href="#写在前面" class="headerlink" title="写在前面"></a>写在前面</h4><p>搞定搞定网站，记录一下考研。<br>第一次写，就先总结一下，<br>目前是二战，一战失败，6月毕业回家摆了一个月才正式开始学习，<br>现在不知不觉也回到了去年一战的状态了，也是和去年一样剩下100天左右，去年是同期在贴吧发了一个记录帖子，现在改成自己的网站，暂定十天的记录组成一篇文章。<br>写记录也算是督促一下自己吧，二战学到现在很糊涂，和自己的预期有很大出入。</p>
+<p><strong>[2026-9-18]</strong><br>阅读精读了几篇，发现还是看文章太不仔细了。<br>数学明天结束线性代数，然后写一下高数和线代收尾的习题。<br>现控结束了第一章，明天开第二章。</p>
+<p><strong>[2026-9-17]</strong><br>我回来啦！<br>今天在自习室换了个位置，从小黑屋逃出来了。<br>今天开始收尾线性代数，二次型章节，课听了一半，<br>线面那块的习题同步在写，往前推一推进度了，计划国庆开真题！<br>现控第一章也基本完了，就剩了几道习题，明天收一下尾巴，专业课也开始赶进度了，毕竟也没强化，打算一边做真题一边强化了。</p>
+<p><strong>[2026-9-16]</strong><br>计划有变，休息一天！</p>
+<p><strong>[2026-9-15]</strong><br>今天是我的22岁生日，恭喜自己又老一岁。<br>英语完型依旧完蛋，阅读找回感觉，<br>目前线面积分再写题，发现前面的二重三重学的不好，返工中。。。<br>专业课快过完第一章了，由于最近这几天晚上不太确定，专业课几乎没怎么推进。<br>最近效率低迷，每天都感觉很累，但是每天又学不了多少个小时，<br>感觉需要一点新鲜感，试着明天换个自习室位置，给自己一点不一样的感觉。</p>
+<p><strong>[2026-9-14]</strong><br>今天继续处理了无穷级数的小尾巴和线面积分部分，<br>知识点回顾的差不多了，可以继续写880了。<br>现在打算改变一下英语的学习节奏了，不太像花时间背单词了，上调英语阅读的优先度，<br>阅读写两篇之后如果有时间就接着背单词。<br>专业课目前还在在现控第一章，明天发力。</p>
+<p><strong>[2026-9-13]</strong><br>想写一下有关于二战心态，<br>剩下不到100天了，现在每天大概能学5-6个小时，时间提不上去了，<br>但是比去年还是要乐观很多了，所以不用太悲观，由于自己学习能力不强，所以效率也不算很高，做题正确率也低。<br>不过，没有关系，把时间和精力都放在焦虑上不会起到任何作用，<br>一步一步的去做，剩下的结果交给天意了，对自己负责就可以了。</p>
+<p><strong>[2026-9-11]</strong><br>阅读2011年的text2终于迎来了全对！<br>今天继续写了几道级数题，把傅里叶级数搞得清晰了一点，继续接着学线面积分，<br>专业课还是决定现代控制理论了,从速成课开始看起，机构的课太长了，速成课过知识然后仔细听他讲题，<br>今天学的状态很不错，感觉现控应该能在10月前学完。</p>
+<p>今天早回家了一会，打了几把瓦，很惬意，继续加油！考完猛猛玩！</p>
+<p><strong>[2026-9-10]</strong><br>今天起的相对早了，也是成功的在11点之前赶到了自习室。<br>单词背了，阅读写到2011年了，仔细研读了一下10年的新题型，感觉还是有不少进步空间，还得练。<br>数学今天没咋学，把相似矩阵写完了，无穷级数写不动了。<br>专业课把第八章看完了，还有时间，先强化一下前几章，后面再考虑开不开现控。<br>以后尽量早点回来，多休息，才有动力学习。</p>
+<p><strong>[2026-9-9]</strong><br>好吧，很遗憾昨天的目标几乎都没有完成。<br>今天起的比较晚，于是早上的英语时间就被压缩了，880写完了相似矩阵篇章的基础+综合小题，无穷级数基础大题还剩几道。<br>专业课也比较卡，第八章还是没太搞懂，难受。<br>一点一点干吧，毕竟时间还有一些的。<br>感觉可以花费一点时间在总结上面，毕竟一战也验证过了赶进度没有用，放平心态吧。</p>
+<p><strong>[2026-9-8]</strong><br>目前的状况是告诉强化到级数了，880块写完级数基础了；线性代数是刚看完相似矩阵章节的课了，在写880相似矩阵的基础。<br>专业课明天应该能搞定自控的最后一章，争取后天开现控！<br>英语目前刚写完2010年的题，感觉真是难的离谱，去年能考75感觉全是靠题简单+狗运<br>明天继续加油吧，尽量把级数和相似矩阵的题写完（虽然很难）。</p>
+]]></content>
+      <categories>
+        <category>考研</category>
+      </categories>
+      <tags>
+        <tag>考研</tag>
+      </tags>
+  </entry>
+</search>
