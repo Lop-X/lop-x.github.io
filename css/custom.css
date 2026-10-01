@@ -2849,10 +2849,6 @@
   color: var(--lopx-muted);
 }
 
-[data-theme='dark'] #article-container .post-copyright__original {
-  background: #2c6280;
-}
-
 /* ============================================================
    24. 文章页并入站内统一轴线 —— 2026-10-01（版式对齐收尾）
    量到的事实（1440 视口，探针实测）：
