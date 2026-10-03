@@ -4,7 +4,7 @@
   --lopx-css-loaded: 1;
   --lopx-accent: #3a7aa0;
   --lopx-ink: #1e262c;
-  --lopx-muted: #68727a;
+  --lopx-muted: #646e76;
   --lopx-line: #e2e8ec;
   --lopx-surface: #ffffff;
   max-width: 1160px;
@@ -13,9 +13,9 @@
   color: var(--lopx-ink);
 }
 
-/* Home hero（2026-10-03 改两栏）：左文字 + 右头像/状态。
+/* Home hero（2026-10-03 两栏；第三轮按用户反馈：头像放左边更像「作者卡」）。
    原本是「头像居中一行 + 另起一块左对齐文字卡」，文字卡宽 1106 而标题只占约 330px，
-   右侧留白约 700px；独立状态条又夹在卡片之间显得突兀。现在合并为一张两栏卡。 */
+   右侧留白约 700px；独立状态条又夹在卡片之间显得突兀。合并为一张两栏卡。 */
 #lopx-home > section#home-about {
   margin-top: 0;
   margin-bottom: 30px;
@@ -30,9 +30,9 @@
 
 .lopx-hero {
   display: grid;
-  /* 右栏 184px：头像 + 状态小卡叠起来约 236px，与左栏文字块（名字/一句话/4 个 chips
-     约 180px）高度接近；align-items: center 让文字垂直居中，避免左下角出现大片空白。 */
-  grid-template-columns: minmax(0, 1fr) 184px;
+  /* 左栏 184px：头像 + 状态小卡叠起来约 236px，与右栏文字块（名字/一句话/4 个 chips
+     约 180px）高度接近；align-items: center 让文字垂直居中，避免右下角出现大片空白。 */
+  grid-template-columns: 184px minmax(0, 1fr);
   gap: 30px;
   align-items: center;
 }
@@ -436,7 +436,7 @@
 #garden-space,
 #garden-category {
   --garden-ink: #1e262c;
-  --garden-muted: #68727a;
+  --garden-muted: #646e76;
   --garden-line: var(--lopx-line);
   --garden-accent: #3a7aa0;
   max-width: 1160px;
@@ -974,7 +974,7 @@
   --lopx-accent: #3a7aa0;
   --lopx-ink: #1e262c;
   --lopx-body: #3d464e;
-  --lopx-muted: #68727a;
+  --lopx-muted: #646e76;
   --lopx-line: #e2e8ec;
 
   /* 动效节奏 token（2026-10-01）—— fast 微反馈 / mid 卡片位移 / slow 入场；
@@ -1204,9 +1204,10 @@
 
 /* ---- 13.1 条目内容放大（不限宽度，移动端同样受益） ---- */
 
-/* 卡片内边距 16/16/8 → 更透气 */
+/* 卡片内边距：左 32 让正文/图片/元信息站上全站内容轴 x≈172
+   （横幅标题、About 网格、文章正文都在这条线上，10-03 实测原 padding 22 时偏左 10px） */
 #essay_page #bber .timeline ul li.bber-item {
-  padding: 20px 22px 14px;
+  padding: 20px 24px 14px 32px;
 }
 
 /* 正文：12.8px/700/justify → 15px/400/左对齐（中文短句两端对齐会拉出大空隙） */
@@ -1235,8 +1236,9 @@
 /* ---- 13.2 图片：写死「4 列 × 100px」→ 按张数自适应 ----
    主题在图片后追加 3 个 .bber-content-noimg 占位以凑满 4 列，先整体隐藏；
    再用 grid + :has() 以「第 2 / 3 个孩子是否为图片」判断张数：
-   1 张 16:9 铺满、2 张两列 4:3、3 张起三列 1:1。
-   不支持 :has() 的旧浏览器回落为单列大图，仍可读。 */
+   1 张 4:3 限宽 424（≈ 双图单张大小，10-03 实测 854×480 偏大）、
+   2 张两列 4:3、3 张起三列 1:1。
+   不支持 :has() 的旧浏览器回落为单列小图，仍可读。 */
 
 #essay_page #bber .bber-content-noimg {
   display: none;
@@ -1244,8 +1246,11 @@
 
 #essay_page #bber .bber-container-img {
   display: grid;
-  grid-template-columns: minmax(0, 1fr);
+  grid-template-columns: minmax(0, 424px);
   gap: 8px;
+  /* 主题原版有 justify-content: center —— 单图会居中悬空，
+     与「正文/双图左对齐」的轴线不一致，显式改回 start */
+  justify-content: start;
   align-items: stretch;
 }
 
@@ -1253,7 +1258,7 @@
 #essay_page #bber .bber-content-video {
   width: 100%;
   height: auto;
-  aspect-ratio: 16 / 9;
+  aspect-ratio: 4 / 3;
   margin-bottom: 0;
 }
 
@@ -1434,7 +1439,7 @@
   --anzhiyu-background: #fafafa;
   --anzhiyu-card-bg: #ffffff;
   --anzhiyu-fontcolor: #171717;
-  --anzhiyu-secondtext: #8a8f98;
+  --anzhiyu-secondtext: #646e76;
 
   /* 圆角与投影：更柔和、更克制 */
   --anzhiyu-border-radius: 12px;
@@ -1444,7 +1449,9 @@
      便于第 22 节用一条暗色覆盖统一处理，不必逐个选择器重写） */
   --lopx-ink: #171717;
   --lopx-body: #3d4149;
-  --lopx-muted: #8a8f98;
+  /* 2026-10-03 对比度小修：#8a8f98 白底仅 3.25:1（12–15px 小字 AA 要 4.5），
+     全站亮色灰统一 #646e76（5.2:1）；暗色 #a1a2b8 不动 */
+  --lopx-muted: #646e76;
   --lopx-line: #e6e8ee;
   --lopx-surface: #ffffff;
   --lopx-accent: #3a7aa0;
@@ -2837,17 +2844,17 @@
 
 /* 29.2b 两栏内容区（2026-10-03）
    左窄列 = 目前/Now（上）+ 联系方式（下），右宽列 = 时间线（跨两行）。
-   DOM 顺序是 now → timeline → contact（移动端单列的阅读顺序即此），
-   桌面端靠 grid-template-areas 把 contact 放到左列第二行。
-   行高由内容决定（align-items: start），左列两块不会互相拉伸。 */
+   DOM 顺序是 now → timeline → contact（移动端单列的阅读顺序即此）。
+   2026-10-03（第三轮）：用户更喜欢上下结构 → 桌面端改为
+   「目前 + 联系方式」并排一行（各半宽），时间线通栏在下。 */
 .lopx-about-grid {
   display: grid;
-  grid-template-columns: 340px minmax(0, 1fr);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   grid-template-areas:
-    'now timeline'
-    'contact timeline';
+    'now contact'
+    'timeline timeline';
   gap: 20px;
-  align-items: start;
+  align-items: stretch;
   margin-top: 20px;
 }
 
@@ -2861,8 +2868,6 @@
 
 .lopx-about-grid > .is-timeline {
   grid-area: timeline;
-  /* 与左列（Now + 联系方式）等底：两栏下沿对齐，避免右列短一截显得参差 */
-  align-self: stretch;
 }
 
 .lopx-about-grid > .is-contact {
@@ -3056,7 +3061,7 @@
   font-size: 0.92rem;
 }
 
-/* 29.6b 窄屏回落：≤900px 两栏并排会让左列（340）与右列都过窄，
+/* 29.6b 窄屏回落：≤900px「目前+联系方式」并排过窄，
    改为单列，顺序 = 目前 / 时间线 / 联系方式（与 DOM 顺序一致）。 */
 @media screen and (max-width: 900px) {
   .lopx-about-grid {
