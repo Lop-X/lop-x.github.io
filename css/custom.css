@@ -275,229 +275,29 @@
   line-height: 1.7;
 }
 
-#hardware-soft-space > nav {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin-top: 28px;
-}
-
-#hardware-soft-space > nav a {
-  padding: 8px 14px;
-  border: 1px solid var(--hardware-line);
-  border-radius: 6px;
-  color: var(--hardware-accent);
-  font-size: 0.85rem;
-  font-weight: 650;
-  transition: color var(--lopx-dur-mid) ease, border-color var(--lopx-dur-mid) ease;
-}
-
-#hardware-soft-space > nav a:hover {
-  border-color: var(--hardware-accent);
-  color: var(--hardware-ink);
-}
-
-/* Hardware & Soft Projects */
-#hardware-soft-space section,
+/* 2026-10-02：旧双段列表（.project-list / section / > article）样式已删，
+   列表改由第 28 节卡片网格渲染；胶囊导航视觉在 20.8、布局在 28.8；
+   窄屏取值统一由 12.6 提供（覆盖本节容器/标题规则）。 */
 #hardware-soft-projects {
   margin-top: 56px;
 }
 
-#hardware-soft-space section h2,
 #hardware-soft-projects > h1,
 #hardware-soft-notes > h1 {
   margin-bottom: 22px;
-}
-
-#hardware-soft-space .project-list {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 22px;
-}
-
-#hardware-soft-space .project-list article,
-#hardware-soft-projects > article {
-  overflow: hidden;
-  border: 1px solid var(--hardware-line);
-  border-radius: 10px;
-  background: var(--lopx-surface);
-  box-shadow: 0 4px 16px rgba(32, 42, 49, 0.045);
-  transition: transform var(--lopx-dur-mid) ease, box-shadow var(--lopx-dur-mid) ease;
-}
-
-#hardware-soft-space .project-list article:hover,
-#hardware-soft-projects > article:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 10px 24px rgba(32, 42, 49, 0.09);
-}
-
-#hardware-soft-space .project-list article > a,
-#hardware-soft-projects > article > a {
-  display: block;
-}
-
-#hardware-soft-space .project-list article img,
-#hardware-soft-projects > article img {
-  display: block;
-  width: 100%;
-  aspect-ratio: 16 / 9;
-  object-fit: cover;
-}
-
-#hardware-soft-space .project-list article > a + p,
-#hardware-soft-projects > article > a + h2,
-#hardware-soft-projects > article > h2,
-#hardware-soft-projects > article > p {
-  margin-right: 24px;
-  margin-left: 24px;
-}
-
-#hardware-soft-space .project-list article > a + p {
-  margin-top: 18px;
-  margin-bottom: 20px;
-  color: var(--hardware-muted);
-  line-height: 1.65;
-}
-
-#hardware-soft-projects > article > h2 {
-  margin-top: 20px;
-  margin-bottom: 0;
-  font-size: 1.25rem;
-  line-height: 1.35;
-}
-
-#hardware-soft-projects > article > h2 a {
   color: var(--hardware-ink);
-  transition: color var(--lopx-dur-mid) ease;
-}
-
-#hardware-soft-projects > article > h2 a:hover {
-  color: var(--hardware-accent);
-}
-
-#hardware-soft-projects > article > p {
-  margin-top: 10px;
-  margin-bottom: 22px;
-  color: var(--hardware-muted);
-  line-height: 1.65;
-}
-
-#hardware-soft-space section > h2,
-#hardware-soft-projects > h1,
-#hardware-soft-notes > h1 {
-  color: var(--hardware-ink);
-  font-size: 1.35rem;
+  font-size: 2rem;
   font-weight: 700;
   letter-spacing: 0;
 }
 
-#hardware-soft-projects > h1,
-#hardware-soft-notes > h1 {
-  font-size: 2rem;
-}
-
 #hardware-soft-projects > p,
-#hardware-soft-notes > p,
-#hardware-soft-space section > p {
+#hardware-soft-notes > p {
   margin: 0;
   padding: 20px 0;
   border-top: 1px solid var(--hardware-line);
   border-bottom: 1px solid var(--hardware-line);
   color: var(--hardware-muted);
-}
-
-/* Hardware & Soft Notes */
-#hardware-soft-space section:last-child {
-  max-width: 900px;
-}
-
-#hardware-soft-space section:last-child article,
-#hardware-soft-notes > article {
-  display: grid;
-  grid-template-columns: 120px minmax(0, 1fr);
-  gap: 20px;
-  align-items: baseline;
-  padding: 16px 0;
-  border-top: 1px solid var(--hardware-line);
-}
-
-#hardware-soft-space section:last-child article:last-child,
-#hardware-soft-notes > article:last-child {
-  border-bottom: 1px solid var(--hardware-line);
-}
-
-#hardware-soft-space section:last-child article h2,
-#hardware-soft-notes > article h2 {
-  grid-column: 2;
-  grid-row: 1;
-  margin: 0;
-  font-size: 1rem;
-  line-height: 1.5;
-}
-
-#hardware-soft-space section:last-child article h2 a,
-#hardware-soft-notes > article h2 a {
-  color: var(--hardware-ink);
-  transition: color var(--lopx-dur-mid) ease;
-}
-
-#hardware-soft-space section:last-child article h2 a:hover,
-#hardware-soft-notes > article h2 a:hover {
-  color: var(--hardware-accent);
-}
-
-#hardware-soft-space section:last-child article time,
-#hardware-soft-notes > article time {
-  grid-column: 1;
-  grid-row: 1;
-  color: var(--hardware-muted);
-  font-size: 0.8rem;
-  font-variant-numeric: tabular-nums;
-}
-
-/* Hardware & Soft Responsive */
-@media screen and (max-width: 768px) {
-  #hardware-soft-space,
-  #hardware-soft-projects,
-  #hardware-soft-notes {
-    padding: 40px 20px 56px;
-  }
-
-  #hardware-soft-space > h1 {
-    font-size: 2.35rem;
-  }
-
-  #hardware-soft-space .project-list {
-    grid-template-columns: 1fr;
-    gap: 18px;
-  }
-
-  #hardware-soft-space .project-list article > a + p,
-  #hardware-soft-projects > article > a + h2,
-  #hardware-soft-projects > article > h2,
-  #hardware-soft-projects > article > p {
-    margin-right: 20px;
-    margin-left: 20px;
-  }
-}
-
-@media screen and (max-width: 480px) {
-  #hardware-soft-projects > h1,
-  #hardware-soft-notes > h1 {
-    font-size: 1.8rem;
-  }
-
-  #hardware-soft-space section:last-child article,
-  #hardware-soft-notes > article {
-    display: block;
-    padding: 14px 0;
-  }
-
-  #hardware-soft-space section:last-child article time,
-  #hardware-soft-notes > article time {
-    display: block;
-    margin-bottom: 4px;
-  }
 }
 
 /* Indie */
@@ -534,243 +334,26 @@
   line-height: 1.7;
 }
 
-#indie-space > nav {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin-top: 28px;
-}
-
-#indie-space > nav a {
-  padding: 8px 14px;
-  border: 1px solid var(--indie-line);
-  border-radius: 6px;
-  color: var(--indie-accent);
-  font-size: 0.85rem;
-  font-weight: 650;
-  transition: color var(--lopx-dur-mid) ease, border-color var(--lopx-dur-mid) ease;
-}
-
-#indie-space > nav a:hover {
-  border-color: var(--indie-accent);
-  color: var(--indie-ink);
-}
-
-/* Indie Projects */
-#indie-space section,
 #indie-projects {
   margin-top: 56px;
 }
 
-#indie-space section h2,
 #indie-projects > h1,
 #indie-devlog > h1 {
   margin-bottom: 22px;
-}
-
-#indie-space section:first-of-type > div,
-#indie-space section:first-of-type {
-  display: grid;
-  gap: 22px;
-}
-
-#indie-space section:first-of-type > article,
-#indie-projects > article {
-  overflow: hidden;
-  border: 1px solid var(--indie-line);
-  border-radius: 10px;
-  background: var(--lopx-surface);
-  box-shadow: 0 4px 16px rgba(40, 37, 47, 0.045);
-  transition: transform var(--lopx-dur-mid) ease, box-shadow var(--lopx-dur-mid) ease;
-}
-
-#indie-space section:first-of-type > article:hover,
-#indie-projects > article:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 10px 24px rgba(40, 37, 47, 0.09);
-}
-
-#indie-space section:first-of-type > article > a,
-#indie-projects > article > a {
-  display: block;
-}
-
-#indie-space section:first-of-type > article img,
-#indie-projects > article img {
-  display: block;
-  width: 100%;
-  aspect-ratio: 16 / 9;
-  object-fit: cover;
-}
-
-#indie-space section:first-of-type > article > a + p,
-#indie-projects > article > h2,
-#indie-projects > article > p {
-  margin-right: 24px;
-  margin-left: 24px;
-}
-
-#indie-space section:first-of-type > article > a + p {
-  margin-top: 18px;
-  margin-bottom: 20px;
-  color: var(--indie-muted);
-  line-height: 1.65;
-}
-
-#indie-projects > article > h2 {
-  margin-top: 20px;
-  margin-bottom: 0;
-  font-size: 1.25rem;
-  line-height: 1.35;
-}
-
-#indie-projects > article > h2 a {
   color: var(--indie-ink);
-  transition: color var(--lopx-dur-mid) ease;
-}
-
-#indie-projects > article > h2 a:hover {
-  color: var(--indie-accent);
-}
-
-#indie-projects > article > p {
-  margin-top: 10px;
-  margin-bottom: 22px;
-  color: var(--indie-muted);
-  line-height: 1.65;
-}
-
-#indie-space section:first-of-type > h2,
-#indie-projects > h1,
-#indie-devlog > h1 {
-  color: var(--indie-ink);
-  font-size: 1.35rem;
+  font-size: 2rem;
   font-weight: 700;
   letter-spacing: 0;
 }
 
-#indie-projects > h1,
-#indie-devlog > h1 {
-  font-size: 2rem;
-}
-
-/* Indie Devlog */
-#indie-space section:last-of-type,
-#indie-devlog {
-  max-width: 900px;
-}
-
-#indie-space section:last-of-type > article,
-#indie-devlog > article {
-  display: grid;
-  grid-template-columns: 120px minmax(0, 1fr);
-  gap: 20px;
-  align-items: baseline;
-  padding: 16px 0;
-  border-top: 1px solid var(--indie-line);
-}
-
-#indie-space section:last-of-type > article:last-child,
-#indie-devlog > article:last-child {
-  border-bottom: 1px solid var(--indie-line);
-}
-
-/* 首页 Latest Devlog 的条目模板是 article > a（没有 h2 / time），
-   而 section:last-of-type > article 是按“日期列 + 内容列”两列排的，
-   链接会掉进 120px 的窄列里折行。
-   这里让标题占满整行，并给一个比默认 16px 更大的字号。 */
-#indie-space section:last-of-type > article > a {
-  grid-column: 1 / -1;
-  font-size: 1.1rem;
-  font-weight: 600;
-}
-
-#indie-space section:last-of-type > article h2,
-#indie-devlog > article h2 {
-  grid-column: 2;
-  grid-row: 1;
-  margin: 0;
-  font-size: 1rem;
-  line-height: 1.5;
-}
-
-#indie-space section:last-of-type > article h2 a,
-#indie-devlog > article h2 a {
-  color: var(--indie-ink);
-  transition: color var(--lopx-dur-mid) ease;
-}
-
-#indie-space section:last-of-type > article h2 a:hover,
-#indie-devlog > article h2 a:hover {
-  color: var(--indie-accent);
-}
-
-#indie-space section:last-of-type > article time,
-#indie-devlog > article time {
-  grid-column: 1;
-  grid-row: 1;
-  color: var(--indie-muted);
-  font-size: 0.8rem;
-  font-variant-numeric: tabular-nums;
-}
-
 #indie-projects > p,
-#indie-devlog > p,
-#indie-space section > p {
+#indie-devlog > p {
   margin: 0;
   padding: 20px 0;
   border-top: 1px solid var(--indie-line);
   border-bottom: 1px solid var(--indie-line);
   color: var(--indie-muted);
-}
-
-/* Indie Responsive */
-@media screen and (min-width: 769px) {
-  #indie-space section:first-of-type {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
-
-@media screen and (max-width: 768px) {
-  #indie-space,
-  #indie-projects,
-  #indie-devlog {
-    padding: 40px 20px 56px;
-  }
-
-  #indie-space > h1 {
-    font-size: 2.35rem;
-  }
-
-  #indie-space section:first-of-type {
-    grid-template-columns: 1fr;
-  }
-
-  #indie-projects > article > h2,
-  #indie-projects > article > p,
-  #indie-space section:first-of-type > article > a + p {
-    margin-right: 20px;
-    margin-left: 20px;
-  }
-}
-
-@media screen and (max-width: 480px) {
-  #indie-projects > h1,
-  #indie-devlog > h1 {
-    font-size: 1.8rem;
-  }
-
-  #indie-space section:last-of-type > article,
-  #indie-devlog > article {
-    display: block;
-    padding: 14px 0;
-  }
-
-  #indie-space section:last-of-type > article time,
-  #indie-devlog > article time {
-    display: block;
-    margin-bottom: 4px;
-  }
 }
 
 /* Garden */
@@ -1058,21 +641,12 @@
   transform: none;
 }
 
-#about-page > .p.logo.large {
-  margin: 0;
-  color: var(--lopx-ink);
-  font-size: 2.35rem;
-  font-weight: 700;
-  line-height: 1.15;
-}
-
-#about-page > .p.small {
-  margin: 12px 0 0;
-  color: #78858a;
-  font-size: 0.92rem;
-  letter-spacing: 0.04em;
-  line-height: 1.6;
-}
+/* 2026-10-02：About 页改信息页后，以下规则已无命中（探针在 / 与 /about/ 上实测 0 个元素），
+   已删除：#about-page > .p.logo.large、> .p.small、.title2 .inline-word、
+   .author-content-item.skills / .buff（含 .card-content / .skills-list /
+   .skill-info / .buff-text / .author-content-item-tips / -title）与对应的响应式、
+   过渡、reduced-motion、暗色覆盖。首页仍在用的 .author-box / .author-tag* /
+   .author-img* / .author-content / .myInfoAndSayHello 全部保留。 */
 
 /* About Intro */
 #about-page .author-content {
@@ -1102,82 +676,6 @@
   font-size: 2.25rem;
   font-weight: 700;
   line-height: 1.1;
-}
-
-#about-page .myInfoAndSayHello .title2 .inline-word {
-  white-space: nowrap;
-}
-
-/* About Skills */
-#about-page .author-content-item.skills,
-#about-page .author-content-item.buff {
-  box-sizing: border-box;
-  min-height: 260px;
-  padding: 0;
-  border: 1px solid var(--lopx-line);
-  border-radius: 10px;
-  background: var(--lopx-surface);
-  box-shadow: 0 5px 18px rgba(39, 50, 57, 0.04);
-}
-
-#about-page .author-content-item.skills {
-  background: var(--lopx-surface);
-}
-
-#about-page .author-content-item.skills .card-content,
-#about-page .author-content-item.buff .card-content {
-  position: relative;
-  box-sizing: border-box;
-  padding: 28px 32px;
-}
-
-#about-page .author-content-item .author-content-item-tips {
-  margin-bottom: 8px;
-  color: #78858a;
-  font-size: 0.78rem;
-  letter-spacing: 0.04em;
-  opacity: 1;
-}
-
-#about-page .author-content-item .author-content-item-title {
-  color: var(--lopx-ink);
-  font-size: 1.55rem;
-  font-weight: 700;
-  line-height: 1.2;
-}
-
-#about-page .skills-list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin-top: 22px;
-}
-
-#about-page .skills .skill-info {
-  margin: 0;
-  padding: 7px 11px;
-  border: 1px solid #d9e1e3;
-  border-radius: 6px;
-  background: var(--lopx-surface);
-  box-shadow: none;
-  color: #52656d;
-  font-size: 0.82rem;
-  font-weight: 600;
-  line-height: 1.35;
-}
-
-#about-page .skills .skill-info:nth-child(n) {
-  background: var(--lopx-surface);
-  box-shadow: none;
-  color: #52656d;
-}
-
-#about-page .buff .buff-text {
-  margin-top: 22px;
-  color: #66757a;
-  font-size: 1.05rem;
-  font-weight: 400;
-  line-height: 1.75;
 }
 
 /* About Responsive */
@@ -1211,10 +709,6 @@
     font-size: 0.72rem;
   }
 
-  #about-page > .p.logo.large {
-    font-size: 2rem;
-  }
-
   #about-page .myInfoAndSayHello {
     min-height: 150px;
     padding: 24px;
@@ -1222,16 +716,6 @@
 
   #about-page .myInfoAndSayHello .title2 {
     font-size: 2rem;
-  }
-
-  #about-page .author-content-item.skills,
-  #about-page .author-content-item.buff {
-    min-height: 0;
-  }
-
-  #about-page .author-content-item.skills .card-content,
-  #about-page .author-content-item.buff .card-content {
-    padding: 24px;
   }
 }
 
@@ -1261,14 +745,6 @@
     padding: 4px 6px;
     text-align: center;
     white-space: normal;
-  }
-
-  #about-page > .p.logo.large {
-    font-size: 1.85rem;
-  }
-
-  #about-page > .p.small {
-    font-size: 0.82rem;
   }
 
   #about-page .myInfoAndSayHello .title2 {
@@ -1320,72 +796,8 @@
   color: #4b5560;
 }
 
-/* Hardware & Soft */
-#hardware-soft-projects > article {
-  transition: transform var(--lopx-dur-fast) ease, border-color var(--lopx-dur-fast) ease, box-shadow var(--lopx-dur-fast) ease;
-}
-
-#hardware-soft-projects > article:hover {
-  transform: translateY(-2px);
-  border-color: #c7d3da;
-}
-
-#hardware-soft-projects > article img {
-  transition: opacity var(--lopx-dur-fast) ease;
-}
-
-#hardware-soft-projects > article:hover img {
-  opacity: 0.96;
-}
-
-#hardware-soft-projects > article > h2 a,
-#hardware-soft-notes > article h2 a,
-#hardware-soft-space section article > a {
-  transition: color var(--lopx-dur-fast) ease;
-}
-
-#hardware-soft-space section article > a:hover {
-  color: var(--hardware-accent);
-}
-
-#hardware-soft-notes > article time {
-  transition: color var(--lopx-dur-fast) ease;
-}
-
-#hardware-soft-notes > article:hover time {
-  color: #4a565e;
-}
-
-/* Indie */
-#indie-projects > article,
-#indie-space section:first-of-type > article {
-  transition: transform var(--lopx-dur-fast) ease, border-color var(--lopx-dur-fast) ease, box-shadow var(--lopx-dur-fast) ease;
-}
-
-#indie-projects > article:hover,
-#indie-space section:first-of-type > article:hover {
-  transform: translateY(-2px);
-  border-color: #cbd8e0;
-}
-
-#indie-projects > article img {
-  transition: opacity var(--lopx-dur-fast) ease;
-}
-
-#indie-projects > article:hover img {
-  opacity: 0.95;
-}
-
-#indie-projects > article > h2 a,
-#indie-space section:first-of-type > article > a,
-#indie-space section:last-of-type > article > a {
-  transition: color var(--lopx-dur-fast) ease;
-}
-
-#indie-space section:first-of-type > article > a:hover,
-#indie-space section:last-of-type > article > a:hover {
-  color: var(--indie-accent);
-}
+/* 2026-10-02：tech / indie 列表的旧 hover 过渡已随旧结构删除，
+   卡片过渡见第 28 节 .lopx-card。 */
 
 /* Garden */
 #garden-space > nav a {
@@ -1399,19 +811,6 @@
 #garden-space .article-sort .article-sort-item-title,
 #garden-category .article-sort .article-sort-item-title {
   transition: color var(--lopx-dur-fast) ease;
-}
-
-/* About */
-#about-page .author-content-item.skills,
-#about-page .author-content-item.buff {
-  transition: transform var(--lopx-dur-fast) ease, border-color var(--lopx-dur-fast) ease, box-shadow var(--lopx-dur-fast) ease;
-}
-
-#about-page .author-content-item.skills:hover,
-#about-page .author-content-item.buff:hover {
-  transform: translateY(-2px);
-  border-color: #cbd8e0;
-  box-shadow: 0 10px 24px rgba(39, 50, 57, 0.07);
 }
 
 /* Navigation（沿用主题既有 hover 配色，仅统一过渡时长） */
@@ -1435,23 +834,11 @@
   #home-projects .project-card h3 a,
   #recent-writing li a,
   #recent-writing time,
-  #hardware-soft-projects > article,
-  #hardware-soft-projects > article img,
-  #hardware-soft-projects > article > h2 a,
-  #hardware-soft-notes > article h2 a,
-  #hardware-soft-notes > article time,
-  #hardware-soft-space section article > a,
-  #indie-projects > article,
-  #indie-projects > article img,
-  #indie-projects > article > h2 a,
-  #indie-space section:first-of-type > article,
-  #indie-space section:first-of-type > article > a,
-  #indie-space section:last-of-type > article > a,
+  .lopx-card,
+  .lopx-card .lopx-card-title,
   #garden-space > nav a,
   #garden-space .article-sort .article-sort-item-title,
   #garden-category .article-sort .article-sort-item-title,
-  #about-page .author-content-item.skills,
-  #about-page .author-content-item.buff,
   #lopx-home #about-page .author-content-item.myInfoAndSayHello,
   #page-header #nav #nav-right .nav-button a,
   #page-header #nav #nav-right .nav-button a:hover,
@@ -1466,12 +853,8 @@
   }
 
   #home-projects .project-card:hover,
-  #hardware-soft-projects > article:hover,
-  #indie-projects > article:hover,
-  #indie-space section:first-of-type > article:hover,
+  .lopx-card:hover,
   #garden-space > nav a:hover,
-  #about-page .author-content-item.skills:hover,
-  #about-page .author-content-item.buff:hover,
   #lopx-home #about-page .author-content-item.myInfoAndSayHello:hover {
     transform: none;
   }
@@ -1642,64 +1025,15 @@
 }
 
 /* ---- 3. 列表标题字重统一为 600（页面主标题才用 700+）---- */
-#recent-writing li a,
-#hardware-soft-notes > article h2 {
+#recent-writing li a {
   font-weight: 600;
 }
 
-#indie-space section:last-of-type > article > a {
-  font-size: 1rem;
-  font-weight: 600;
-}
-
-/* ---- 4. tech 空间首页列表：单列 ----
-   .pug 结构是 section > article > a(标题)[+ p(描述)]，没有日期列；
-   而共享规则为「带日期的 notes 列表」写了 grid-template-columns: 120px 1fr，
-   于是唯一的标题链接被塞进 120px 窄列逐字换行。此处让它回到单列。 */
-#hardware-soft-space section:last-child > article,
-#hardware-soft-space section > article {
-  display: block;
-  padding: 16px 0;
-  border-top: 1px solid var(--hardware-line);
-}
-
-#hardware-soft-space section:last-child > article:last-child,
-#hardware-soft-space section > article:last-child {
-  border-bottom: 1px solid var(--hardware-line);
-}
-
-#hardware-soft-space section article > a {
-  color: var(--hardware-ink);
-  font-size: 1rem;
-  font-weight: 600;
-  line-height: 1.5;
-}
-
-/* ---- 5. indie 空间首页：标题跨列 + 单卡片时退回单列 ----
-   原规则把 section:first-of-type 设为两列网格，但 section 的第一个子元素是 h2，
-   于是「标题 + 唯一文章」被并排成左右两栏。
-   当前 0 篇 project，该 section 同时是 last-of-type，问题必现。 */
-@media screen and (min-width: 769px) {
-  #indie-space section:first-of-type {
-    grid-template-columns: minmax(0, 1fr);
-  }
-
-  #indie-space section:first-of-type:has(> article + article) {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
-
-#indie-space section:first-of-type > h2 {
-  grid-column: 1 / -1;
-}
+/* ---- 4 / 5. tech、indie 空间首页的旧列表修复已随旧结构删除（2026-10-02）---- */
 
 /* ---- 6. 正文宽度：已在第 12 节统一处理（容器 1160 / 内容 900），此处不再单独设值 ---- */
 
 /* ---- 7. 留白收紧 ---- */
-#indie-space section {
-  margin-top: 40px; /* 原 56px */
-}
-
 #garden-space > section {
   margin-top: 40px; /* 原 58px；第 12 节统一为 40px */
 }
@@ -1772,8 +1106,6 @@
 :root:root #article-container h2,
 :root:root #article-container h3,
 :root:root #article-container h4,
-:root:root #hardware-soft-notes h2,
-:root:root #indie-devlog h2,
 :root:root h1.page-title {
   color: var(--lopx-ink);
 }
@@ -1824,13 +1156,11 @@
   padding: 48px 32px 72px;
 }
 
-/* 12.2 内容：统一 900px（与 h1 左边缘对齐，右侧自然留白） */
-#hardware-soft-space section:last-child,
-#hardware-soft-notes > article,
+/* 12.2 内容：统一 900px（与 h1 左边缘对齐，右侧自然留白）
+   2026-10-02：旧列表 > article / section 选择器已删，tech/indie 的
+   内容宽度改由第 28 节 .lopx-cards 控制；此处只保留仍生效的部分。 */
 #hardware-soft-notes > p,
 #hardware-soft-projects > p,
-#indie-space section,
-#indie-devlog > article,
 #indie-devlog > p,
 #indie-projects > p,
 #garden-space > section,
@@ -1917,11 +1247,12 @@
 }
 
 /* ============================================================
-   13. 动态页（/essay/）—— 2026-09-30 建立 / 2026-10-01 回归主题原版版式
-   曾做过：容器收窄 900、横幅与列表统一 900、卡片改两列 48%。
-   现回归原版：容器保持与站点一致（1160 居中 → x=140），
-   横幅与瀑布流占满容器，卡片回到主题原版三列（32% + 2% 间距），
-   响应式交回主题（≤1200px 两列、≤768px 单列）。
+   13. 动态页（/essay/）—— 2026-09-30 建立 / 10-01 回归原版 / 10-02 桌面单列
+   历史：曾做容器收窄 900 + 卡片两列 48%，10-01 回归主题原版三列。
+   现状：容器保持 1160 居中（x=140）、横幅满宽不动；
+   卡片列表 ≥1200px 改单列并限宽 760 居中，与移动端（≤768px 单列）同构，
+   消除三列瀑布流在条目较少时产生的孤卡与底部参差。
+   ≤1200px 的响应式仍交回主题（两列 / 单列）。
    ============================================================ */
 #essay_page {
   max-width: 1160px;
@@ -1929,6 +1260,23 @@
   margin-right: auto;
   /* 主题原版对 essay 页设了 #page{padding:0}，此处对齐 → 横幅满宽 1160 */
   padding: 0;
+}
+
+@media screen and (min-width: 1200px) {
+
+  /* 列表限宽 760 居中；顺带归零可能存在的左内边距，避免限宽后左右不对称 */
+  #essay_page #bber .timeline ul#waterfall.list {
+    max-width: 760px;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 0;
+  }
+
+  /* 单列：覆盖主题的 32% 三列与 2% 右间距 */
+  #essay_page #bber .timeline ul li.bber-item {
+    width: 100%;
+    margin-right: 0;
+  }
 }
 
 /* ============================================================
@@ -2009,9 +1357,7 @@
    不改模板结构，纯覆盖式声明。
    ============================================================ */
 
-/* 15.1 区块卡片 */
-#hardware-soft-space > section,
-#indie-space > section,
+/* 15.1 区块卡片（2026-10-02：tech/indie 主页已改卡片网格，仅 garden 生效） */
 #garden-space > section {
   padding: 22px 26px;
   border: 1px solid var(--lopx-line);
@@ -2023,36 +1369,19 @@
     border-color var(--lopx-dur-mid) ease;
 }
 
-#hardware-soft-space > section:hover,
-#indie-space > section:hover,
 #garden-space > section:hover {
   border-color: rgba(58, 122, 160, 0.3);
   box-shadow: 0 10px 30px rgba(30, 38, 44, 0.1);
   transform: translateY(-3px);
 }
 
-/* 卡片内的次级分隔线：卡片已有边界，行分隔线减淡 */
-#hardware-soft-space > section > article,
-#indie-space > section > article {
-  border-top-color: rgba(30, 38, 44, 0.07);
-}
-
-#hardware-soft-space > section > article:last-child,
-#indie-space > section > article:last-child {
-  border-bottom-color: rgba(30, 38, 44, 0.07);
-}
-
-/* 15.2 列表页行 hover（/tech/notes/ · /indie/devlog/ · garden 分类页） */
-#hardware-soft-notes > article,
-#indie-devlog > article,
+/* 15.2 列表页行 hover（garden 分类页；tech/indie 列表页已改卡片网格） */
 #garden-space .article-sort-item,
 #garden-category .article-sort-item {
   border-radius: 10px;
   transition: background-color var(--lopx-dur-mid) ease;
 }
 
-#hardware-soft-notes > article:hover,
-#indie-devlog > article:hover,
 #garden-space .article-sort-item:hover,
 #garden-category .article-sort-item:hover {
   background-color: rgba(58, 122, 160, 0.05);
@@ -2071,8 +1400,6 @@
 }
 
 /* 首页与 space 主页：卡片内边距会压缩 900 内容，向右放宽 26px 补偿 */
-#hardware-soft-space > section,
-#indie-space > section,
 #garden-space > section {
   max-width: 926px;
 }
@@ -2444,12 +1771,18 @@
    实现：纯 CSS 伪元素，不改模板与页面生成器。
    ============================================================ */
 
-/* 20.1 色带高度：space 主页要盖住 h1 + 副标题 + 按钮行；列表页只有 h1 */
+/* 20.1 色带高度：space 主页要盖住 h1 + 副标题 + 胶囊导航行；
+       garden 分类页只有 h1。
+   2026-10-02：tech/indie 的四个列表页新增胶囊导航 → 104px 提到 168px。 */
 :is(#hardware-soft-space, #indie-space, #garden-space) {
   --lopx-band-h: 232px;
 }
 
-:is(#hardware-soft-notes, #indie-devlog, #hardware-soft-projects, #indie-projects, #garden-category) {
+:is(#hardware-soft-notes, #indie-devlog, #hardware-soft-projects, #indie-projects) {
+  --lopx-band-h: 168px;
+}
+
+#garden-category {
   --lopx-band-h: 104px;
 }
 
@@ -2458,7 +1791,11 @@
   position: relative;
 }
 
-/* 20.3 色带本体：贴容器上沿，圆角沿用容器自身（只取上半），不裁切任何内容 */
+/* 20.3 色带本体：贴容器上沿，圆角沿用容器自身（只取上半），不裁切任何内容
+   2026-10-02：去掉照片。原方案三个空间共用同一张 post-cover.webp，
+   只靠遮罩色调与裁切位置区分，等于「换个角度拍同一张图」，仍属撞图。
+   现在改为纯 CSS：空间识别色深色渐变 + 细网格纹理，各空间独立成色，
+   以后想换回照片，只需把 url() 追加到 background-image 末尾。 */
 :is(#hardware-soft-space, #hardware-soft-notes, #hardware-soft-projects, #indie-space, #indie-devlog, #indie-projects, #garden-space, #garden-category)::before {
   content: '';
   position: absolute;
@@ -2470,30 +1807,50 @@
   border-radius: inherit;
   border-bottom-right-radius: 0;
   border-bottom-left-radius: 0;
-  background-image: var(
-      --lopx-band-scrim,
-      linear-gradient(115deg, rgba(13, 30, 40, 0.93) 0%, rgba(13, 30, 40, 0.55) 56%, rgba(13, 30, 40, 0.26) 100%)
+  background-image: repeating-linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.055) 0 1px,
+      transparent 1px 32px
     ),
-    url('/img/post-cover.webp');
-  background-repeat: no-repeat, no-repeat;
-  background-size: cover, cover;
-  background-position: center center, var(--lopx-band-pos, center 40%);
+    repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.045) 0 1px, transparent 1px 32px),
+    var(--lopx-band-glow, none),
+    var(--lopx-band-base, linear-gradient(115deg, #0b2130 0%, #1f6288 100%));
+  background-repeat: repeat, repeat, no-repeat, no-repeat;
+  background-size: 32px 32px, 32px 32px, cover, cover;
+  background-position: left top, left top, center center, center center;
 }
 
-/* 20.4 三个 space 各一套色调 + 裁切（同一张图换角度，避免三个页面一模一样） */
-#hardware-soft-space {
-  --lopx-band-scrim: linear-gradient(115deg, rgba(9, 34, 48, 0.93) 0%, rgba(9, 34, 48, 0.55) 56%, rgba(9, 34, 48, 0.26) 100%);
-  --lopx-band-pos: center 34%;
+/* 20.4 三个空间各一套渐变色（深底 → 识别色），色相与 26 节首页空间卡同源 */
+:is(#hardware-soft-space, #hardware-soft-notes, #hardware-soft-projects) {
+  --lopx-band-base: linear-gradient(115deg, #0b2130 0%, #163f57 58%, #1f6288 100%);
+  --lopx-band-glow: radial-gradient(
+    120% 130% at 88% 6%,
+    rgba(24, 95, 165, 0.5) 0%,
+    rgba(24, 95, 165, 0) 62%
+  );
 }
 
-#indie-space {
-  --lopx-band-scrim: linear-gradient(115deg, rgba(24, 22, 54, 0.93) 0%, rgba(24, 22, 54, 0.55) 56%, rgba(24, 22, 54, 0.26) 100%);
-  --lopx-band-pos: center 62%;
+:is(#indie-space, #indie-devlog, #indie-projects) {
+  --lopx-band-base: linear-gradient(115deg, #171432 0%, #2d2760 58%, #4a3f9b 100%);
+  --lopx-band-glow: radial-gradient(
+    120% 130% at 88% 6%,
+    rgba(83, 74, 183, 0.5) 0%,
+    rgba(83, 74, 183, 0) 62%
+  );
 }
 
-#garden-space {
-  --lopx-band-scrim: linear-gradient(115deg, rgba(14, 42, 36, 0.93) 0%, rgba(14, 42, 36, 0.55) 56%, rgba(14, 42, 36, 0.26) 100%);
-  --lopx-band-pos: center 14%;
+:is(#garden-space, #garden-category) {
+  --lopx-band-base: linear-gradient(115deg, #0b2a23 0%, #14503f 58%, #1f6d55 100%);
+  --lopx-band-glow: radial-gradient(
+    120% 130% at 88% 6%,
+    rgba(15, 110, 86, 0.5) 0%,
+    rgba(15, 110, 86, 0) 62%
+  );
+}
+
+/* 暗色下页面底色本身就是深色，给色带补一条下沿发丝线保证边界可见 */
+[data-theme='dark'] :is(#hardware-soft-space, #hardware-soft-notes, #hardware-soft-projects, #indie-space, #indie-devlog, #indie-projects, #garden-space, #garden-category)::before {
+  box-shadow: inset 0 -1px 0 rgba(255, 255, 255, 0.08);
 }
 
 /* 20.5 色带是绝对定位元素，会把非定位兄弟盖住；所有直接子元素提到它之上 */
@@ -2502,33 +1859,65 @@
   z-index: 1;
 }
 
-/* 20.6 色带上的标题转白 */
-:root:root:not([data-theme='dark']) :is(#hardware-soft-space, #hardware-soft-notes, #hardware-soft-projects, #indie-space, #indie-devlog, #indie-projects, #garden-space, #garden-category) > h1 {
+/* 20.6 色带上的标题转白
+   2026-10-02：色带恒为深底（不再是「亮色主题下的照片 + 遮罩」），
+   因此 20.6 / 20.7 / 20.8 一并去掉 :not([data-theme='dark']) 限制，
+   两个主题共用同一套白字。 */
+:root:root :is(#hardware-soft-space, #hardware-soft-notes, #hardware-soft-projects, #indie-space, #indie-devlog, #indie-projects, #garden-space, #garden-category) > h1 {
   color: #ffffff;
   text-shadow: 0 2px 12px rgba(6, 14, 20, 0.42);
 }
 
-/* 20.7 副标题（tech 的「技术」、garden 的分类串）转浅白 */
-:root:root:not([data-theme='dark']) :is(#hardware-soft-space, #indie-space, #garden-space) > p {
+/* 20.7 副标题（tech / indie 的空间说明、garden 的分类串）转浅白 */
+:root:root :is(#hardware-soft-space, #indie-space, #garden-space) > p {
   color: rgba(255, 255, 255, 0.78);
 }
 
-/* 20.8 space 主页的 Projects / Notes 按钮改玻璃胶囊，压在图上 */
-:root:root:not([data-theme='dark']) :is(#hardware-soft-space, #indie-space) > nav a {
-  padding: 7px 18px;
+/* 20.7b Garden 的分类串在 941 行带一对浅灰发丝线（原本用于白底分隔），
+   移到深色色带上会变成两条突兀的杂线，这里统一透明，只留文字；
+   分隔交给色带自身的下沿。 */
+:root:root :is(#garden-space, #garden-category) > p {
+  border-color: transparent;
+}
+
+/* 20.8 色带上的空间导航胶囊（玻璃质感，压在渐变上）
+   与 28 节的卡片网格配套：主页给 Projects / Notes，列表页给空间主页 + 同级列表。 */
+:root:root :is(#hardware-soft-space, #indie-space, #garden-space, #hardware-soft-notes, #hardware-soft-projects, #indie-projects, #indie-devlog, #garden-category) > nav.lopx-space-nav > a,
+:root:root :is(#hardware-soft-space, #indie-space, #garden-space, #hardware-soft-notes, #hardware-soft-projects, #indie-projects, #indie-devlog, #garden-category) > nav.lopx-space-nav > span {
+  display: inline-flex;
+  align-items: center;
+  padding: 7px 16px;
   border: 1px solid rgba(255, 255, 255, 0.26);
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.13);
   color: #ffffff;
+  font-size: 0.85rem;
+  font-weight: 650;
+  text-decoration: none;
   -webkit-backdrop-filter: blur(8px);
   backdrop-filter: blur(8px);
   transition: background-color var(--lopx-dur-mid) ease, border-color var(--lopx-dur-mid) ease;
 }
 
-:root:root:not([data-theme='dark']) :is(#hardware-soft-space, #indie-space) > nav a:hover {
+:root:root :is(#hardware-soft-space, #indie-space, #garden-space, #hardware-soft-notes, #hardware-soft-projects, #indie-projects, #indie-devlog, #garden-category) > nav.lopx-space-nav > a:hover {
   border-color: rgba(255, 255, 255, 0.5);
   background: rgba(255, 255, 255, 0.26);
   color: #ffffff;
+}
+
+/* 当前页胶囊：不可点，靠底色与描边区分 */
+:root:root :is(#hardware-soft-space, #indie-space, #garden-space, #hardware-soft-notes, #hardware-soft-projects, #indie-projects, #indie-devlog, #garden-category) > nav.lopx-space-nav > span.is-active {
+  border-color: rgba(255, 255, 255, 0.62);
+  background: rgba(255, 255, 255, 0.28);
+}
+
+/* 数量：胶囊内的次要信息，不抢标题 */
+:root:root :is(#hardware-soft-space, #indie-space, #garden-space, #hardware-soft-notes, #hardware-soft-projects, #indie-projects, #indie-devlog, #garden-category) > nav.lopx-space-nav small {
+  margin-left: 6px;
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 0.78rem;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
 }
 
 /* 20.9 列表页：色带只有 104px 高，把第一条内容推离色带下沿，别贴在一起 */
@@ -2536,13 +1925,18 @@
   margin-top: 24px;
 }
 
-/* 20.10 窄屏 */
+/* 20.10 窄屏
+   2026-10-02：列表页新增胶囊导航，窄屏下导航可能折到第二行，色带同步加高。 */
 @media screen and (max-width: 768px) {
   :is(#hardware-soft-space, #indie-space, #garden-space) {
     --lopx-band-h: 200px;
   }
 
-  :is(#hardware-soft-notes, #indie-devlog, #hardware-soft-projects, #indie-projects, #garden-category) {
+  :is(#hardware-soft-notes, #indie-devlog, #hardware-soft-projects, #indie-projects) {
+    --lopx-band-h: 168px;
+  }
+
+  #garden-category {
     --lopx-band-h: 92px;
   }
 }
@@ -2680,8 +2074,6 @@
 
 /* 22.5 卡片阴影：亮色用弥散浅影，暗色要更深才看得出层次 */
 [data-theme='dark'] #lopx-home > section,
-[data-theme='dark'] #hardware-soft-space > section,
-[data-theme='dark'] #indie-space > section,
 [data-theme='dark'] #garden-space > section,
 [data-theme='dark'] #hardware-soft-notes,
 [data-theme='dark'] #indie-devlog,
@@ -2694,8 +2086,6 @@
 
 /* 22.6 hover 反馈：亮色的淡主色底在暗色下几乎看不见，提高不透明度 */
 [data-theme='dark'] #lopx-home #recent-writing li:hover,
-[data-theme='dark'] #hardware-soft-notes > article:hover,
-[data-theme='dark'] #indie-devlog > article:hover,
 [data-theme='dark'] #garden-space .article-sort-item:hover,
 [data-theme='dark'] #garden-category .article-sort-item:hover {
   background-color: rgba(103, 178, 208, 0.1);
@@ -2791,16 +2181,6 @@
   color: #c9cad6;
 }
 
-[data-theme='dark'] #about-page .skills .skill-info,
-[data-theme='dark'] #about-page .skills .skill-info:nth-child(n) {
-  border-color: var(--lopx-line);
-  color: #c9cad6;
-}
-
-[data-theme='dark'] #about-page .buff .buff-text {
-  color: var(--lopx-body);
-}
-
 [data-theme='dark'] #about-page .title1 {
   color: var(--lopx-muted);
 }
@@ -2855,10 +2235,9 @@
   filter: brightness(0.45) saturate(0.5) contrast(1.08);
 }
 
-/* 23.7 小标签与「原创」胶囊的残留项（探针 4.35–4.38:1，属临界值，顺手补齐） */
-[data-theme='dark'] :is(#about-page, #lopx-home) .author-content-item-tips {
-  color: var(--lopx-muted);
-}
+/* 23.7 小标签与「原创」胶囊的残留项 —— 2026-10-02：原选择器
+   :is(#about-page, #lopx-home) .author-content-item-tips 已无命中（About 改版后
+   该元素只存在于侧栏 console 卡内，不在两个根节点之下），故删除。 */
 
 /* ============================================================
    24. 文章页并入站内统一轴线 —— 2026-10-01（版式对齐收尾）
@@ -3128,4 +2507,605 @@
   #lopx-home .space-list {
     grid-template-columns: 1fr;
   }
+}
+
+/* ============================================================
+   27. 首页「当前状态」条（方案 C：独立于 hero 卡）
+   数据源：source/_data/about.yml 的 status 字段（text）。
+   2026-10-02：由 hero 卡内右侧胶囊改为卡下方独立状态条——
+   hero 只讲「我是谁」，近况单独成条，不再与标题组左右抢位；
+   去掉 emoji 与呼吸绿点（绿与 Garden 空间识别色撞色、emoji 跨端不可控），
+   改为强调色 8% 底 + 左侧 3px 竖线；hero 内部恢复 18.3 的块级布局。
+   ⚠️ pangu 防御：status 在首页渲染，field: post 不注入，无需处理。
+   ============================================================ */
+
+/* 状态条：位于 #home-about 卡片与 #home-spaces 之间，
+   上方间距由 #home-about 的 margin-bottom: 24px 提供 */
+#lopx-home .hello-status {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 28px;
+  padding: 11px 16px;
+  border-radius: 10px;
+  background: rgba(58, 122, 160, 0.08);
+  font-size: 0.875rem;
+  line-height: 1.45;
+  color: #2c6688;
+}
+
+/* 左侧竖线：中性强调（--lopx-accent），不用绿 */
+#lopx-home .hello-status .status-dot {
+  flex: none;
+  width: 3px;
+  height: 14px;
+  border-radius: 2px;
+  background: var(--lopx-accent);
+}
+
+#lopx-home .hello-status .status-text {
+  min-width: 0;
+}
+
+/* 暗色：底色换暗阶 accent（与 Tech 空间暗色 #85B7EB 同源），文字提亮 */
+[data-theme='dark'] #lopx-home .hello-status {
+  background: rgba(133, 183, 235, 0.12);
+  color: #9cc3e8;
+}
+
+[data-theme='dark'] #lopx-home .hello-status .status-dot {
+  background: #85B7EB;
+}
+
+/* ============================================================
+   28. 空间页卡片网格（2026-10-02）
+   背景：/tech/、/indie/ 及其四个子列表页原本是「白卡片 + 行行文字链接」，
+        内容少时版面失衡（Indie 一屏只有 1 行）；主页的 Latest Projects 段
+        又因站内暂无 project 文章而恒为空，整页只有一段内容。
+   处理：主页与四个子列表页统一为 3 列卡片网格 ——
+        渐变文字封面（空间识别色深底，不依赖封面图）+ 标题 + 元信息行
+        （类型徽章 · 日期 · 标签 ≤2）；文章日后补 cover 字段则优先显示图片。
+        顶部胶囊导航样式见 20.8，数量由生成器算出。
+   色板：与 26 节首页空间卡同源（Tech #185FA5 / Indie #534AB7）。
+   ============================================================ */
+
+/* 28.1 每个空间一套卡片配色：渐变两端 + 强调色（暗色另给强调色，见 28.7） */
+:is(#hardware-soft-space, #hardware-soft-notes, #hardware-soft-projects) {
+  --lopx-card-from: #0b2130;
+  --lopx-card-to: #1f6288;
+  --lopx-card-accent: #185FA5;
+}
+
+:is(#indie-space, #indie-projects, #indie-devlog) {
+  --lopx-card-from: #171432;
+  --lopx-card-to: #4a3f9b;
+  --lopx-card-accent: #534AB7;
+}
+
+/* Garden 本轮仍是列表形态，取值先备好，日后统一时不必重新定色 */
+:is(#garden-space, #garden-category) {
+  --lopx-card-from: #0b2a23;
+  --lopx-card-to: #1f6d55;
+  --lopx-card-accent: #0F6E56;
+}
+
+/* 28.2 网格：3 列固定。内容少时（如 tech 5 篇 → 3+2）比 4 列更稳，
+   不会出现「4+1 孤卡」；窄屏在 28.6 收口 */
+.lopx-cards {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 22px;
+  margin-top: 40px;
+}
+
+/* 28.3 卡片外壳 */
+.lopx-card {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid var(--lopx-line);
+  border-radius: 12px;
+  background: var(--lopx-surface);
+  box-shadow: 0 4px 16px rgba(32, 42, 49, 0.045);
+  transition:
+    transform var(--lopx-dur-mid) ease,
+    border-color var(--lopx-dur-mid) ease,
+    box-shadow var(--lopx-dur-mid) ease;
+}
+
+.lopx-card:hover {
+  transform: translateY(-3px);
+  border-color: var(--lopx-card-accent);
+  box-shadow: 0 10px 24px rgba(32, 42, 49, 0.09);
+}
+
+/* 28.4 渐变文字封面：空间识别色 + 与色带同源的细网格纹理 */
+.lopx-card-cover {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 104px;
+  background-image: repeating-linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.055) 0 1px,
+      transparent 1px 26px
+    ),
+    repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.045) 0 1px, transparent 1px 26px),
+    linear-gradient(135deg, var(--lopx-card-from, #0b2130) 0%, var(--lopx-card-to, #1f6288) 100%);
+  background-repeat: repeat, repeat, no-repeat;
+  background-size: 26px 26px, 26px 26px, cover;
+  background-position: left top, left top, center center;
+  text-decoration: none;
+}
+
+.lopx-card-cover-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.lopx-card-cat {
+  color: #ffffff;
+  font-size: 0.9rem;
+  font-weight: 650;
+  letter-spacing: 0.14em;
+  text-shadow: 0 2px 10px rgba(6, 14, 20, 0.35);
+}
+
+/* 有封面图时，分类名降为左下角角标 */
+.lopx-card-cover.has-img .lopx-card-cat {
+  position: absolute;
+  left: 10px;
+  bottom: 10px;
+  padding: 3px 9px;
+  border-radius: 999px;
+  background: rgba(6, 14, 20, 0.55);
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px);
+}
+
+/* 28.5 卡片正文：标题两行封顶，元信息贴底（同一行卡片对齐底部） */
+.lopx-card-body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 12px;
+  padding: 14px 16px 16px;
+}
+
+.lopx-card-title {
+  display: -webkit-box;
+  overflow: hidden;
+  color: var(--lopx-ink);
+  font-size: 0.98rem;
+  font-weight: 650;
+  line-height: 1.45;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  transition: color var(--lopx-dur-mid) ease;
+}
+
+.lopx-card:hover .lopx-card-title {
+  color: var(--lopx-card-accent);
+}
+
+.lopx-card-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 8px;
+  margin-top: auto;
+  color: var(--lopx-muted);
+  font-size: 0.75rem;
+  line-height: 1.4;
+}
+
+.lopx-card-kind {
+  padding: 1px 7px;
+  border: 1px solid currentColor;
+  border-radius: 4px;
+  color: var(--lopx-card-accent);
+  font-size: 0.7rem;
+  font-weight: 650;
+}
+
+.lopx-card-date {
+  font-variant-numeric: tabular-nums;
+}
+
+.lopx-card-tag {
+  padding: 1px 8px;
+  border-radius: 999px;
+  background: rgba(58, 122, 160, 0.09);
+  color: var(--lopx-muted);
+  font-size: 0.7rem;
+}
+
+/* 28.6 响应式：≤960 两列，≤600 单列 */
+@media screen and (max-width: 960px) {
+  .lopx-cards {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .lopx-cards {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 16px;
+    margin-top: 32px;
+  }
+
+  .lopx-card-cover {
+    height: 92px;
+  }
+}
+
+/* 28.7 暗色：强调色换亮阶（与 26 节空间卡同源），阴影收敛 */
+[data-theme='dark'] :is(#hardware-soft-space, #hardware-soft-notes, #hardware-soft-projects) {
+  --lopx-card-accent: #85B7EB;
+}
+
+[data-theme='dark'] :is(#indie-space, #indie-projects, #indie-devlog) {
+  --lopx-card-accent: #AFA9EC;
+}
+
+[data-theme='dark'] :is(#garden-space, #garden-category) {
+  --lopx-card-accent: #5DCAA5;
+}
+
+[data-theme='dark'] .lopx-card {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.32);
+}
+
+[data-theme='dark'] .lopx-card:hover {
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.44);
+}
+
+[data-theme='dark'] .lopx-card-tag {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+/* 28.8 色带上的胶囊导航：主页沿 537 / 278 行的既有 flex 规则，
+   子列表页原本没有 nav，这里补上一样的排布；视觉由 20.8 提供 */
+.lopx-space-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 26px;
+}
+
+/* 28.9 空态：与卡片网格同一上沿间距 */
+:is(#hardware-soft-space, #hardware-soft-notes, #hardware-soft-projects, #indie-space, #indie-projects, #indie-devlog) > p.space-empty {
+  margin-top: 40px;
+}
+
+/* ============================================================
+   29. About 信息页（/about/）—— 2026-10-02
+   背景：原版与首页 hero 完全重复（同一张头像、同样四个能力标签、
+   同一句 Hello），同一信息一屏出现三次，1087px 页面里卡片只占 480px。
+   现在换成「紧凑页头 + Now + 时间线 + 联系方式」，模板见
+   themes/anzhiyu/layout/includes/page/about.pug，数据在 source/_data/about.yml。
+   作用域全部限定在 .lopx-about（只存在于 /about/），
+   首页内联的 #about-page 副本与既有 #about-page 规则不受影响。
+   颜色全部走 --lopx-* token（亮暗在全局分别定义），无需额外暗色覆盖。
+   ============================================================ */
+
+/* 29.0 内容宽度：沿 #about-page 的容器（1160 / 内边距 32），
+   内部卡片限宽 900 靠左，与其它页「容器 1160 / 内容 900」的轴线一致。
+   注意：这里不能写 .lopx-about { max-width } —— #about-page 是 id 选择器，
+   权重更高，会把它压掉（实测发生过）。 */
+.lopx-about-head,
+.lopx-about-block {
+  max-width: 900px;
+}
+
+/* 链接用的可读强调色：--lopx-accent(#3a7aa0) 在白底上对比约 4.3:1，
+   作正文链接偏低；沿用第 27 节状态条已校验过的同一组取值。 */
+.lopx-about {
+  --lopx-about-link: #2c6688;
+}
+
+[data-theme='dark'] .lopx-about {
+  --lopx-about-link: #9cc3e8;
+}
+
+/* 29.1 紧凑页头：头像退回 64px 缩略尺寸，只在这里出现一次 */
+.lopx-about-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 18px;
+  padding: 20px 24px;
+  border: 1px solid var(--lopx-line);
+  border-radius: 16px;
+  background: var(--lopx-surface);
+  box-shadow: 0 2px 10px rgba(30, 38, 44, 0.04);
+}
+
+.lopx-about-avatar {
+  flex: none;
+  width: 64px;
+  height: 64px;
+  overflow: hidden;
+  border: 1px solid var(--lopx-line);
+  border-radius: 16px;
+}
+
+.lopx-about-avatar img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.lopx-about-headline {
+  flex: 1 1 150px;
+  min-width: 0;
+}
+
+.lopx-about-name {
+  margin: 0;
+  color: var(--lopx-ink);
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.lopx-about-intro {
+  margin: 8px 0 0;
+  color: var(--lopx-muted);
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+/* 方向标签：小号 chips，替代原来被放大成 8 个胶囊的能力标签 */
+.lopx-about-dirs {
+  flex: 1 1 100%;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 6px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.lopx-about-dirs li {
+  padding: 4px 11px;
+  border: 1px solid var(--lopx-line);
+  border-radius: 999px;
+  color: var(--lopx-muted);
+  font-size: 0.78rem;
+  font-weight: 550;
+  line-height: 1.5;
+}
+
+/* 29.2 区块外壳：三块内容共用 */
+.lopx-about-block {
+  margin-top: 20px;
+  padding: 22px 24px;
+  border: 1px solid var(--lopx-line);
+  border-radius: 16px;
+  background: var(--lopx-surface);
+  box-shadow: 0 2px 10px rgba(30, 38, 44, 0.04);
+}
+
+.lopx-about-block-title {
+  display: flex;
+  align-items: baseline;
+  gap: 9px;
+  margin: 0 0 18px;
+  color: var(--lopx-ink);
+  font-size: 1.05rem;
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.lopx-about-block-title small {
+  color: var(--lopx-muted);
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* 29.3 Now 列表 */
+.lopx-about-now-list {
+  display: grid;
+  gap: 13px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.lopx-about-now-list li {
+  display: flex;
+  gap: 11px;
+  align-items: baseline;
+}
+
+.lopx-about-now-label {
+  flex: none;
+  padding: 2px 9px;
+  border-radius: 6px;
+  background: rgba(58, 122, 160, 0.08);
+  color: var(--lopx-about-link);
+  font-size: 0.75rem;
+  font-weight: 650;
+  line-height: 1.6;
+}
+
+[data-theme='dark'] .lopx-about-now-label {
+  background: rgba(103, 178, 208, 0.14);
+}
+
+.lopx-about-now-text {
+  color: var(--lopx-muted);
+  font-size: 0.92rem;
+  line-height: 1.7;
+}
+
+/* 29.4 当前状态：沿用首页状态条的语言（强调色浅底 + 左竖线） */
+.lopx-about-status {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin: 18px 0 0;
+  padding: 10px 14px;
+  border-left: 3px solid var(--lopx-accent);
+  border-radius: 0 8px 8px 0;
+  background: rgba(58, 122, 160, 0.08);
+  color: #2c6688;
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+.lopx-about-status-dot {
+  flex: none;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--lopx-accent);
+}
+
+[data-theme='dark'] .lopx-about-status {
+  background: rgba(103, 178, 208, 0.12);
+  color: #9cc3e8;
+}
+
+/* 29.5 时间线：年份分组 + 左侧细轴 + 圆点 */
+.lopx-tl-group + .lopx-tl-group {
+  margin-top: 22px;
+}
+
+.lopx-tl-year {
+  margin: 0 0 12px;
+  color: var(--lopx-muted);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  font-variant-numeric: tabular-nums;
+}
+
+.lopx-tl-list {
+  display: grid;
+  gap: 18px;
+  margin: 0;
+  padding: 0 0 2px 18px;
+  border-left: 1px solid var(--lopx-line);
+  list-style: none;
+}
+
+.lopx-tl-item {
+  position: relative;
+  display: grid;
+  grid-template-columns: 84px minmax(0, 1fr);
+  gap: 14px;
+  align-items: start;
+}
+
+.lopx-tl-item::before {
+  content: '';
+  position: absolute;
+  top: 6px;
+  left: -23px;
+  width: 9px;
+  height: 9px;
+  border: 2px solid var(--lopx-accent);
+  border-radius: 50%;
+  background: var(--lopx-surface);
+}
+
+.lopx-tl-date {
+  padding-top: 2px;
+  color: var(--lopx-muted);
+  font-size: 0.78rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.lopx-tl-title {
+  margin: 0;
+  color: var(--lopx-ink);
+  font-size: 0.95rem;
+  font-weight: 600;
+  line-height: 1.5;
+}
+
+.lopx-tl-text {
+  margin: 5px 0 0;
+  color: var(--lopx-muted);
+  font-size: 0.88rem;
+  line-height: 1.7;
+}
+
+/* 29.6 联系方式 */
+.lopx-contact-list {
+  display: grid;
+  gap: 11px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.lopx-contact-list li {
+  display: flex;
+  gap: 12px;
+  align-items: baseline;
+}
+
+.lopx-contact-label {
+  flex: none;
+  min-width: 62px;
+  color: var(--lopx-muted);
+  font-size: 0.82rem;
+}
+
+.lopx-contact-list a {
+  color: var(--lopx-about-link);
+  font-size: 0.92rem;
+  font-weight: 600;
+  text-decoration: none;
+  word-break: break-all;
+}
+
+.lopx-contact-list a:hover {
+  text-decoration: underline;
+}
+
+.lopx-contact-value {
+  color: var(--lopx-muted);
+  font-size: 0.92rem;
+}
+
+/* 29.7 窄屏：时间线日期换行到标题上方（与 12.6 的窄屏策略一致） */
+@media screen and (max-width: 600px) {
+  .lopx-about-head,
+  .lopx-about-block {
+    padding-right: 18px;
+    padding-left: 18px;
+  }
+
+  .lopx-tl-item {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 4px;
+  }
+}
+
+/* ============================================================
+   30. 段标题中英统一 —— 2026-10-02
+   现状：导航是「技术 Tech」的中英并列，首页与 Garden 的段标题却只有英文
+   （Projects / Recent Writing / Recent Garden），中英混排风格不统一。
+   这里统一为「中文 + 英文小字」：英文用小号、字距加宽、次要色，不抢中文主标题。
+   作用域限定首页与 Garden 页，避免波及文章正文里的 h2 > small。
+   ============================================================ */
+
+:is(#lopx-home, #garden-space) :is(h2, h3) > small {
+  margin-left: 8px;
+  color: var(--lopx-muted);
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
