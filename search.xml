@@ -43,6 +43,88 @@
       </tags>
   </entry>
   <entry>
+    <title>常见 Git 命令学习使用</title>
+    <url>/Git/%E5%B8%B8%E8%A7%81Git%E5%91%BD%E4%BB%A4%E5%AD%A6%E4%B9%A0/</url>
+    <content><![CDATA[<h1 id="Git-基础使用"><a href="#Git-基础使用" class="headerlink" title="Git 基础使用"></a>Git 基础使用</h1><p>Git 是本地代码版本管理工具，用来记录修改历史、恢复旧版本。<br>GitHub 是把 Git 仓库托管到网上的平台。</p>
+<h2 id="1-第一次配置"><a href="#1-第一次配置" class="headerlink" title="1. 第一次配置"></a>1. 第一次配置</h2><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git config --global user.name <span class="string">&quot;Fanbo&quot;</span></span><br><span class="line">git config --global user.email <span class="string">&quot;你的GitHub邮箱&quot;</span></span><br><span class="line">git config --global --list</span><br></pre></td></tr></table></figure>
+<p>可以使用下面的命令检查配置：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git config --global --list</span><br></pre></td></tr></table></figure>
+
+<p>如果看到类似：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">user.name=Fanbo</span><br><span class="line">user.email=xxxx@example.com</span><br></pre></td></tr></table></figure>
+
+<p>就说明配置成功了。</p>
+<h2 id="2-创建仓库"><a href="#2-创建仓库" class="headerlink" title="2. 创建仓库"></a>2. 创建仓库</h2><p>在项目文件夹中执行：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git init</span><br></pre></td></tr></table></figure>
+
+<p>会生成隐藏的 <code>.git</code> 文件夹，不要删除。</p>
+<p>先创建 <code>.gitignore</code>，告诉 Git 哪些文件不管理，列如：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">node_modules/</span><br><span class="line">.env</span><br><span class="line">*.log</span><br><span class="line">.DS_Store</span><br></pre></td></tr></table></figure>
+
+<p>如果某个文件不想被忽略，用 <code>!</code>：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">!important.log</span><br></pre></td></tr></table></figure>
+
+<h2 id="3-第一次提交并上传-GitHub"><a href="#3-第一次提交并上传-GitHub" class="headerlink" title="3. 第一次提交并上传 GitHub"></a>3. 第一次提交并上传 GitHub</h2><p>在 GitHub 新建仓库，然后本地执行：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git add .</span><br><span class="line">git commit -m <span class="string">&quot;Initial commit&quot;</span></span><br><span class="line">git branch -M main</span><br><span class="line">git remote add origin 你的仓库地址</span><br><span class="line">git push -u origin main</span><br></pre></td></tr></table></figure>
+
+<p>如果提示 <code>src refspec main does not match any</code>，通常是还没提交，或分支不是 <code>main</code>。先执行：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git add .</span><br><span class="line">git commit -m <span class="string">&quot;Initial commit&quot;</span></span><br><span class="line">git branch -M main</span><br></pre></td></tr></table></figure>
+
+<p>如果远程仓库已有 README，先合并再推送：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git pull origin main --allow-unrelated-histories</span><br><span class="line">git push -u origin main</span><br></pre></td></tr></table></figure>
+
+<h2 id="4-以后每次修改"><a href="#4-以后每次修改" class="headerlink" title="4. 以后每次修改"></a>4. 以后每次修改</h2><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git add .</span><br><span class="line">git commit -m <span class="string">&quot;说明修改内容&quot;</span></span><br><span class="line">git push</span><br></pre></td></tr></table></figure>
+
+<p>记住这三条即可。</p>
+<h2 id="5-常用命令"><a href="#5-常用命令" class="headerlink" title="5. 常用命令"></a>5. 常用命令</h2><table>
+<thead>
+<tr>
+<th>命令</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>git init</code></td>
+<td>创建 Git 仓库</td>
+</tr>
+<tr>
+<td><code>git status</code></td>
+<td>查看当前状态</td>
+</tr>
+<tr>
+<td><code>git add .</code></td>
+<td>暂存所有修改</td>
+</tr>
+<tr>
+<td><code>git commit -m &quot;...&quot;</code></td>
+<td>创建新版本</td>
+</tr>
+<tr>
+<td><code>git push</code></td>
+<td>上传到 GitHub</td>
+</tr>
+<tr>
+<td><code>git pull</code></td>
+<td>获取远程最新代码</td>
+</tr>
+<tr>
+<td><code>git log</code></td>
+<td>查看提交历史</td>
+</tr>
+<tr>
+<td><code>git remote -v</code></td>
+<td>查看远程仓库</td>
+</tr>
+</tbody></table>
+]]></content>
+      <categories>
+        <category>Git</category>
+      </categories>
+      <tags>
+        <tag>Git</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>个人网站已复活</title>
     <url>/%E5%BB%BA%E7%AB%99/%E5%B7%B2%E5%A4%8D%E6%B4%BB/</url>
     <content><![CDATA[<p>老站随着我坏掉的硬盘一起无了，虽然旧blog也没有写过文章，但还是有点心疼的，简记记录一下新blog简要搭建步骤</p>
@@ -171,88 +253,6 @@
         <tag>hexo</tag>
         <tag>网站</tag>
         <tag>复活</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>常见 Git 命令学习使用</title>
-    <url>/Git/%E5%B8%B8%E8%A7%81Git%E5%91%BD%E4%BB%A4%E5%AD%A6%E4%B9%A0/</url>
-    <content><![CDATA[<h1 id="Git-基础使用"><a href="#Git-基础使用" class="headerlink" title="Git 基础使用"></a>Git 基础使用</h1><p>Git 是本地代码版本管理工具，用来记录修改历史、恢复旧版本。<br>GitHub 是把 Git 仓库托管到网上的平台。</p>
-<h2 id="1-第一次配置"><a href="#1-第一次配置" class="headerlink" title="1. 第一次配置"></a>1. 第一次配置</h2><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git config --global user.name <span class="string">&quot;Fanbo&quot;</span></span><br><span class="line">git config --global user.email <span class="string">&quot;你的GitHub邮箱&quot;</span></span><br><span class="line">git config --global --list</span><br></pre></td></tr></table></figure>
-<p>可以使用下面的命令检查配置：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git config --global --list</span><br></pre></td></tr></table></figure>
-
-<p>如果看到类似：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">user.name=Fanbo</span><br><span class="line">user.email=xxxx@example.com</span><br></pre></td></tr></table></figure>
-
-<p>就说明配置成功了。</p>
-<h2 id="2-创建仓库"><a href="#2-创建仓库" class="headerlink" title="2. 创建仓库"></a>2. 创建仓库</h2><p>在项目文件夹中执行：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git init</span><br></pre></td></tr></table></figure>
-
-<p>会生成隐藏的 <code>.git</code> 文件夹，不要删除。</p>
-<p>先创建 <code>.gitignore</code>，告诉 Git 哪些文件不管理，列如：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">node_modules/</span><br><span class="line">.env</span><br><span class="line">*.log</span><br><span class="line">.DS_Store</span><br></pre></td></tr></table></figure>
-
-<p>如果某个文件不想被忽略，用 <code>!</code>：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">!important.log</span><br></pre></td></tr></table></figure>
-
-<h2 id="3-第一次提交并上传-GitHub"><a href="#3-第一次提交并上传-GitHub" class="headerlink" title="3. 第一次提交并上传 GitHub"></a>3. 第一次提交并上传 GitHub</h2><p>在 GitHub 新建仓库，然后本地执行：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git add .</span><br><span class="line">git commit -m <span class="string">&quot;Initial commit&quot;</span></span><br><span class="line">git branch -M main</span><br><span class="line">git remote add origin 你的仓库地址</span><br><span class="line">git push -u origin main</span><br></pre></td></tr></table></figure>
-
-<p>如果提示 <code>src refspec main does not match any</code>，通常是还没提交，或分支不是 <code>main</code>。先执行：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git add .</span><br><span class="line">git commit -m <span class="string">&quot;Initial commit&quot;</span></span><br><span class="line">git branch -M main</span><br></pre></td></tr></table></figure>
-
-<p>如果远程仓库已有 README，先合并再推送：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git pull origin main --allow-unrelated-histories</span><br><span class="line">git push -u origin main</span><br></pre></td></tr></table></figure>
-
-<h2 id="4-以后每次修改"><a href="#4-以后每次修改" class="headerlink" title="4. 以后每次修改"></a>4. 以后每次修改</h2><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git add .</span><br><span class="line">git commit -m <span class="string">&quot;说明修改内容&quot;</span></span><br><span class="line">git push</span><br></pre></td></tr></table></figure>
-
-<p>记住这三条即可。</p>
-<h2 id="5-常用命令"><a href="#5-常用命令" class="headerlink" title="5. 常用命令"></a>5. 常用命令</h2><table>
-<thead>
-<tr>
-<th>命令</th>
-<th>作用</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><code>git init</code></td>
-<td>创建 Git 仓库</td>
-</tr>
-<tr>
-<td><code>git status</code></td>
-<td>查看当前状态</td>
-</tr>
-<tr>
-<td><code>git add .</code></td>
-<td>暂存所有修改</td>
-</tr>
-<tr>
-<td><code>git commit -m &quot;...&quot;</code></td>
-<td>创建新版本</td>
-</tr>
-<tr>
-<td><code>git push</code></td>
-<td>上传到 GitHub</td>
-</tr>
-<tr>
-<td><code>git pull</code></td>
-<td>获取远程最新代码</td>
-</tr>
-<tr>
-<td><code>git log</code></td>
-<td>查看提交历史</td>
-</tr>
-<tr>
-<td><code>git remote -v</code></td>
-<td>查看远程仓库</td>
-</tr>
-</tbody></table>
-]]></content>
-      <categories>
-        <category>Git</category>
-      </categories>
-      <tags>
-        <tag>Git</tag>
       </tags>
   </entry>
   <entry>
