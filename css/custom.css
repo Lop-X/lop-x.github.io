@@ -73,6 +73,87 @@
   line-height: 1.5;
 }
 
+/* 右栏改为三行文字 + 右下角「站点数据」微卡（2026-10-05）。
+   背景：右栏宽 892px，而名字 / 一句话 / chips 合计只占约 360px，
+   右侧空出约 530px（占卡片 48%），即此前反馈的「hero 右半空旷」。
+   修法：右栏切成两列网格，stats 跨三行并 align-self:end 贴住右下角，
+   与左下角的状态小卡形成对角呼应，卡片四角都有内容。 */
+.lopx-hero-text {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-areas:
+    'name stats'
+    'intro stats'
+    'chips stats';
+  align-content: center;
+  column-gap: 34px;
+}
+
+.lopx-hero-name {
+  grid-area: name;
+}
+
+.lopx-hero-intro {
+  grid-area: intro;
+}
+
+.lopx-hero-chips {
+  grid-area: chips;
+}
+
+.lopx-hero-stats {
+  grid-area: stats;
+  align-self: end;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.lopx-hero-stats li {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 92px;
+  padding: 9px 12px;
+  border: 1px solid var(--lopx-line);
+  border-radius: 12px;
+  background: rgba(58, 122, 160, 0.06);
+}
+
+.lopx-hero-stats b {
+  color: var(--lopx-ink);
+  font-size: 1.05rem;
+  font-weight: 700;
+  line-height: 1.15;
+}
+
+.lopx-hero-stats span {
+  color: var(--lopx-muted);
+  font-size: 0.72rem;
+  line-height: 1.3;
+}
+
+[data-theme='dark'] #lopx-home .lopx-hero-stats li {
+  background: rgba(103, 178, 208, 0.09);
+}
+
+/* ≤1080px：文字与数据卡并排会挤成多行，回退为纵向流式。
+   数据卡默认排列（2×2 @375 手机，4 列一排 @1024）交给 auto-fit，
+   避免在 1024 这种中间宽度上出现两个 350px 的空旷大格。 */
+@media screen and (max-width: 1080px) {
+  .lopx-hero-text {
+    display: block;
+  }
+
+  .lopx-hero-stats {
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    margin-top: 22px;
+  }
+}
+
 /* 右栏：头像在上、状态小卡在下（整列 208px，与左栏文字底对齐感更强） */
 .lopx-hero-side {
   display: flex;
@@ -140,7 +221,9 @@
   }
 
   .lopx-hero-status {
-    flex: 1 1 auto;
+    /* 2026-10-05：原 flex: 1 1 auto 会把胶囊拉到 195px（内容仅约 145），
+       右侧留出一条 50px 空条；改为按内容收窄，与 96px 头像并排更紧凑。 */
+    flex: 0 1 auto;
     min-width: 0;
   }
 }
@@ -495,10 +578,12 @@
   font-size: 0.75rem;
 }
 
-/* Garden Posts */
+/* Garden Posts
+   2026-10-05：去掉 max-width:900px（原值见 12.2 同款规则）。garden 主页的
+   「最近更新」卡与分类页列表，上方/同页就是满宽的 nav 行与容器，
+   限到 900 会让列表比导航窄 170px —— 同页之内先不自洽，故跟齐容器内容区。 */
 #garden-space > section,
 #garden-category > .article-sort {
-  max-width: 900px;
   margin-top: 58px;
 }
 
@@ -664,7 +749,11 @@
 #about-page {
   max-width: 1160px;
   margin: 0 auto;
-  padding: 24px 32px 72px;
+  /* 2026-10-05：左右内衬 32px 归零。
+     这层内衬是 2026-10-03「铺满容器 + 内部两栏」方案留下的，副作用是卡片左缘
+     实测 172，而首页 / 动态页都是 140 —— 跨页切页时内容块会横向跳 32px。
+     归零后卡片 1160 @ x=140，三页同一轴线；内部两栏同时由 538 放宽到 570。 */
+  padding: 24px 0 72px;
   color: var(--lopx-ink);
 }
 
@@ -674,10 +763,11 @@
    .title1 / .title2 —— 首页改用 .lopx-hero 系列（见第 1 节），
    /about/ 用的是 .lopx-about-* 系列（见第 29 节）。 */
 
-/* About Responsive：容器内边距仍按页面级调整（正文规则已随 hero 改版删除） */
+/* About Responsive：容器内边距仍按页面级调整（正文规则已随 hero 改版删除）。
+   左右内衬一并归零 —— 移动端由外层 #page 提供约 15px 边距，与动态页一致。 */
 @media screen and (max-width: 768px) {
   #about-page {
-    padding: 16px 20px 56px;
+    padding: 16px 0 56px;
   }
 }
 
@@ -1073,13 +1163,13 @@
   padding: 48px 32px 72px;
 }
 
-/* 12.2 内容：统一 900px（与 h1 左边缘对齐，右侧自然留白）
-   2026-10-02：旧列表 > article / section 选择器已删，tech/indie 的
-   内容宽度改由第 28 节 .lopx-cards 控制；此处只保留仍生效的部分。 */
+/* 12.2 内容：<p> 是空间描述文字，保持 900 的阅读行宽。
+   2026-10-05：原来这里的 garden 两处列表（#garden-space > section /
+   #garden-category > .article-sort）也限 900，与同页满宽的 nav 行叠出 170px 落差
+   （列表右缘 1099 vs 导航 1268），已改回铺满。tech/indie 的 .article-sort 本来就没限宽，
+   garden 跟齐。 */
 #space-tech-cat > p,
-#space-indie-cat > p,
-#garden-space > section,
-#garden-category > .article-sort {
+#space-indie-cat > p {
   max-width: 900px;
 }
 
@@ -1111,9 +1201,9 @@
   display: none;
 }
 
-/* 12.5 空态占位：与内容同宽，观感与列表一致 */
+/* 12.5 空态占位：与内容同宽，观感与列表一致（10-05：列表已铺满，占位同步去掉 900 限宽） */
 .space-empty {
-  max-width: 900px;
+  max-width: none;
 }
 
 /* 12.6 移动端：12.1 / 12.3 用的是 id 选择器且位置在文件末尾，
@@ -1154,12 +1244,17 @@
 }
 
 /* ============================================================
-   13. 动态页（/essay/）—— 2026-09-30 建立 / 10-01 回归原版 / 10-03 对齐+放大
+   13. 动态页（/essay/）—— 2026-09-30 建立 / 10-01 回归原版 / 10-03 对齐+放大 / 10-05 铺满
    历史：容器收窄 900 + 卡片两列 48% → 10-01 回归主题原版三列
-        → 10-02 桌面单列 760 居中 → 10-03 单列限宽 900 靠左。
-   现状（10-03）：
-   - 列表左缘与横幅内文字同一条轴线（容器 padding 32 → x=172），右侧自然留白，
-     消除「760 居中导致与满宽横幅左右各差 200px」的错位；
+        → 10-02 桌面单列 760 居中 → 10-03 单列限宽 900 靠左
+        → 10-05 横幅与列表一起放宽到满容器 1160。
+   现状（10-05，实测 1440）：
+   - 全页一条 1160 的内容柱（横幅 140–1300、列表 140–1300、正文左缘 173），
+     右侧空白 260px → 0；
+   - 10-03 曾把横幅从 1160 收到 900 去对齐同样 900 的列表，两者是对齐了，
+     但整页只用掉容器的 78%，从第 80px 空到第 1875px。10-05 复审确认：
+     首页/About 的内容都铺到 1273/1275（右侧仅 25–27px 的卡片内衬），
+     只有动态页是三位数空白 —— 故结论是「列表 900 才是离群值」，改宽而不是改窄；
    - 正文 12.8px/700/justify → 15px/400/左对齐；元信息 11.2 → 12.5px；
    - 图片由主题写死的「4 列 × height:100px」改为按张数自适应
      （1 张 16:9 铺满 / 2 张两列 4:3 / 3 张起三列 1:1）。
@@ -1176,9 +1271,16 @@
 
 @media screen and (min-width: 1200px) {
 
-  /* 列表限宽 900 靠左：与其它页「容器 1160 / 内容 900」的轴线一致 */
+  /* 横幅满宽 1160（2026-10-05）：10-03 曾收到 900 去对齐列表，代价是整页右侧
+     空 260px。实测确认列表 900 才是离群值（首页/About 都铺到 1273/1275），
+     故改为「两个都放宽」：横幅与列表同为 1160，整页填满容器内容区。 */
+  #essay_page .essayPage {
+    max-width: none;
+  }
+
+  /* 列表满宽：原限宽 900 见上 */
   #essay_page #bber .timeline ul#waterfall.list {
-    max-width: 900px;
+    max-width: none;
     margin-left: 0;
     margin-right: 0;
     padding-left: 0;
@@ -1198,16 +1300,18 @@
 
 @media screen and (min-width: 1200px) {
   #essay_page #bber-tips {
-    max-width: 900px;
+    max-width: none;
   }
 }
 
 /* ---- 13.1 条目内容放大（不限宽度，移动端同样受益） ---- */
 
-/* 卡片内边距：左 32 让正文/图片/元信息站上全站内容轴 x≈172
-   （横幅标题、About 网格、文章正文都在这条线上，10-03 实测原 padding 22 时偏左 10px） */
+/* 卡片内边距：左右 32 让正文/图片/元信息站上全站内容轴 x=173
+   （横幅标题、space h1、文章正文都在这条线上，10-05 实测）。
+   10-03 时左侧曾单独写 32、右侧 24（主题原为时间线头像留位），
+   左侧现在不放任何标记，改为左右对称。 */
 #essay_page #bber .timeline ul li.bber-item {
-  padding: 20px 24px 14px 32px;
+  padding: 20px 32px 14px;
 }
 
 /* 正文：12.8px/700/justify → 15px/400/左对齐（中文短句两端对齐会拉出大空隙） */
@@ -1236,8 +1340,10 @@
 /* ---- 13.2 图片：写死「4 列 × 100px」→ 按张数自适应 ----
    主题在图片后追加 3 个 .bber-content-noimg 占位以凑满 4 列，先整体隐藏；
    再用 grid + :has() 以「第 2 / 3 个孩子是否为图片」判断张数：
-   1 张 4:3 限宽 424（≈ 双图单张大小，10-03 实测 854×480 偏大）、
-   2 张两列 4:3、3 张起三列 1:1。
+   1 张满宽 16:9 限高 480、2 张两列 4:3、3 张起三列 1:1。
+   10-05 修正：单图原为「4:3 限宽 424」（10-03 为压高度所设），而卡片内容宽
+   842 → 右侧空出 418px（50%），观感像「图片没加载完」；双图/三图/移动端本身正常。
+   改为满宽 + max-height 兜底：既填满整行，又不会比原 424×318 更高。
    不支持 :has() 的旧浏览器回落为单列小图，仍可读。 */
 
 #essay_page #bber .bber-content-noimg {
@@ -1246,7 +1352,8 @@
 
 #essay_page #bber .bber-container-img {
   display: grid;
-  grid-template-columns: minmax(0, 424px);
+  /* 单图满宽（2026-10-05）：原 minmax(0, 424px) 见上方注释 */
+  grid-template-columns: minmax(0, 1fr);
   gap: 8px;
   /* 主题原版有 justify-content: center —— 单图会居中悬空，
      与「正文/双图左对齐」的轴线不一致，显式改回 start */
@@ -1268,6 +1375,14 @@
   height: 100%;
   object-fit: cover;
   max-height: none;
+}
+
+/* 一张图：满宽 16:9 + 限高 480
+   10-05 卡片由 900 放宽到 1160（内容宽 842 → 1094），限高按同比例 360 → 480，
+   使裁切比保持在 2.3:1 左右（1094×480），不会因加宽而变成一条细带。 */
+#essay_page #bber .bber-container-img:not(:has(> .bber-content-img:nth-child(2))) .bber-content-img {
+  aspect-ratio: 16 / 9;
+  max-height: 480px;
 }
 
 /* 两张图：两列 4:3 */
@@ -1297,6 +1412,58 @@
 
   #essay_page #bber .bber-container-img:has(> .bber-content-img:nth-child(3)) .bber-content-img {
     aspect-ratio: 4 / 3;
+  }
+}
+
+/* ---- 13.3 横幅取景与移动端文字 —— 2026-10-05 ----
+   背景来自模板内联的 `background: url(...) left 28% / cover no-repeat`
+   （themes/anzhiyu/layout/includes/page/essay.pug:4）。内联声明优先级高于普通
+   作者样式 —— 覆盖 background-position 必须带 !important（同目录 fcirclePage
+   模板的内联写法本身即带 !important，可作参照）。
+   实测（1440 / 375）：
+   · 桌面 900×304（2.96:1）：cover 后只剩原图中部一条横带，垂直 28% 时头顶贴住
+     上边缘 → 下移到 12% 留出额头空间（与文章页封面同一思路，见第 23 节）。
+   · 移动 345×304（近 1:1）：36px 标题折行后「片」单字成孤行；副标题与人物手臂
+     重叠；「回到首页」圆钮压在杯子上。
+     → 高度压到 14rem、标题 clamp 到 ≤24px（10 字一行放得下），
+       并加左侧渐变 scrim，保证任何取景下白字都有暗底。 */
+
+/* 桌面取景：头顶不再贴边 */
+@media screen and (min-width: 1200px) {
+  #essay_page .essayPage {
+    background-position: center 12% !important;
+  }
+}
+
+@media screen and (max-width: 768px) {
+
+  #essay_page .essayPage {
+    height: 14rem;
+    background-position: center 20% !important;
+  }
+
+  /* 标题 36px → ≤24px：10 字（随手记的一些碎片）一行放得下，消除孤字「片」 */
+  #essay_page .essayPage .card-content .author-content-item-title {
+    font-size: clamp(1.5rem, 6.4vw, 2.25rem);
+    line-height: 1.15;
+    margin-bottom: 0.35rem;
+  }
+
+  /* 左侧渐变 scrim：标题与副标题在插画上也有稳定暗底。
+     .card-content 已是 position:absolute + z-index:2，文字保持在 scrim 之上。 */
+  #essay_page .essayPage::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    background: linear-gradient(90deg, rgba(6, 30, 60, 0.5) 0%, rgba(6, 30, 60, 0) 62%);
+  }
+
+  /* 「回到首页」圆钮：贴右下并收进 14px，避开插画主体（杯口） */
+  #essay_page .essayPage .card-content .banner-button-group {
+    right: 14px;
+    bottom: 14px;
   }
 }
 
@@ -1378,9 +1545,10 @@
    不改模板结构，纯覆盖式声明。
    ============================================================ */
 
-/* 15.1 区块卡片（2026-10-02：tech/indie 主页已改卡片网格，仅 garden 生效） */
+/* 15.1 区块卡片（2026-10-02：tech/indie 主页已改卡片网格，仅 garden 生效）
+   2026-10-05：横向内衬 26 → 32，与全站卡片 token 一致（卡片内容左缘 = 卡片左缘 + 32） */
 #garden-space > section {
-  padding: 22px 26px;
+  padding: 22px 32px;
   border: 1px solid var(--lopx-line);
   border-radius: 16px;
   background: var(--lopx-surface);
@@ -1416,10 +1584,9 @@
   box-shadow: 0 2px 12px rgba(30, 38, 44, 0.045);
 }
 
-/* 首页与 space 主页：卡片内边距会压缩 900 内容，向右放宽 26px 补偿 */
-#garden-space > section {
-  max-width: 926px;
-}
+/* 2026-10-05：此处原有一条 #garden-space > section { max-width: 926px }
+   （"卡片内边距会压缩 900 内容，向右放宽 26px 补偿"）。既然 12.2 的 900 限宽已去掉，
+   这条补偿规则一并删除 —— 列表卡片直接铺满容器内容区（172–1268）。 */
 
 /* ============================================================
    16. 整体风格向 ragnote.top 靠拢 —— 2026-09-30
@@ -1487,7 +1654,14 @@
    17. Garden 彩色分类卡片 + 追番页卡片强化 —— 2026-09-30
    ============================================================ */
 
-/* 17.1 Garden 分类：胶囊 → 彩色卡片（每类一个色相，左下图标的观感） */
+/* 17.1 Garden 分类：胶囊 → 彩色卡片（每类一个色相，左下图标的观感）
+   2026-10-05 对比度修正：卡片标签是 16.32px/600 白字（未达 WCAG「大字」门槛，
+   需 ≥4.5:1），而白字压在渐变中段。对线上截图做像素采样实测：
+   Games 4.00 / Anime 3.94 / Music 3.61 / Thoughts 2.96 / 背单词 3.04 —— 5 张全部不达标。
+   修法：把五组渐变的两个端色等比压暗（保持色相与渐变方向不变），
+   使渐变 50%（即标签所在位置）的白字对比度达到 5.0:1。
+   取值由脚本反解：对 50% 处混合色做亮度二分，求出等比系数 k（0.74~0.88）。
+   改后中点 5.00、最亮端 4.08~4.31（标签不在最亮端，留有余量）。 */
 #garden-space > nav {
   display: grid;
   grid-template-columns: repeat(5, minmax(0, 1fr));
@@ -1528,28 +1702,28 @@
 }
 
 #garden-space > nav a:nth-child(1) {
-  --gc1: #3a7aa0;
-  --gc2: #4d93bb;
+  --gc1: #336b8c;
+  --gc2: #4380a3; /* Games */
 }
 
 #garden-space > nav a:nth-child(2) {
-  --gc1: #5568cc;
-  --gc2: #7b8ae8;
+  --gc1: #4a5ab1;
+  --gc2: #6b78c9; /* Anime */
 }
 
 #garden-space > nav a:nth-child(3) {
-  --gc1: #8266c4;
-  --gc2: #a58ad9;
+  --gc1: #6b54a2;
+  --gc2: #8872b3; /* Music */
 }
 
 #garden-space > nav a:nth-child(4) {
-  --gc1: #c07640;
-  --gc2: #dd9560;
+  --gc1: #8e572f;
+  --gc2: #a46e47; /* Thoughts */
 }
 
 #garden-space > nav a:nth-child(5) {
-  --gc1: #3a9384;
-  --gc2: #57b39d;
+  --gc1: #2c6f63;
+  --gc2: #428776; /* 背单词 */
 }
 
 @media screen and (max-width: 768px) {
@@ -1627,9 +1801,13 @@
   box-shadow: none;
 }
 
-/* 18.2 区块卡片：只有一层，实色底 + 贴边浅阴影 */
+/* 18.2 区块卡片：只有一层，实色底 + 贴边浅阴影
+   2026-10-05 轴线修正：横向内衬 26 → 32。实测全站内容左缘只有首页(167)与
+   About(165)偏离，其余（文章正文、space h1、essay 横幅标题与正文）都在 173
+   = 140(容器) + 1(卡片描边) + 32。故留 32，把这两个离群者对齐，而不是把 4 处
+   都改成 24 —— 32 是站内已有的主流取值。 */
 #lopx-home > section {
-  padding: 24px 26px;
+  padding: 24px 32px;
   border: 1px solid var(--lopx-line);
   border-radius: 12px;
   background: var(--lopx-surface);
@@ -1777,8 +1955,12 @@
    实现：纯 CSS 伪元素，不改模板与页面生成器。
    ============================================================ */
 
-/* 20.1 色带高度：space 主页要盖住 h1 + 副标题 + 胶囊导航行；
-       分类子页盖住 h1（含空间名小字）+ 胶囊导航行；garden 分类页只有 h1。
+/* 20.1 色带高度（2026-10-05 按实测重写说明）
+   实际分工（1440 实测）：
+   · tech / indie：色带 232 盖住 h1 + 副标题 + 43px 胶囊导航行（胶囊 245–289，带底 312）→ 余量 23px；
+   · garden：色带 232 只盖住 h1 + 描述行（描述行底 295），下方 104px 的分类大卡落在带外
+     （卡 323–427）。这是 17.1 把胶囊换成大卡后的结果，卡片自带渐变底，所以白字仍可读，
+     属「有意为之」而非事故 —— 旧注释写的「要盖住…胶囊导航行」已过期。
    2026-10-03：tech/indie 分类化后分类子页与主页同构，导航行一直在；
        主页在该空间只有一个分类时隐藏胶囊（模板加 .is-solo），色带相应降低。 */
 :is(#space-tech, #space-indie, #garden-space) {
@@ -1937,9 +2119,16 @@
 }
 
 /* 20.10 窄屏
-   2026-10-02：列表页新增胶囊导航，窄屏下导航可能折到第二行，色带同步加高。 */
+   2026-10-02：列表页新增胶囊导航，窄屏下导航可能折到第二行，色带同步加高。
+   2026-10-05：实测 375 下 tech 的胶囊底 263 与带底 270 只差 7px，贴得太紧 →
+       tech / indie 单独提到 220（余量 27px）。garden 窄屏下是大卡（3 行，本身在带外），
+       维持 200，不必跟着加高。 */
 @media screen and (max-width: 768px) {
-  :is(#space-tech, #space-indie, #garden-space) {
+  :is(#space-tech, #space-indie) {
+    --lopx-band-h: 220px;
+  }
+
+  #garden-space {
     --lopx-band-h: 200px;
   }
 
@@ -2551,11 +2740,16 @@
   --lopx-card-accent: #0F6E56;
 }
 
-/* 28.2 网格：3 列固定。内容少时（如 tech 5 篇 → 3+2）比 4 列更稳，
-   不会出现「4+1 孤卡」；窄屏在 28.6 收口 */
+/* 28.2 网格：自适应列数（2026-10-05 由固定 3 列改）
+   固定列数在「空间只有 1 篇文章」时会露馅：/indie/ 唯一一张卡只占 1/3 列，
+   右侧约 780px 全空（实测卡 173–521，容器内容区 172–1268），观感像"没做完"；
+   garden 恰好 5 张填满 5 列，所以一直看不出这个问题。
+   改 auto-fit + minmax(min(100%,320px),1fr)：卡数 ≤3 时铺满整行，
+   ≥4 时自动仍为 3 列（5 张仍是 3+2，与本轮之前一致）。
+   min(100%,320px) 是防窄容器溢出的兜底；≤960 / ≤600 另有 28.6 收口。 */
 .lopx-cards {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr));
   gap: 22px;
   margin-top: 40px;
 }
@@ -2583,13 +2777,17 @@
 
 /* 28.4 渐变文字封面：空间识别色 + 与色带同源的细网格纹理
    2026-10-03：由固定 height:104px（348×104 ≈ 3.4:1，太扁）改为 16:10，
-   3 列时约 348×218；将来文章补了 cover 字段，图片在这个比例下才像封面。 */
+   3 列时约 348×218；将来文章补了 cover 字段，图片在这个比例下才像封面。
+   2026-10-05：配合 28.2 的自适应列数补 max-height:300px —— 单卡铺满整行时
+   16:10 会算到 685px 高（控制整张卡），封顶后为 1096×300（约 3.7:1）的特征卡，
+   多列时（218px）够不到上限，取值不变。 */
 .lopx-card-cover {
   position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
   aspect-ratio: 16 / 10;
+  max-height: 300px;
   background-image: repeating-linear-gradient(
       90deg,
       rgba(255, 255, 255, 0.055) 0 1px,
@@ -2833,9 +3031,10 @@
   line-height: 1.5;
 }
 
-/* 29.2 区块外壳：三块内容共用 */
+/* 29.2 区块外壳：三块内容共用（横向内衬 24 → 32，文字左缘 165 → 173，
+   与首页 / space 页 / 文章正文同轴，2026-10-05 实测） */
 .lopx-about-block {
-  padding: 22px 24px;
+  padding: 22px 32px;
   border: 1px solid var(--lopx-line);
   border-radius: 16px;
   background: var(--lopx-surface);
@@ -2929,32 +3128,40 @@
   line-height: 1.7;
 }
 
-/* 29.4 当前状态：沿用首页状态条的语言（强调色浅底 + 左竖线） */
-.lopx-about-status {
+/* 29.4 当前状态：2026-10-05 从「目前」卡底部上移到页头右侧。
+   原来是一条整行宽的状态条（强调色浅底 + 左竖线），页头右侧因此空掉约 43%；
+   现在改为页头右端的胶囊，与首页 hero 左下角的状态小卡同一套语言
+   （渐变底 + 白字 + 呼吸点），同时「目前」卡高度减少约 50px。 */
+.lopx-about-head-status {
   display: flex;
   align-items: center;
   gap: 9px;
-  margin: 18px 0 0;
-  padding: 10px 14px;
-  border-left: 3px solid var(--lopx-accent);
-  border-radius: 0 8px 8px 0;
-  background: rgba(58, 122, 160, 0.08);
-  color: #2c6688;
-  font-size: 0.875rem;
-  line-height: 1.5;
+  flex: 0 0 auto;
+  margin: 0 0 0 auto;
+  padding: 9px 14px;
+  border-radius: 999px;
+  background-image: linear-gradient(135deg, #2f6f92 0%, #3a7aa0 100%);
+  color: #ffffff;
+  font-size: 0.8rem;
+  font-weight: 550;
+  line-height: 1.4;
+  white-space: nowrap;
 }
 
-.lopx-about-status-dot {
+.lopx-about-head-status-dot {
   flex: none;
   width: 7px;
   height: 7px;
   border-radius: 50%;
-  background: var(--lopx-accent);
+  background: #cfe8f6;
+  box-shadow: 0 0 0 3px rgba(207, 232, 246, 0.28);
 }
 
-[data-theme='dark'] .lopx-about-status {
-  background: rgba(103, 178, 208, 0.12);
-  color: #9cc3e8;
+/* 窄屏：胶囊换到独立一行时不再靠右，避免右缘出现突兀缺口 */
+@media screen and (max-width: 600px) {
+  .lopx-about-head-status {
+    margin-left: 0;
+  }
 }
 
 /* 29.5 时间线：年份分组 + 左侧细轴 + 圆点 */
@@ -3114,4 +3321,27 @@
   font-weight: 550;
   letter-spacing: 0.12em;
   vertical-align: 0.12em;
+}
+
+/* ============================================================
+   31. 短页面内容贴顶 —— 2026-10-05
+   现象：内容不足一屏的页面，正文会随浏览器窗口高度上下漂移。
+   实测（同一份 HTML，只改视口高度）：/indie/ 的容器起点
+   123px@vh900 → 373px@vh1400（+250px）；/about/ 80 → 200（+120px）；
+   内容超过一屏的 /tech/ 稳定在 60px。
+   根因：主题 themes/anzhiyu/source/css/_page/common.styl 的
+   `#body-wrap { display:flex; flex-direction:column; min-height:100vh;
+   justify-content:space-between }` —— header / main / footer 三个 flex 子项被
+   均分，main 被推到中间；窗口越高，推得越远。
+   注意：根因在主题目录，主题升级会被覆盖，所以覆盖写在 custom.css（本文件）。
+   修法：改 flex-start 让内容固定贴顶，再用 #footer{margin-top:auto}
+   保留「页脚贴底」——两者都保留，不用二选一。
+   ============================================================ */
+
+#body-wrap {
+  justify-content: flex-start;
+}
+
+#footer {
+  margin-top: auto;
 }
