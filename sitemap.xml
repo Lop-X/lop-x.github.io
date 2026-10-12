@@ -2,6 +2,15 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://lop-x.github.io/%E8%80%83%E7%A0%94%E8%AE%B0%E5%BD%95%EF%BC%88%E4%B8%80%EF%BC%89/</loc>
+    
+    <lastmod>2026-10-12</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>https://lop-x.github.io/%E4%BD%BF%E7%94%A8obsidian%E7%BC%96%E8%BE%91%E7%AC%94%E8%AE%B0/</loc>
     
     <lastmod>2026-10-12</lastmod>
@@ -48,15 +57,6 @@
   
   <url>
     <loc>https://lop-x.github.io/%E5%B7%B2%E5%A4%8D%E6%B4%BB/</loc>
-    
-    <lastmod>2026-10-12</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://lop-x.github.io/%E8%80%83%E7%A0%94%E8%AE%B0%E5%BD%95%EF%BC%88%E4%B8%80%EF%BC%89/</loc>
     
     <lastmod>2026-10-12</lastmod>
     
