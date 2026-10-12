@@ -10,7 +10,43 @@
   <rights>All rights reserved 2026, Fanbo</rights>
   <subtitle>Embedded · Robotics · Indie Game</subtitle>
   <title>Lop-X</title>
-  <updated>2026-10-12T14:00:10.467Z</updated>
+  <updated>2026-10-12T16:13:59.544Z</updated>
+  <entry>
+    <author>
+      <name>Fanbo</name>
+    </author>
+    <category term="项目" scheme="https://lop-x.github.io/categories/%E9%A1%B9%E7%9B%AE/"/>
+    <category term="大学" scheme="https://lop-x.github.io/tags/%E5%A4%A7%E5%AD%A6/"/>
+    <category term="竞赛" scheme="https://lop-x.github.io/tags/%E7%AB%9E%E8%B5%9B/"/>
+    <category term="项目" scheme="https://lop-x.github.io/tags/%E9%A1%B9%E7%9B%AE/"/>
+    <id>https://lop-x.github.io/%E6%99%BA%E8%83%BD%E6%B1%BD%E8%BD%A6%E7%AB%9E%E8%B5%9B/</id>
+    <link href="https://lop-x.github.io/%E6%99%BA%E8%83%BD%E6%B1%BD%E8%BD%A6%E7%AB%9E%E8%B5%9B/"/>
+    <published>2026-10-12T16:10:00.000Z</published>
+    <summary>
+      <![CDATA[<p><img src="/img/%E6%99%BA%E8%83%BD%E6%B1%BD%E8%BD%A6%E7%AB%9E%E8%B5%9B/wallhaven-yxpwmx.png"></p>]]>
+    </summary>
+    <title>智能汽车竞赛</title>
+    <updated>2026-10-12T16:13:59.544Z</updated>
+  </entry>
+  <entry>
+    <author>
+      <name>Fanbo</name>
+    </author>
+    <category term="工具" scheme="https://lop-x.github.io/categories/%E5%B7%A5%E5%85%B7/"/>
+    <category term="WorkBuddy" scheme="https://lop-x.github.io/tags/WorkBuddy/"/>
+    <category term="AI" scheme="https://lop-x.github.io/tags/AI/"/>
+    <category term="工具" scheme="https://lop-x.github.io/tags/%E5%B7%A5%E5%85%B7/"/>
+    <id>https://lop-x.github.io/Workbuddy%E5%88%9D%E4%BD%93%E9%AA%8C/</id>
+    <link href="https://lop-x.github.io/Workbuddy%E5%88%9D%E4%BD%93%E9%AA%8C/"/>
+    <published>2026-09-29T14:31:23.000Z</published>
+    <summary>
+      <![CDATA[<p>看到了b站打的广告，安装了腾讯的workbuddy,体验一下。</p>
+<p>不得不说界面还是很美观的，和codex很像，看看国产agent使用体验怎么样。</p>
+<p>想先用这个清理一下C盘看看效果，目前容量 剩下 26.4G&#x2F;199G<br><img src]]>
+    </summary>
+    <title>WorkBuddy 初体验</title>
+    <updated>2026-10-12T15:36:47.242Z</updated>
+  </entry>
   <entry>
     <author>
       <name>Fanbo</name>
