@@ -1,0 +1,705 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"><title>个人网站已复活 | Lop-X</title><meta name="keywords" content="hexo,网站,复活"><meta name="author" content="Fanbo"><meta name="copyright" content="Fanbo"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#f7f9fe"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-touch-fullscreen" content="yes"><meta name="apple-mobile-web-app-title" content="个人网站已复活"><meta name="application-name" content="个人网站已复活"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="#f7f9fe"><meta property="og:type" content="article"><meta property="og:title" content="个人网站已复活"><meta property="og:url" content="https://lop-x.github.io/%E5%B7%B2%E5%A4%8D%E6%B4%BB/index.html"><meta property="og:site_name" content="Lop-X"><meta property="og:description" content="老站随着我坏掉的硬盘一起无了，虽然旧blog也没有写过文章，但还是有点心疼的，简记记录一下新blog简要搭建步骤 基于hexo的blog搭建流程第一步，安装必要软件 下载nodejs  下载git   ​	管理员运行cmd，依次输入命令，检测是否安装到位 12node -vgit -v  第二步，下"><meta property="og:locale" content="zh-CN"><meta property="og:image" content="https://lop-x.github.io/img/placeholder-site-revived.webp"><meta property="article:author" content="Fanbo"><meta property="article:tag" content="[&quot;嵌入式&quot;,&quot;机器人&quot;,&quot;独立游戏&quot;,&quot;考研&quot;,&quot;学习记录&quot;,&quot;Fanbo&quot;]"><meta name="twitter:card" content="summary"><meta name="twitter:image" content="https://lop-x.github.io/img/placeholder-site-revived.webp"><meta name="description" content="老站随着我坏掉的硬盘一起无了，虽然旧blog也没有写过文章，但还是有点心疼的，简记记录一下新blog简要搭建步骤 基于hexo的blog搭建流程第一步，安装必要软件 下载nodejs  下载git   ​	管理员运行cmd，依次输入命令，检测是否安装到位 12node -vgit -v  第二步，下"><link rel="shortcut icon" href="/favicon.ico"><link rel="canonical" href="https://lop-x.github.io/%E5%B7%B2%E5%A4%8D%E6%B4%BB/"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","headline":"个人网站已复活","description":"老站随着我坏掉的硬盘一起无了，虽然旧blog也没有写过文章，但还是有点心疼的，简记记录一下新blog简要搭建步骤 基于hexo的blog搭建流程第一步，安装必要软件 下载nodejs  下载git   ​\t管理员运行cmd，依次输入命令，检测是否安装到位 12node -vgit -v  第二步，下","url":"https://lop-x.github.io/%E5%B7%B2%E5%A4%8D%E6%B4%BB/","mainEntityOfPage":{"@type":"WebPage","@id":"https://lop-x.github.io/%E5%B7%B2%E5%A4%8D%E6%B4%BB/"},"author":{"@type":"Person","name":"Fanbo","url":"https://lop-x.github.io/about/"},"inLanguage":"zh-CN","datePublished":"2026-09-07T03:48:48.000Z","dateModified":"2026-10-12T14:00:10.468Z","image":"https://lop-x.github.io/img/placeholder-site-revived.webp","keywords":"hexo,网站,复活"}</script><link rel="preconnect" href="//cdn.cbd.int"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><meta name="google-site-verification" content="xxx"/><meta name="baidu-site-verification" content="code-xxx"/><meta name="msvalidate.01" content="xxx"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.cbd.int/node-snackbar@0.1.16/dist/snackbar.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="/pluginsSrc/fancybox/fancybox.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="/pluginsSrc/swiper/swiper.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  linkPageTop: undefined,
+  peoplecanvas: undefined,
+  postHeadAiDescription: {"enable":true,"gptName":"AnZhiYu","mode":"local","switchBtn":false,"btnLink":"https://afdian.net/item/886a79d4db6711eda42a52540025c377","randomNum":3,"basicWordCount":1000,"key":"xxxx","Referer":"https://xx.xx/"},
+  diytitle: {"enable":true,"leaveTitle":"w(ﾟДﾟ)w 不要走！再看看嘛！","backTitle":"♪(^∇^*)欢迎肥来！"},
+  LA51: undefined,
+  greetingBox: undefined,
+  twikooEnvId: '',
+  commentBarrageConfig:undefined,
+  music_page_default: "nav_music",
+  root: '/',
+  preloader: {"source":2},
+  friends_vue_info: undefined,
+  navMusic: false,
+  mainTone: undefined,
+  authorStatus: {"skills":null},
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: {"defaultEncoding":2,"translateDelay":0,"msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"简","rightMenuMsgToTraditionalChinese":"转为繁体","rightMenuMsgToSimplifiedChinese":"转为简体"},
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":330},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    simplehomepage: true,
+    post: false
+  },
+  runtime: '天',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: {"copy":true,"copyrightEbable":false,"limitCount":50,"languages":{"author":"作者: Fanbo","link":"链接: ","source":"来源: Lop-X","info":"著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。","copySuccess":"复制成功，复制和转载请标注本文地址"}},
+  lightbox: 'fancybox',
+  Snackbar: {"chs_to_cht":"你已切换为繁体","cht_to_chs":"你已切换为简体","day_to_night":"你已切换为深色模式","night_to_day":"你已切换为浅色模式","bgLight":"#425AEF","bgDark":"#1f1f1f","position":"top-center"},
+  source: {
+    justifiedGallery: {
+      js: '/pluginsSrc/fjGallery/fjGallery.min.js',
+      css: 'https://cdn.cbd.int/flickr-justified-gallery@2.2.0/dist/fjGallery.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: true,
+  isAnchor: true,
+  shortcutKey: undefined,
+  autoDarkmode: true
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  configTitle: 'Lop-X',
+  title: '个人网站已复活',
+  postAI: '',
+  pageFillDescription: '基于hexo的blog搭建流程, 第一步安装必要软件, 第二步下载hexo直接输入, 第三步建仓库, 第四步本地生成博客内容, 第五步上线博客, 两种方式, 换电脑之后可能用到的设置, 🔒 在旧电脑上（提前准备以防万一）, ⚠️ 如果你从来没有执行过 git remote add, 🚀 在新电脑上（从零到恢复）, 📋 总结：需要备份的核心文件老站随着我坏掉的硬盘一起无了虽然旧也没有写过文章但还是有点心疼的简记记录一下新简要搭建步骤基于的搭建流程第一步安装必要软件下载下载管理员运行依次输入命令检测是否安装到位第二步下载直接输入第三步建仓库新建仓库名输入用户名注意用户名必须是的用户名勾选勾选生成进入任意文件夹右键空白处然后点输入邮件地址然后敲次然后进入用户名在里面进入文件用记事本打开里面的全选复制里面的代码然后打开进入用户设置找到新建名称随意在下面粘贴代码然后创建测试是否成功在中输入回车然后再输入第四步本地生成博客内容右键空白处然后点输入如果就在前面加上如现在就可以复制生成的链接进入浏览器看到我们生成的本地服务器了然后回到命令行关闭第五步上线博客进入之前的文件夹用记事本打开拉到最下面将后面的全删掉复制粘贴这段注意缩进格式每行前面都有两个空格不要删每个冒号后面都有个空格也不要删去之前生成的仓库页面点复制链接将其粘贴到我们记事本中的后面然后保存退出回到博客文件夹安装自动部署发布工具然后在文件夹右键打开依次输入如果是第一次使用的话会需要配置你的邮箱你的名字配置完后再上传在跳出来的窗口内进行登录接下来我们就成功把本地内容上传到了网址是我们之前设的仓库名用户名两种方式进行编辑直接使用输入命令直接用写换电脑之后可能用到的设置在旧电脑上提前准备以防万一确保你的博客源码已经推送到的私有仓库比如这一步是换电脑后能恢复的基础操作在博客根目录下依次执行最后一次提交另外记下你上使用的邮箱和用户名稍后在新电脑配置需要用到如果你从来没有执行过那么执行时会报错因为不知道推送到哪里你需要先在博客根目录执行你的用户名你的源码仓库名在新电脑上从零到恢复安装必备软件下载并安装官网下载版本一路默认安装即可下载并安装官网下载安装时全部保持默认选项配置身份重要打开输入以下命令替换成你的信息你的用户名你的邮箱这一步是为了让知道你是谁避免之前遇到的错误恢复密钥或改用如果能找回旧密钥将旧电脑目录下的和文件复制到新电脑相同目录即可直接使用如果找不回旧密钥在中执行你的邮箱生成新密钥然后登录添加新的公钥把新的内容粘贴进去备用方案如果觉得配麻烦可以把博客里的地址改为格式如用户名仓库名推送时会提示输入用户名和克隆博客源码到新电脑切换到盘你也可以换到其他位置你的用户名你的源码仓库名安装依赖关键一步这条命令会根据自动安装及其所有插件无需手动逐个安装恢复主题配置重要提醒如果你之前修改过主题源码比如里的文件且没有单独备份这部分修改会丢失需要重新应用建议的做法以后修改主题时尽量使用主题支持的覆盖配置功能即在根目录下创建这样的文件这样源码提交时就会包含这些自定义配置换电脑后自动生效验证并开始写作本地预览检查是否正常生成并部署确认能正常发布如果一切顺利你的博客就完整恢复到了新电脑上总结需要备份的核心文件只要确保以下内容在源码仓库中换电脑就能恢复文件夹所有文章和页面文件夹主题文件站点配置依赖列表如果是用覆盖配置等自定义文件',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2026-10-12 22:00:10',
+  postMainColor: '',
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+      win.saveToLocal = {
+        set: (key, value, ttl) => {
+          if (ttl === 0) return
+          const now = Date.now()
+          const expiry = now + ttl * 86400000
+          const item = {
+            value,
+            expiry
+          }
+          localStorage.setItem(key, JSON.stringify(item))
+        },
+      
+        get: key => {
+          const itemStr = localStorage.getItem(key)
+      
+          if (!itemStr) {
+            return undefined
+          }
+          const item = JSON.parse(itemStr)
+          const now = Date.now()
+      
+          if (now > item.expiry) {
+            localStorage.removeItem(key)
+            return undefined
+          }
+          return item.value
+        }
+      }
+    
+      win.getScript = (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        script.onerror = reject
+        script.onload = script.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          script.onload = script.onreadystatechange = null
+          resolve()
+        }
+
+        Object.keys(attr).forEach(key => {
+          script.setAttribute(key, attr[key])
+        })
+
+        document.head.appendChild(script)
+      })
+    
+      win.getCSS = (url, id = false) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onerror = reject
+        link.onload = link.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          link.onload = link.onreadystatechange = null
+          resolve()
+        }
+        document.head.appendChild(link)
+      })
+    
+      win.activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#18171d')
+        }
+      }
+      win.activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#f7f9fe')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          const isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches
+          const isLightMode = window.matchMedia('(prefers-color-scheme: light)').matches
+          const isNotSpecified = window.matchMedia('(prefers-color-scheme: no-preference)').matches
+          const hasNoSupport = !isDarkMode && !isLightMode && !isNotSpecified
+
+          if (t === undefined) {
+            if (isLightMode) activateLightMode()
+            else if (isDarkMode) activateDarkMode()
+            else if (isNotSpecified || hasNoSupport) {
+              const now = new Date()
+              const hour = now.getHours()
+              const isNight = hour <= 6 || hour >= 18
+              isNight ? activateDarkMode() : activateLightMode()
+            }
+            window.matchMedia('(prefers-color-scheme: dark)').addListener(e => {
+              if (saveToLocal.get('theme') === undefined) {
+                e.matches ? activateDarkMode() : activateLightMode()
+              }
+            })
+          } else if (t === 'light') activateLightMode()
+          else activateDarkMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+      const detectApple = () => {
+        if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+          document.documentElement.classList.add('apple')
+        }
+      }
+      detectApple()
+    })(window)</script><link rel="stylesheet" href="/css/custom.css"><meta name="generator" content="Hexo 8.1.2"><link rel="alternate" href="/atom.xml" title="Lop-X" type="application/atom+xml">
+</head><body data-type="anzhiyu"><div id="web_bg"></div><div id="an_music_bg"></div><link rel="stylesheet" href="https://cdn.cbd.int/anzhiyu-theme-static@1.1.10/progress_bar/progress_bar.css"/><script async="async" src="/pluginsSrc/pace/pace.min.js" data-pace-options="{ &quot;restartOnRequestAfter&quot;:false,&quot;eventLag&quot;:false}"></script><a class="lopx-skip-link" href="#content-inner">跳转到主内容</a><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="--lopx-post-cover:url('/img/placeholder-site-revived.webp')"><nav id="nav"><div id="nav-group"><span id="blog_name"><a id="site-name" href="/" accesskey="h"><div class="title">Lop-X</div><i class="anzhiyufont anzhiyu-icon-house-chimney"></i></a></span><div class="mask-name-container"><div id="name-container"><a id="page-name" href="javascript:anzhiyu.scrollToDest(0, 500)">PAGE_NAME</a></div></div><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page faa-parent animated-hover" href="/tech/"><i class="anzhiyufont anzhiyu-icon-box-archive faa-tada" style="font-size: 0.9em;"></i><span class="nav-label"> 技术<small class="nav-sub-label">Tech</small></span></a></div><div class="menus_item"><a class="site-page faa-parent animated-hover" href="/indie/"><i class="anzhiyufont anzhiyu-icon-dice-d20 faa-tada" style="font-size: 0.9em;"></i><span class="nav-label"> 独立游戏<small class="nav-sub-label">Indie</small></span></a></div><div class="menus_item"><a class="site-page faa-parent animated-hover" href="/garden/"><i class="anzhiyufont anzhiyu-icon-music faa-tada" style="font-size: 0.9em;"></i><span class="nav-label"> 生活<small class="nav-sub-label">Garden</small></span></a></div><div class="menus_item"><a class="site-page faa-parent animated-hover" href="/essay/"><i class="anzhiyufont anzhiyu-icon-jike faa-tada" style="font-size: 0.9em;"></i><span class="nav-label"> 动态<small class="nav-sub-label">Moments</small></span></a></div><div class="menus_item"><a class="site-page faa-parent animated-hover" href="/about/"><i class="anzhiyufont anzhiyu-icon-paper-plane faa-tada" style="font-size: 0.9em;"></i><span class="nav-label"> 关于<small class="nav-sub-label">About</small></span></a></div></div></div><div id="nav-right"><div class="nav-button" id="search-button"><a class="site-page social-icon search" href="javascript:void(0);" title="搜索🔍" accesskey="s"><i class="anzhiyufont anzhiyu-icon-magnifying-glass"></i><span> 搜索</span></a></div><input id="center-console" type="checkbox"/><label class="widget" for="center-console" title="中控台" onclick="anzhiyu.switchConsole();"><i class="left"></i><i class="widget center"></i><i class="widget right"></i></label><div id="console"><div class="console-card-group"><div class="console-card-group-left"><div class="console-card" id="card-newest-comments"><div class="card-content"><div class="author-content-item-tips">互动</div><span class="author-content-item-title"> 最新评论</span></div><div class="aside-list"><span>正在加载中...</span></div></div></div><div class="console-card-group-right"><div class="console-card tags"><div class="card-content"><div class="author-content-item-tips">兴趣点</div><span class="author-content-item-title">寻找你感兴趣的领域</span><div class="card-tags"><div class="item-headline"></div><div class="card-tag-cloud"><a href="/tags/EasyX/" style="font-size: 1.05rem;">EasyX<sup>1</sup></a><a href="/tags/Git/" style="font-size: 1.05rem;">Git<sup>1</sup></a><a href="/tags/bangumi/" style="font-size: 1.05rem;">bangumi<sup>1</sup></a><a href="/tags/hexo/" style="font-size: 1.05rem;">hexo<sup>3</sup></a><a href="/tags/obsidian/" style="font-size: 1.05rem;">obsidian<sup>1</sup></a><a href="/tags/%E5%A4%8D%E6%B4%BB/" style="font-size: 1.05rem;">复活<sup>1</sup></a><a href="/tags/%E7%8B%AC%E7%AB%8B%E6%B8%B8%E6%88%8F/" style="font-size: 1.05rem;">独立游戏<sup>1</sup></a><a href="/tags/%E7%BD%91%E7%AB%99/" style="font-size: 1.05rem;">网站<sup>2</sup></a><a href="/tags/%E8%80%83%E7%A0%94/" style="font-size: 1.05rem;">考研<sup>2</sup></a><a href="/tags/%E8%AE%B0%E5%BD%95/" style="font-size: 1.05rem;">记录<sup>1</sup></a></div></div><hr/></div></div><div class="console-card history"><div class="item-headline"><i class="anzhiyufont anzhiyu-icon-box-archiv"></i><span>文章</span></div><div class="card-archives"><div class="item-headline"><i class="anzhiyufont anzhiyu-icon-archive"></i><span>归档</span></div><ul class="card-archive-list"><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2026/09/"><span class="card-archive-list-date">九月 2026</span><div class="card-archive-list-count-group"><span class="card-archive-list-count">8</span><span>篇</span></div></a></li></ul></div><hr/></div></div></div><div class="button-group"><div class="console-btn-item"><a class="darkmode_switchbutton" title="显示模式切换" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-moon"></i></a></div><div class="console-btn-item" id="consoleHideAside" onclick="anzhiyu.hideAsideBtn()" title="边栏显示控制"><a class="asideSwitch"><i class="anzhiyufont anzhiyu-icon-arrows-left-right"></i></a></div></div><div class="console-mask" onclick="anzhiyu.hideConsole()" href="javascript:void(0);"></div></div><div class="nav-button" id="nav-totop"><a class="totopbtn" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-arrow-up"></i><span id="percent" onclick="anzhiyu.scrollToDest(0,500)">0</span></a></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);" title="切换"><i class="anzhiyufont anzhiyu-icon-bars"></i></a></div></div></div></nav><div id="post-info"><div id="post-firstinfo"><div class="meta-firstline"><a class="post-meta-original">原创</a><span class="post-meta-categories"><span class="post-meta-separator"></span><i class="anzhiyufont anzhiyu-icon-inbox post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E5%BB%BA%E7%AB%99/" itemprop="url">建站</a></span><span class="article-meta tags"><a class="article-meta__tags" href="/tags/hexo/" tabindex="-1" itemprop="url"> <span> <i class="anzhiyufont anzhiyu-icon-hashtag"></i>hexo</span></a><a class="article-meta__tags" href="/tags/%E7%BD%91%E7%AB%99/" tabindex="-1" itemprop="url"> <span> <i class="anzhiyufont anzhiyu-icon-hashtag"></i>网站</span></a><a class="article-meta__tags" href="/tags/%E5%A4%8D%E6%B4%BB/" tabindex="-1" itemprop="url"> <span> <i class="anzhiyufont anzhiyu-icon-hashtag"></i>复活</span></a></span></div></div><h1 class="post-title" itemprop="name headline">个人网站已复活</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="anzhiyufont anzhiyu-icon-calendar-days post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" itemprop="dateCreated datePublished" datetime="2026-09-07T03:48:48.000Z" title="发表于 2026-09-07 11:48:48">2026-09-07</time><span class="post-meta-separator"></span><i class="anzhiyufont anzhiyu-icon-history post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" itemprop="dateCreated datePublished" datetime="2026-10-12T14:00:10.468Z" title="更新于 2026-10-12 22:00:10">2026-10-12</time></span></div><div class="meta-secondline"><span class="post-meta-separator"></span><span class="post-meta-wordcount"><i class="anzhiyufont anzhiyu-icon-file-word post-meta-icon" title="文章字数"></i><span class="post-meta-label" title="文章字数">字数总计:</span><span class="word-count" title="文章字数">1.5k</span><span class="post-meta-separator"></span><i class="anzhiyufont anzhiyu-icon-clock post-meta-icon" title="阅读时长"></i><span class="post-meta-label" title="阅读时长">阅读时长:</span><span>5分钟</span></span><span class="post-meta-separator"></span><span class="post-meta-pv-cv" id="" data-flag-title="个人网站已复活"><i class="anzhiyufont anzhiyu-icon-fw-eye post-meta-icon"></i><span class="post-meta-label" title="阅读量">阅读量:</span><span id="busuanzi_value_page_pv"><i class="anzhiyufont anzhiyu-icon-spinner anzhiyu-spin"></i></span></span></div></div></div><section class="main-hero-waves-area waves-area"><svg class="waves-svg" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" viewBox="0 24 150 28" preserveAspectRatio="none" shape-rendering="auto"><defs><path id="gentle-wave" d="M -160 44 c 30 0 58 -18 88 -18 s 58 18 88 18 s 58 -18 88 -18 s 58 18 88 18 v 44 h -352 Z"></path></defs><g class="parallax"><use href="#gentle-wave" x="48" y="0"></use><use href="#gentle-wave" x="48" y="3"></use><use href="#gentle-wave" x="48" y="5"></use><use href="#gentle-wave" x="48" y="7"></use></g></svg></section></header><main id="blog-container"><div class="layout" id="content-inner" tabindex="-1"><div id="post"><article class="post-content" id="article-container" itemscope itemtype="https://lop-x.github.io/%E5%B7%B2%E5%A4%8D%E6%B4%BB/"><header><a class="post-meta-categories" href="/categories/%E5%BB%BA%E7%AB%99/" itemprop="url">建站</a><a href="/tags/hexo/" tabindex="-1" itemprop="url">hexo</a><a href="/tags/%E7%BD%91%E7%AB%99/" tabindex="-1" itemprop="url">网站</a><a href="/tags/%E5%A4%8D%E6%B4%BB/" tabindex="-1" itemprop="url">复活</a><h1 id="CrawlerTitle" itemprop="name headline">个人网站已复活</h1><span itemprop="author" itemscope itemtype="http://schema.org/Person">Fanbo</span><time itemprop="dateCreated datePublished" datetime="2026-09-07T03:48:48.000Z" title="发表于 2026-09-07 11:48:48">2026-09-07</time><time itemprop="dateCreated datePublished" datetime="2026-10-12T14:00:10.468Z" title="更新于 2026-10-12 22:00:10">2026-10-12</time></header><p>老站随着我坏掉的硬盘一起无了，虽然旧blog也没有写过文章，但还是有点心疼的，简记记录一下新blog简要搭建步骤</p>
+<h3 id="基于hexo的blog搭建流程"><a href="#基于hexo的blog搭建流程" class="headerlink" title="基于hexo的blog搭建流程"></a>基于hexo的blog搭建流程</h3><h4 id="第一步，安装必要软件"><a href="#第一步，安装必要软件" class="headerlink" title="第一步，安装必要软件"></a>第一步，安装必要软件</h4><ol>
+<li><p>下载nodejs</p>
+</li>
+<li><p>下载git</p>
+</li>
+</ol>
+<p>​	管理员运行cmd，依次输入命令，检测是否安装到位</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">node -v</span><br><span class="line">git -v</span><br></pre></td></tr></table></figure>
+
+<h4 id="第二步，下载hexo，直接输入"><a href="#第二步，下载hexo，直接输入" class="headerlink" title="第二步，下载hexo，直接输入"></a>第二步，下载hexo，直接输入</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install hexo-cli -g</span><br></pre></td></tr></table></figure>
+
+<h4 id="第三步，建仓库"><a href="#第三步，建仓库" class="headerlink" title="第三步，建仓库"></a>第三步，建仓库</h4><p><strong>新建仓库名输入：</strong></p>
+<p>用户名.github.io（注意用户名必须是github的用户名）<br>勾选 Public</p>
+<p>勾选 Add a README file</p>
+<p><strong>生成SSH Keys：</strong><br>进入任意文件夹，右键空白处然后点Git bash here,输入</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ssh-keygen -t rsa -C <span class="string">&quot;邮件地址</span></span><br></pre></td></tr></table></figure>
+<p>然后敲4次Enter⌨️</p>
+<p>然后进入C:\Users\用户名，在里面进入.ssh文件</p>
+<p>用记事本打开里面的id_rsa.pub,全选复制里面的代码</p>
+<p><strong>然后打开github</strong></p>
+<p>进入用户设置，找到SSH keys</p>
+<p>新建SSH keys，名称随意，在下面粘贴代码，</p>
+<p>然后创建</p>
+<p>测试是否成功，在git bash中输入</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ssh -T git@github.com</span><br></pre></td></tr></table></figure>
+<p>回车，然后再输入yes</p>
+<h4 id="第四步，本地生成博客内容"><a href="#第四步，本地生成博客内容" class="headerlink" title="第四步，本地生成博客内容"></a>第四步，本地生成博客内容</h4><p>右键空白处然后点Git bash here，输入</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo init </span><br></pre></td></tr></table></figure>
+<p>如果‘command not find’，就在前面加上npx，如：npx hexo init</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">hexo g</span><br><span class="line">hexo s</span><br></pre></td></tr></table></figure>
+
+<p>现在就可以复制生成的链接进入浏览器看到我们生成的本地服务器了</p>
+<p>然后回到命令行，ctrl+c关闭</p>
+<h4 id="第五步，上线博客"><a href="#第五步，上线博客" class="headerlink" title="第五步，上线博客"></a>第五步，上线博客</h4><p>进入之前的Blog文件夹，用记事本打开_config.yml</p>
+<p>拉到最下面将deploy后面的全删掉，复制粘贴这段</p>
+<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">type:</span> <span class="string">git</span></span><br><span class="line"><span class="attr">repository:</span></span><br><span class="line"><span class="attr">branch:</span> <span class="string">main</span></span><br></pre></td></tr></table></figure>
+<p>注意缩进格式：每行前面都有两个空格不要删，每个冒号后面都有个空格也不要删！</p>
+<p>去github之前生成的仓库页面，点code，复制https链接，将其粘贴到我们记事本中的repository：后面</p>
+<p>然后保存退出</p>
+<p>回到博客文件夹，git bash 安装自动部署发布工具</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install hexo-deployer-git --save</span><br></pre></td></tr></table></figure>
+
+<p>然后在Blog文件夹右键打开git bash，依次输入</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">hexo g</span><br><span class="line">hexo d</span><br></pre></td></tr></table></figure>
+
+<p>如果是第一次使用git的话会需要配置</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git config --global user.email <span class="string">&quot;你的邮箱&quot;</span></span><br><span class="line">git config --global user.name <span class="string">&quot;你的名字&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>配置完后再hexo d上传</p>
+<p>在跳出来的窗口内进行登录</p>
+<p>接下来我们就成功把本地内容上传到github了</p>
+<p>网址是我们之前设的仓库名：用户名.github.io</p>
+<h3 id="两种方式"><a href="#两种方式" class="headerlink" title="两种方式"></a>两种方式</h3><ol>
+<li><p>vscode进行编辑</p>
+</li>
+<li><p>直接使用PowerShell输入命令，直接用Typora写</p>
+</li>
+</ol>
+<h2 id="换电脑之后可能用到的设置"><a href="#换电脑之后可能用到的设置" class="headerlink" title="换电脑之后可能用到的设置"></a>换电脑之后可能用到的设置</h2><h3 id="🔒-在旧电脑上（提前准备，以防万一）"><a href="#🔒-在旧电脑上（提前准备，以防万一）" class="headerlink" title="🔒 在旧电脑上（提前准备，以防万一）"></a>🔒 在旧电脑上（提前准备，以防万一）</h3><p>确保你的博客源码已经推送到GitHub的私有仓库（比如 <code>my-blog-source</code>）。这一步是换电脑后能恢复的基础。</p>
+<ul>
+<li><p><strong>操作</strong>：在博客根目录下，依次执行：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">git add .</span><br><span class="line">git commit -m <span class="string">&quot;最后一次提交&quot;</span></span><br><span class="line">git push</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>另外</strong>：记下你GitHub上使用的<strong>邮箱</strong>和<strong>用户名</strong>，稍后在新电脑配置需要用到。</p>
+</li>
+</ul>
+<h3 id="⚠️-如果你从来没有执行过-git-remote-add"><a href="#⚠️-如果你从来没有执行过-git-remote-add" class="headerlink" title="⚠️ 如果你从来没有执行过 git remote add"></a>⚠️ 如果你从来没有执行过 <code>git remote add</code></h3><p>  那么执行 <code>git push</code> 时会报错，因为 Git 不知道推送到哪里。你需要先在博客根目录执行：</p>
+<p>  bash</p>
+  <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git remote add origin https://github.com/你的用户名/你的源码仓库名.git</span><br></pre></td></tr></table></figure>
+
+<h3 id="🚀-在新电脑上（从零到恢复）"><a href="#🚀-在新电脑上（从零到恢复）" class="headerlink" title="🚀 在新电脑上（从零到恢复）"></a>🚀 在新电脑上（从零到恢复）</h3><p><strong>1. 安装必备软件</strong></p>
+<ul>
+<li>下载并安装 <strong>Node.js</strong>（官网下载LTS版本，一路默认安装即可）。</li>
+<li>下载并安装 <strong>Git</strong>（官网下载，安装时全部保持默认选项）。</li>
+</ul>
+<p><strong>2. 配置Git身份（重要）</strong><br>打开 <strong>Git Bash</strong>，输入以下命令（替换成你的信息）：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git config --global user.name &quot;你的GitHub用户名&quot;</span><br><span class="line">git config --global user.email &quot;你的GitHub邮箱&quot;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>这一步是为了让Git知道你是谁，避免之前遇到的“Author identity unknown”错误。</p>
+<p><strong>3. 恢复SSH密钥（或改用HTTPS）</strong></p>
+<ul>
+<li><strong>如果能找回旧密钥</strong>：将旧电脑 <code>~/.ssh/</code> 目录下的 <code>id_rsa</code> 和 <code>id_rsa.pub</code> 文件复制到新电脑相同目录，即可直接使用。</li>
+<li><strong>如果找不回旧密钥</strong>：在Git Bash中执行 <code>ssh-keygen -t rsa -C &quot;你的邮箱&quot;</code> 生成新密钥，然后登录GitHub → Settings → SSH keys，<strong>添加新的公钥</strong>（把新 <code>id_rsa.pub</code> 的内容粘贴进去）。</li>
+<li><strong>备用方案</strong>：如果觉得配SSH麻烦，可以把博客 <code>_config.yml</code> 里的 <code>repo</code> 地址改为 <strong>HTTPS格式</strong>（如 <code>https://github.com/用户名/仓库名.git</code>），推送时会提示输入用户名和Token。</li>
+</ul>
+<p><strong>4. 克隆博客源码到新电脑</strong></p>
+<p>bash</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">cd /d/   # 切换到D盘，你也可以换到其他位置</span><br><span class="line">git clone https://github.com/你的用户名/你的源码仓库名.git blog2026-new</span><br><span class="line">cd blog2026-new</span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong>5. 安装依赖（关键一步）</strong></p>
+<p>bash</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install</span><br></pre></td></tr></table></figure>
+
+
+
+<p>这条命令会根据 <code>package.json</code> 自动安装Hexo及其所有插件，无需手动逐个安装。</p>
+<p><strong>6. 恢复主题配置（重要提醒）</strong></p>
+<ul>
+<li>如果你之前修改过<strong>主题源码</strong>（比如 <code>themes/anzhiyu</code> 里的文件），且没有单独备份，这部分修改会丢失，需要重新应用。</li>
+<li><strong>建议的做法</strong>：以后修改主题时，尽量使用主题支持的 <strong>“覆盖配置”功能</strong>（即在根目录下创建 <code>_config.anzhiyu.yml</code> 这样的文件），这样源码提交时就会包含这些自定义配置，换电脑后自动生效。</li>
+</ul>
+<p><strong>7. 验证并开始写作</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">hexo s   <span class="comment"># 本地预览，检查是否正常</span></span><br><span class="line">hexo g -d   <span class="comment"># 生成并部署，确认能正常发布</span></span><br></pre></td></tr></table></figure>
+
+<p>如果一切顺利，你的博客就完整恢复到了新电脑上。</p>
+<h3 id="📋-总结：需要备份的核心文件"><a href="#📋-总结：需要备份的核心文件" class="headerlink" title="📋 总结：需要备份的核心文件"></a>📋 总结：需要备份的核心文件</h3><p>只要确保以下内容在源码仓库中，换电脑就能恢复：</p>
+<ul>
+<li><code>source/</code> 文件夹（所有文章和页面）</li>
+<li><code>themes/</code> 文件夹（主题文件）</li>
+<li><code>_config.yml</code>（站点配置）</li>
+<li><code>package.json</code>（依赖列表）</li>
+<li>（如果是用覆盖配置）<code>_config.anzhiyu.yml</code> 等自定义文件</li>
+</ul>
+</article><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/%E7%BD%91%E7%AB%99%E8%A3%85%E4%BF%AE%E8%AE%B0%E5%BD%95/"><img class="next-cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404-skeleton.webp&quot;" data-lazy-src="/img/placeholder-site-renovation.webp" onerror="onerror=null;src='/img/404-skeleton.webp'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">网站装修记录</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="anzhiyufont anzhiyu-icon-thumbs-up fa-fw" style="font-size: 1.5rem; margin-right: 4px"></i><span>喜欢这篇文章的人也看了</span></div><div class="relatedPosts-list"><div><a href="/%E7%BD%91%E7%AB%99%E8%A3%85%E4%BF%AE%E8%AE%B0%E5%BD%95/" title="网站装修记录"><img class="cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404-skeleton.webp&quot;" data-lazy-src="/img/placeholder-site-renovation.webp" alt="cover"><div class="content is-center"><div class="date"><i class="anzhiyufont anzhiyu-icon-calendar-days fa-fw"></i> 2026-09-07</div><div class="title">网站装修记录</div></div></a></div><div><a href="/hexo%E9%85%8D%E7%BD%AEbangumi%E8%BF%BD%E7%95%AA%E9%A1%B5%E9%9D%A2/" title="Hexo 配置 Bangumi 追番页面"><img class="cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404-skeleton.webp&quot;" data-lazy-src="/img/placeholder-hexo-bangumi.webp" alt="cover"><div class="content is-center"><div class="date"><i class="anzhiyufont anzhiyu-icon-calendar-days fa-fw"></i> 2026-09-09</div><div class="title">Hexo 配置 Bangumi 追番页面</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="anzhiyufont anzhiyu-icon-bars"></i><span>文章目录</span><span class="toc-percentage"></span></div><div class="toc-content is-expand"><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9F%BA%E4%BA%8Ehexo%E7%9A%84blog%E6%90%AD%E5%BB%BA%E6%B5%81%E7%A8%8B"><span class="toc-number">1.</span> <span class="toc-text">基于hexo的blog搭建流程</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%AC%AC%E4%B8%80%E6%AD%A5%EF%BC%8C%E5%AE%89%E8%A3%85%E5%BF%85%E8%A6%81%E8%BD%AF%E4%BB%B6"><span class="toc-number">1.1.</span> <span class="toc-text">第一步，安装必要软件</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%AC%AC%E4%BA%8C%E6%AD%A5%EF%BC%8C%E4%B8%8B%E8%BD%BDhexo%EF%BC%8C%E7%9B%B4%E6%8E%A5%E8%BE%93%E5%85%A5"><span class="toc-number">1.2.</span> <span class="toc-text">第二步，下载hexo，直接输入</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%AC%AC%E4%B8%89%E6%AD%A5%EF%BC%8C%E5%BB%BA%E4%BB%93%E5%BA%93"><span class="toc-number">1.3.</span> <span class="toc-text">第三步，建仓库</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%AC%AC%E5%9B%9B%E6%AD%A5%EF%BC%8C%E6%9C%AC%E5%9C%B0%E7%94%9F%E6%88%90%E5%8D%9A%E5%AE%A2%E5%86%85%E5%AE%B9"><span class="toc-number">1.4.</span> <span class="toc-text">第四步，本地生成博客内容</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%AC%AC%E4%BA%94%E6%AD%A5%EF%BC%8C%E4%B8%8A%E7%BA%BF%E5%8D%9A%E5%AE%A2"><span class="toc-number">1.5.</span> <span class="toc-text">第五步，上线博客</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%A4%E7%A7%8D%E6%96%B9%E5%BC%8F"><span class="toc-number">2.</span> <span class="toc-text">两种方式</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%8D%A2%E7%94%B5%E8%84%91%E4%B9%8B%E5%90%8E%E5%8F%AF%E8%83%BD%E7%94%A8%E5%88%B0%E7%9A%84%E8%AE%BE%E7%BD%AE"><span class="toc-number">3.</span> <span class="toc-text">换电脑之后可能用到的设置</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%F0%9F%94%92-%E5%9C%A8%E6%97%A7%E7%94%B5%E8%84%91%E4%B8%8A%EF%BC%88%E6%8F%90%E5%89%8D%E5%87%86%E5%A4%87%EF%BC%8C%E4%BB%A5%E9%98%B2%E4%B8%87%E4%B8%80%EF%BC%89"><span class="toc-number">3.1.</span> <span class="toc-text">🔒 在旧电脑上（提前准备，以防万一）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E2%9A%A0%EF%B8%8F-%E5%A6%82%E6%9E%9C%E4%BD%A0%E4%BB%8E%E6%9D%A5%E6%B2%A1%E6%9C%89%E6%89%A7%E8%A1%8C%E8%BF%87-git-remote-add"><span class="toc-number">3.2.</span> <span class="toc-text">⚠️ 如果你从来没有执行过 git remote add</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%F0%9F%9A%80-%E5%9C%A8%E6%96%B0%E7%94%B5%E8%84%91%E4%B8%8A%EF%BC%88%E4%BB%8E%E9%9B%B6%E5%88%B0%E6%81%A2%E5%A4%8D%EF%BC%89"><span class="toc-number">3.3.</span> <span class="toc-text">🚀 在新电脑上（从零到恢复）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%F0%9F%93%8B-%E6%80%BB%E7%BB%93%EF%BC%9A%E9%9C%80%E8%A6%81%E5%A4%87%E4%BB%BD%E7%9A%84%E6%A0%B8%E5%BF%83%E6%96%87%E4%BB%B6"><span class="toc-number">3.4.</span> <span class="toc-text">📋 总结：需要备份的核心文件</span></a></li></ol></li></ol></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div id="footer-site-stats"><span class="footer-stat"><span class="footer-stat-label">总访问量</span><span class="footer-stat-value" id="busuanzi_value_site_pv"><i class="anzhiyufont anzhiyu-icon-spinner anzhiyu-spin"></i></span><span class="footer-stat-unit">次</span></span><span class="footer-stat"><span class="footer-stat-label">独立访客</span><span class="footer-stat-value" id="busuanzi_value_site_uv"><i class="anzhiyufont anzhiyu-icon-spinner anzhiyu-spin"></i></span><span class="footer-stat-unit">人</span></span></div></div><div id="footer-bar"><div class="footer-bar-links"><div class="footer-bar-left"><div id="footer-bar-tips"><div class="copyright">&copy;2026 By <a class="footer-bar-link" href="/" title="Fanbo" target="_blank">Fanbo</a></div></div><div id="footer-type-tips"></div></div><div class="footer-bar-right"><a class="footer-bar-link" target="_blank" rel="noopener" href="https://github.com/anzhiyu-c/hexo-theme-anzhiyu" title="主题">主题</a></div></div></div></footer></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="sidebar-site-data site-data is-center"><a href="/archives/" title="archive"><div class="headline">文章</div><div class="length-num">8</div></a><a href="/tags/" title="tag"><div class="headline">标签</div><div class="length-num">10</div></a><a href="/categories/" title="category"><div class="headline">分类</div><div class="length-num">5</div></a></div><span class="sidebar-menu-item-title">功能</span><div class="sidebar-menu-item"><a class="darkmode_switchbutton menu-child" href="javascript:void(0);" title="显示模式"><i class="anzhiyufont anzhiyu-icon-circle-half-stroke"></i><span>显示模式</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page faa-parent animated-hover" href="/tech/"><i class="anzhiyufont anzhiyu-icon-box-archive faa-tada" style="font-size: 0.9em;"></i><span class="nav-label"> 技术<small class="nav-sub-label">Tech</small></span></a></div><div class="menus_item"><a class="site-page faa-parent animated-hover" href="/indie/"><i class="anzhiyufont anzhiyu-icon-dice-d20 faa-tada" style="font-size: 0.9em;"></i><span class="nav-label"> 独立游戏<small class="nav-sub-label">Indie</small></span></a></div><div class="menus_item"><a class="site-page faa-parent animated-hover" href="/garden/"><i class="anzhiyufont anzhiyu-icon-music faa-tada" style="font-size: 0.9em;"></i><span class="nav-label"> 生活<small class="nav-sub-label">Garden</small></span></a></div><div class="menus_item"><a class="site-page faa-parent animated-hover" href="/essay/"><i class="anzhiyufont anzhiyu-icon-jike faa-tada" style="font-size: 0.9em;"></i><span class="nav-label"> 动态<small class="nav-sub-label">Moments</small></span></a></div><div class="menus_item"><a class="site-page faa-parent animated-hover" href="/about/"><i class="anzhiyufont anzhiyu-icon-paper-plane faa-tada" style="font-size: 0.9em;"></i><span class="nav-label"> 关于<small class="nav-sub-label">About</small></span></a></div></div><span class="sidebar-menu-item-title">标签</span><div class="card-tags"><div class="item-headline"></div><div class="card-tag-cloud"><a href="/tags/EasyX/" style="font-size: 0.88rem;">EasyX<sup>1</sup></a><a href="/tags/Git/" style="font-size: 0.88rem;">Git<sup>1</sup></a><a href="/tags/bangumi/" style="font-size: 0.88rem;">bangumi<sup>1</sup></a><a href="/tags/hexo/" style="font-size: 0.88rem;">hexo<sup>3</sup></a><a href="/tags/obsidian/" style="font-size: 0.88rem;">obsidian<sup>1</sup></a><a href="/tags/%E5%A4%8D%E6%B4%BB/" style="font-size: 0.88rem;">复活<sup>1</sup></a><a href="/tags/%E7%8B%AC%E7%AB%8B%E6%B8%B8%E6%88%8F/" style="font-size: 0.88rem;">独立游戏<sup>1</sup></a><a href="/tags/%E7%BD%91%E7%AB%99/" style="font-size: 0.88rem;">网站<sup>2</sup></a><a href="/tags/%E8%80%83%E7%A0%94/" style="font-size: 0.88rem;">考研<sup>2</sup></a><a href="/tags/%E8%AE%B0%E5%BD%95/" style="font-size: 0.88rem;">记录<sup>1</sup></a></div></div><hr/></div></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="anzhiyufont anzhiyu-icon-book-open"></i></button><button id="translateLink" type="button" title="简繁转换">繁</button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="anzhiyufont anzhiyu-icon-circle-half-stroke"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="anzhiyufont anzhiyu-icon-arrows-left-right"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="anzhiyufont anzhiyu-icon-gear"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="anzhiyufont anzhiyu-icon-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><i class="anzhiyufont anzhiyu-icon-arrow-up"></i></button></div></div><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="anzhiyufont anzhiyu-icon-xmark"></i></button></nav><div class="is-center" id="loading-database"><i class="anzhiyufont anzhiyu-icon-spinner anzhiyu-pulse-icon"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div id="local-search-results"></div></div></div><div id="search-mask"></div></div><div id="rightMenu"><div class="rightMenu-group rightMenu-small"><div class="rightMenu-item" id="menu-backward"><i class="anzhiyufont anzhiyu-icon-arrow-left"></i></div><div class="rightMenu-item" id="menu-forward"><i class="anzhiyufont anzhiyu-icon-arrow-right"></i></div><div class="rightMenu-item" id="menu-refresh"><i class="anzhiyufont anzhiyu-icon-arrow-rotate-right" style="font-size: 1rem;"></i></div><div class="rightMenu-item" id="menu-top"><i class="anzhiyufont anzhiyu-icon-arrow-up"></i></div></div><div class="rightMenu-group rightMenu-line rightMenuPlugin"><div class="rightMenu-item" id="menu-copytext"><i class="anzhiyufont anzhiyu-icon-copy"></i><span>复制选中文本</span></div><div class="rightMenu-item" id="menu-pastetext"><i class="anzhiyufont anzhiyu-icon-paste"></i><span>粘贴文本</span></div><a class="rightMenu-item" id="menu-commenttext"><i class="anzhiyufont anzhiyu-icon-comment-medical"></i><span>引用到评论</span></a><div class="rightMenu-item" id="menu-newwindow"><i class="anzhiyufont anzhiyu-icon-window-restore"></i><span>新窗口打开</span></div><div class="rightMenu-item" id="menu-copylink"><i class="anzhiyufont anzhiyu-icon-link"></i><span>复制链接地址</span></div><div class="rightMenu-item" id="menu-copyimg"><i class="anzhiyufont anzhiyu-icon-images"></i><span>复制此图片</span></div><div class="rightMenu-item" id="menu-downloadimg"><i class="anzhiyufont anzhiyu-icon-download"></i><span>下载此图片</span></div><div class="rightMenu-item" id="menu-newwindowimg"><i class="anzhiyufont anzhiyu-icon-window-restore"></i><span>新窗口打开图片</span></div><div class="rightMenu-item" id="menu-search"><i class="anzhiyufont anzhiyu-icon-magnifying-glass"></i><span>站内搜索</span></div><div class="rightMenu-item" id="menu-searchBaidu"><i class="anzhiyufont anzhiyu-icon-magnifying-glass"></i><span>百度搜索</span></div><div class="rightMenu-item" id="menu-music-toggle"><i class="anzhiyufont anzhiyu-icon-play"></i><span>播放音乐</span></div><div class="rightMenu-item" id="menu-music-back"><i class="anzhiyufont anzhiyu-icon-backward"></i><span>切换到上一首</span></div><div class="rightMenu-item" id="menu-music-forward"><i class="anzhiyufont anzhiyu-icon-forward"></i><span>切换到下一首</span></div><div class="rightMenu-item" id="menu-music-playlist" onclick="window.open(&quot;https://y.qq.com/n/ryqq/playlist/8802438608&quot;, &quot;_blank&quot;);" style="display: none;"><i class="anzhiyufont anzhiyu-icon-radio"></i><span>查看所有歌曲</span></div><div class="rightMenu-item" id="menu-music-copyMusicName"><i class="anzhiyufont anzhiyu-icon-copy"></i><span>复制歌名</span></div></div><div class="rightMenu-group rightMenu-line rightMenuOther"><a class="rightMenu-item menu-link" href="/categories/"><i class="anzhiyufont anzhiyu-icon-cube"></i><span>博客分类</span></a><a class="rightMenu-item menu-link" href="/tags/"><i class="anzhiyufont anzhiyu-icon-tags"></i><span>文章标签</span></a></div><div class="rightMenu-group rightMenu-line rightMenuOther"><a class="rightMenu-item" id="menu-copy" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-copy"></i><span>复制地址</span></a><a class="rightMenu-item" id="menu-commentBarrage" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-message"></i><span class="menu-commentBarrage-text">关闭热评</span></a><a class="rightMenu-item" id="menu-darkmode" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-circle-half-stroke"></i><span class="menu-darkmode-text">深色模式</span></a><a class="rightMenu-item" id="menu-translate" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-language"></i><span>轉為繁體</span></a></div></div><div id="rightmenu-mask"></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="/js/tw_cn.js"></script><script src="/pluginsSrc/fancybox/fancybox.umd.js" defer></script><script src="/pluginsSrc/instantpage/instantpage.js" type="module"></script><script src="https://cdn.cbd.int/vanilla-lazyload@19.1.3/dist/lazyload.iife.min.js" defer></script><script src="https://cdn.cbd.int/node-snackbar@0.1.16/dist/snackbar.min.js" defer></script><script>function panguFn () {
+  if (typeof pangu === 'object') pangu.autoSpacingPage()
+  else {
+    getScript('/pluginsSrc/pangu/pangu.min.js')
+      .then(() => {
+        pangu.autoSpacingPage()
+      })
+  }
+}
+
+function panguInit () {
+  if (true){
+    GLOBAL_CONFIG_SITE.isPost && panguFn()
+  } else {
+    panguFn()
+  }
+}
+
+document.addEventListener('DOMContentLoaded', panguInit)</script><canvas id="universe"></canvas><script async src="https://npm.elemecdn.com/anzhiyu-theme-static@1.0.0/dark/dark.js"></script><script defer src="/js/lopx-particles.js"></script><script>// 消除控制台打印
+var HoldLog = console.log;
+console.log = function () {};
+let now1 = new Date();
+queueMicrotask(() => {
+  const Log = function () {
+    HoldLog.apply(console, arguments);
+  }; //在恢复前输出日志
+  const grt = new Date("04/01/2021 00:00:00"); //此处修改你的建站时间或者网站上线时间
+  now1.setTime(now1.getTime() + 250);
+  const days = (now1 - grt) / 1000 / 60 / 60 / 24;
+  const dnum = Math.floor(days);
+  const ascll = [
+    `欢迎使用安知鱼!`,
+    `生活明朗, 万物可爱`,
+    `
+        
+       █████╗ ███╗   ██╗███████╗██╗  ██╗██╗██╗   ██╗██╗   ██╗
+      ██╔══██╗████╗  ██║╚══███╔╝██║  ██║██║╚██╗ ██╔╝██║   ██║
+      ███████║██╔██╗ ██║  ███╔╝ ███████║██║ ╚████╔╝ ██║   ██║
+      ██╔══██║██║╚██╗██║ ███╔╝  ██╔══██║██║  ╚██╔╝  ██║   ██║
+      ██║  ██║██║ ╚████║███████╗██║  ██║██║   ██║   ╚██████╔╝
+      ╚═╝  ╚═╝╚═╝  ╚═══╝╚══════╝╚═╝  ╚═╝╚═╝   ╚═╝    ╚═════╝
+        
+        `,
+    "已上线",
+    dnum,
+    "天",
+    "©2026 By 安知鱼 V1.7.1",
+  ];
+  const ascll2 = [`NCC2-036`, `调用前置摄像头拍照成功，识别为【小笨蛋】.`, `Photo captured: `, `🤪`];
+
+  setTimeout(
+    Log.bind(
+      console,
+      `\n%c${ascll[0]} %c ${ascll[1]} %c ${ascll[2]} %c${ascll[3]}%c ${ascll[4]}%c ${ascll[5]}\n\n%c ${ascll[6]}\n`,
+      "color:#425AEF",
+      "",
+      "color:#425AEF",
+      "color:#425AEF",
+      "",
+      "color:#425AEF",
+      ""
+    )
+  );
+  setTimeout(
+    Log.bind(
+      console,
+      `%c ${ascll2[0]} %c ${ascll2[1]} %c \n${ascll2[2]} %c\n${ascll2[3]}\n`,
+      "color:white; background-color:#4fd953",
+      "",
+      "",
+      'background:url("https://npm.elemecdn.com/anzhiyu-blog@1.1.6/img/post/common/tinggge.gif") no-repeat;font-size:450%'
+    )
+  );
+
+  setTimeout(Log.bind(console, "%c WELCOME %c 你好，小笨蛋.", "color:white; background-color:#4f90d9", ""));
+
+  setTimeout(
+    console.warn.bind(
+      console,
+      "%c ⚡ Powered by 安知鱼 %c 你正在访问 Fanbo 的博客.",
+      "color:white; background-color:#f0ad4e",
+      ""
+    )
+  );
+
+  setTimeout(Log.bind(console, "%c W23-12 %c 你已打开控制台.", "color:white; background-color:#4f90d9", ""));
+
+  setTimeout(
+    console.warn.bind(console, "%c S013-782 %c 你现在正处于监控中.", "color:white; background-color:#d9534f", "")
+  );
+});</script><script async src="/anzhiyu/random.js"></script><script src="/js/search/local-search.js"></script><div class="js-pjax"><script data-pjax>(function () {
+  var root = document.querySelector('.garden-bento');
+  if (!root) return;
+
+  var tiles = Array.prototype.slice.call(root.querySelectorAll('.garden-tile'));
+  if (!tiles.length) return;
+
+  document.documentElement.classList.add('js');
+
+  if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    tiles.forEach(function (tile) { tile.classList.add('is-in'); });
+    return;
+  }
+
+  var counted = false;
+  function countUp() {
+    if (counted) return;
+    counted = true;
+    Array.prototype.slice.call(root.querySelectorAll('[data-count]')).forEach(function (el) {
+      var target = parseInt(el.getAttribute('data-count'), 10) || 0;
+      if (!target) return;
+      var start = null;
+      function step(ts) {
+        if (start === null) start = ts;
+        var p = Math.min((ts - start) / 700, 1);
+        el.textContent = Math.round(target * (1 - Math.pow(1 - p, 3)));
+        if (p < 1) requestAnimationFrame(step);
+      }
+      requestAnimationFrame(step);
+    });
+  }
+
+  //- 错峰用 setTimeout 逐个加类，而不是给每张卡设一个 CSS 变量当 transition-delay：
+  //- 内联变量优先级高于任何选择器，悬停时没法把它清零，抬升会被延迟拖慢 90~270ms。
+  function reveal() {
+    tiles.forEach(function (tile, index) {
+      setTimeout(function () { tile.classList.add('is-in'); }, index * 90);
+    });
+    setTimeout(countUp, 140);
+  }
+
+  if (!('IntersectionObserver' in window)) { reveal(); return; }
+
+  var fired = false;
+  var io = new IntersectionObserver(function (entries) {
+    for (var i = 0; i < entries.length; i++) {
+      if (entries[i].isIntersecting && !fired) {
+        fired = true;
+        reveal();
+        io.disconnect();
+        return;
+      }
+    }
+  }, { threshold: 0.05 });
+
+  io.observe(root);
+})();
+</script><script data-pjax>(function () {
+  var stats = document.querySelector('#home-about .lopx-hero-stats');
+  if (!stats) return;
+  if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  var cells = Array.prototype.slice.call(stats.querySelectorAll('b[data-count]'));
+  if (!cells.length) return;
+
+  function easeOutCubic(t) { return 1 - Math.pow(1 - t, 3); }
+
+  function countUp(el) {
+    var target = parseInt(el.getAttribute('data-count'), 10) || 0;
+    var start = null;
+    function step(ts) {
+      if (start === null) start = ts;
+      var p = Math.min((ts - start) / 700, 1);
+      el.textContent = Math.round(target * easeOutCubic(p));
+      if (p < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }
+
+  var counted = false;
+  if ('IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting && !counted) {
+          counted = true;
+          cells.forEach(countUp);
+          io.disconnect();
+        }
+      });
+    }, { threshold: 0.2 });
+    io.observe(stats);
+  } else {
+    cells.forEach(countUp);
+  }
+})();
+</script><script data-pjax>(function () {
+  var cards = document.querySelectorAll('#home-spaces .space-card');
+  if (!cards.length) return;
+  Array.prototype.slice.call(cards).forEach(function (card) {
+    function setPos(e) {
+      var rect = card.getBoundingClientRect();
+      card.style.setProperty('--mouse-x', (e.clientX - rect.left) + 'px');
+      card.style.setProperty('--mouse-y', (e.clientY - rect.top) + 'px');
+    }
+    card.addEventListener('mousemove', setPos, { passive: true });
+    card.addEventListener('mouseenter', setPos, { passive: true });
+  });
+})();
+</script><script data-pjax>(function () {
+  function normPath() {
+    var p = location.pathname;
+    if (p.length > 1 && p.charAt(p.length - 1) !== '/') p += '/';
+    return p;
+  }
+  function hrefPath(a) {
+    var h = a.getAttribute('href') || '';
+    if (!h || h.indexOf('javascript') === 0) return null;
+    try { return new URL(h, location.origin).pathname; } catch (e) { return null; }
+  }
+  function isCurrent(li) {
+    var a = li.querySelector('a.site-page');
+    if (!a) return false;
+    var href = hrefPath(a);
+    if (!href) return false;
+    var p = normPath();
+    if (href === '/') return p === '/';
+    return p.indexOf(href) === 0;
+  }
+
+  function install(container, opts) {
+    if (!container) return;
+    if (container.__lopxNav) { container.__lopxNav.refresh(); return; }
+
+    var ind = document.createElement('span');
+    ind.className = 'lopx-nav-indicator';
+    container.appendChild(ind);
+
+    var items = Array.prototype.slice.call(container.querySelectorAll('.menus_item'));
+    var active = null;
+
+    function place(li, visible) {
+      if (!li) { ind.style.opacity = '0'; return; }
+      var base = container.getBoundingClientRect();
+      if (opts.horizontal) {
+        var a = li.querySelector('a.site-page');
+        if (!a) { ind.style.opacity = '0'; return; }
+        var ar = a.getBoundingClientRect();
+        ind.style.transform = 'translateX(' + (ar.left - base.left) + 'px)';
+        ind.style.width = ar.width + 'px';
+      } else {
+        var r = li.getBoundingClientRect();
+        var h = Math.max(14, Math.min(20, r.height - 6));
+        ind.style.height = h + 'px';
+        ind.style.transform = 'translateY(' + (r.top - base.top + (r.height - h) / 2) + 'px)';
+      }
+      ind.style.opacity = visible === false ? '0' : '1';
+    }
+
+    function refresh() {
+      active = null;
+      items.forEach(function (li) { li.classList.remove('is-active'); });
+      for (var i = 0; i < items.length; i++) {
+        if (isCurrent(items[i])) { active = items[i]; break; }
+      }
+      if (active) active.classList.add('is-active');
+      place(active, !!active);
+    }
+
+    if (opts.hover) {
+      items.forEach(function (li) {
+        li.addEventListener('mouseenter', function () { place(li); });
+        li.addEventListener('focusin', function () { place(li); });
+      });
+      container.addEventListener('mouseleave', function () { place(active, !!active); });
+    }
+    window.addEventListener('resize', function () { place(active, !!active); }, { passive: true });
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(function () { place(active, !!active); });
+    }
+
+    if (firstRun) {
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', refresh);
+      } else {
+        refresh();
+      }
+    }
+    container.__lopxNav = { refresh: refresh };
+  }
+
+  //- pjax 换 DOM 时本 script 会重跑，但彼时 pushState 尚未发生、pathname 仍是旧页，
+  //- 若此时定位会让指示器滞后一拍。故：首次全量加载立即定位；pjax 重跑只挂结构，
+  //- 由 watcher 轮询到 URL 变化后再定位（用 interval 而非事件监听，避免监听器累积）。
+  var firstRun = !window.__lopxNavRan;
+  window.__lopxNavRan = true;
+
+  install(document.querySelector('#nav #menus .menus_items'), { horizontal: true, hover: true });
+  install(document.querySelector('#sidebar-menus .menus_items'), { horizontal: false, hover: false });
+
+  function refreshAll() {
+    var d = document.querySelector('#nav #menus .menus_items');
+    var s = document.querySelector('#sidebar-menus .menus_items');
+    if (d && d.__lopxNav) d.__lopxNav.refresh();
+    if (s && s.__lopxNav) s.__lopxNav.refresh();
+  }
+  if (!firstRun) {
+    var seen = location.pathname;
+    var tick = 0;
+    var iv = setInterval(function () {
+      if (++tick > 40) { clearInterval(iv); return; }
+      if (location.pathname !== seen) {
+        seen = location.pathname;
+        refreshAll();
+      }
+    }, 70);
+  }
+})();
+</script><input type="hidden" name="page-type" id="page-type" value="post"></div><script>var visitorMail = "";
+</script><script async data-pjax src="https://cdn.cbd.int/anzhiyu-theme-static@1.0.0/waterfall/waterfall.js"></script><script>(function () {
+  var QR_SRC = '/pluginsSrc/qrcode/qrcode.min.js';
+  var raw = anzhiyu.qrcodeCreate;   // 原始实现（会 new QRCode 并画进 #qrcode）
+  var requesting = false;
+
+  anzhiyu.qrcodeCreate = function () {
+    if (typeof QRCode !== 'function') return;   // 库没到就跳过，交互时再补
+    return raw.apply(anzhiyu, arguments);
+  };
+
+  function ensureQRCode() {
+    if (typeof QRCode === 'function') { raw.call(anzhiyu); return; }
+    if (requesting) return;
+    requesting = true;
+    getScript(QR_SRC).then(function () { raw.call(anzhiyu); });
+  }
+
+  function isShareTarget(e) {
+    var t = e.target;
+    return !!(t && t.closest && t.closest('#post-tools .share-link'));
+  }
+  ['mouseover', 'click', 'touchstart'].forEach(function (ev) {
+    document.addEventListener(ev, function (e) { isShareTarget(e) && ensureQRCode(); }, { passive: true });
+  });
+})();</script><link rel="stylesheet" href="https://cdn.cbd.int/anzhiyu-theme-static@1.1.9/icon/ali_iconfont_css.css"><script src="/js/lazy-fix.js"></script><script src="/js/nav-darkmode.js"></script><script src="/pluginsSrc/pjax/pjax.min.js"></script><script>let pjaxSelectors = ["head > title","#config-diff","#body-wrap","#rightside-config-hide","#rightside-config-show",".js-pjax"]
+var pjax = new Pjax({
+  elements: 'a:not([target="_blank"])',
+  selectors: pjaxSelectors,
+  cacheBust: false,
+  analytics: false,
+  scrollRestoration: false
+})
+
+document.addEventListener('pjax:send', function () {
+  // removeEventListener scroll 
+  anzhiyu.removeGlobalFnEvent('pjax')
+  anzhiyu.removeGlobalFnEvent('themeChange')
+
+  document.getElementById('rightside').classList.remove('rightside-show')
+  
+  if (window.aplayers) {
+    for (let i = 0; i < window.aplayers.length; i++) {
+      if (!window.aplayers[i].options.fixed) {
+        window.aplayers[i].destroy()
+      }
+    }
+  }
+
+  typeof typed === 'object' && typed.destroy()
+
+  //reset readmode
+  const $bodyClassList = document.body.classList
+  $bodyClassList.contains('read-mode') && $bodyClassList.remove('read-mode')
+})
+
+document.addEventListener('pjax:complete', function () {
+  window.refreshFn()
+
+  document.querySelectorAll('script[data-pjax]').forEach(item => {
+    const newScript = document.createElement('script')
+    const content = item.text || item.textContent || item.innerHTML || ""
+    Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+    newScript.appendChild(document.createTextNode(content))
+    item.parentNode.replaceChild(newScript, item)
+  })
+
+  GLOBAL_CONFIG.islazyload && window.lazyLoadInstance.update()
+
+  typeof panguInit === 'function' && panguInit()
+
+  // google analytics
+  typeof gtag === 'function' && gtag('config', '', {'page_path': window.location.pathname});
+
+  // baidu analytics
+  typeof _hmt === 'object' && _hmt.push(['_trackPageview',window.location.pathname]);
+
+  typeof loadMeting === 'function' && document.getElementsByClassName('aplayer').length && loadMeting()
+
+  // prismjs
+  typeof Prism === 'object' && Prism.highlightAll()
+})
+
+document.addEventListener('pjax:error', e => {
+  if (e.request.status === 404) {
+    pjax.loadUrl('/404')
+  }
+})</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><script charset="UTF-8" defer src="https://cdn.cbd.int/anzhiyu-theme-static@1.1.5/accesskey/accesskey.js"></script></div><div id="popup-window"><div class="popup-window-title">通知</div><div class="popup-window-divider"></div><div class="popup-window-content"><div class="popup-tip">你好呀</div><div class="popup-link"><i class="anzhiyufont anzhiyu-icon-arrow-circle-right"></i></div></div></div></body></html>

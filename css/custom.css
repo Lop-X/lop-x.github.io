@@ -1,0 +1,4658 @@
+/* ============================================================
+   0. 【已移除】MiSans webfont 的 @import —— 2026-10-09
+   原第 1 行：@import url('https://cdn.jsdelivr.net/npm/misans@1.0.0/lib/misans.css');
+   移除原因（全部为实测，不是推测）：
+   1) 该 URL 已失效，jsDelivr 返回 50 字节纯文本
+      「Couldn't find the requested release version 1.0.0.」，不是 CSS。
+   2) 因内容不是 CSS，浏览器**没有注册任何 @font-face**：
+      探针实测 document.fonts.size = 1，且其中不含 MiSans（只有 anzhiyufont）。
+      本机字体目录与注册表也查无 MiSans —— 即第 16.1 节的 'MiSans' 一直都只是
+      字体栈里一个永远命不中的名字，实际渲染早已回落 Microsoft YaHei。
+   3) 代价却是实打实的：@import 写在 custom.css 首行，而 custom.css 在 <head>
+      里同步加载 → 这是一个**渲染阻塞请求**。冷启动实测三次：
+         misans 耗时 5863 / 11789 / 4333 ms
+         对应 FCP   6020 / 11936 / 4464 ms
+      两者几乎相等（差值恒定 ~150ms），即首屏时间基本由这条失效请求独占。
+   因此移除 = 零视觉变化 + 直接砍掉一个跨域阻塞往返。
+   字体栈里的 'MiSans' 予以保留：若将来本机装了 MiSans，仍可优雅生效。
+   ============================================================ */
+
+#lopx-home {
+  --lopx-css-loaded: 1;
+  --lopx-accent: #3a7aa0;
+  --lopx-ink: #1e262c;
+  --lopx-muted: #646e76;
+  --lopx-line: #e2e8ec;
+  --lopx-surface: #ffffff;
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 56px 32px 72px;
+  color: var(--lopx-ink);
+}
+
+/* Home hero（2026-10-03 两栏；第三轮按用户反馈：头像放左边更像「作者卡」）。
+   原本是「头像居中一行 + 另起一块左对齐文字卡」，文字卡宽 1106 而标题只占约 330px，
+   右侧留白约 700px；独立状态条又夹在卡片之间显得突兀。合并为一张两栏卡。 */
+#lopx-home > section#home-about {
+  margin-top: 0;
+  margin-bottom: 30px;
+}
+
+/* 去掉 About 页面级留白，使其嵌入首页容器（卡片外观来自 18.2 的 #home-about 规则） */
+#lopx-home #about-page {
+  max-width: none;
+  margin: 0;
+  padding: 0;
+}
+
+.lopx-hero {
+  display: grid;
+  /* 左栏 184px：头像 + 状态小卡叠起来约 236px，与右栏文字块（名字/一句话/4 个 chips
+     约 180px）高度接近；align-items: center 让文字垂直居中，避免右下角出现大片空白。 */
+  grid-template-columns: 184px minmax(0, 1fr);
+  gap: 30px;
+  align-items: center;
+}
+
+.lopx-hero-name {
+  margin: 0;
+  color: var(--lopx-ink);
+  font-size: clamp(1.5rem, 3.4vw, 2.25rem);
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.lopx-hero-intro {
+  max-width: 620px;
+  margin: 10px 0 0;
+  color: var(--lopx-muted);
+  font-size: 1rem;
+  line-height: 1.7;
+}
+
+/* 方向标签：与 About 页的 chips 同一套取值（29.1 的 .lopx-about-dirs） */
+.lopx-hero-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 18px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.lopx-hero-chips li {
+  padding: 5px 11px;
+  border: 1px solid var(--lopx-line);
+  border-radius: 999px;
+  color: var(--lopx-muted);
+  font-size: 0.78rem;
+  font-weight: 550;
+  line-height: 1.5;
+}
+
+/* 右栏改为三行文字 + 右下角「站点数据」微卡（2026-10-05）。
+   背景：右栏宽 892px，而名字 / 一句话 / chips 合计只占约 360px，
+   右侧空出约 530px（占卡片 48%），即此前反馈的「hero 右半空旷」。
+   修法：右栏切成两列网格，stats 跨三行并 align-self:end 贴住右下角，
+   与左下角的状态小卡形成对角呼应，卡片四角都有内容。 */
+.lopx-hero-text {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-areas:
+    'name stats'
+    'intro stats'
+    'chips stats';
+  align-content: center;
+  column-gap: 34px;
+}
+
+.lopx-hero-name {
+  grid-area: name;
+}
+
+.lopx-hero-intro {
+  grid-area: intro;
+}
+
+.lopx-hero-chips {
+  grid-area: chips;
+}
+
+.lopx-hero-stats {
+  grid-area: stats;
+  align-self: end;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.lopx-hero-stats li {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 92px;
+  padding: 9px 12px;
+  border: 1px solid var(--lopx-line);
+  border-radius: 12px;
+  background: rgba(58, 122, 160, 0.06);
+}
+
+.lopx-hero-stats b {
+  color: var(--lopx-ink);
+  font-size: 1.05rem;
+  font-weight: 700;
+  line-height: 1.15;
+}
+
+.lopx-hero-stats span {
+  color: var(--lopx-muted);
+  font-size: 0.7rem;
+  line-height: 1.3;
+}
+
+[data-theme='dark'] #lopx-home .lopx-hero-stats li {
+  background: rgba(103, 178, 208, 0.09);
+}
+
+/* ≤1080px：文字与数据卡并排会挤成多行，回退为纵向流式。
+   数据卡默认排列（2×2 @375 手机，4 列一排 @1024）交给 auto-fit，
+   避免在 1024 这种中间宽度上出现两个 350px 的空旷大格。 */
+@media screen and (max-width: 1080px) {
+  .lopx-hero-text {
+    display: block;
+  }
+
+  .lopx-hero-stats {
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    margin-top: 22px;
+  }
+}
+
+/* 右栏：头像在上、状态小卡在下（整列 208px，与左栏文字底对齐感更强） */
+.lopx-hero-side {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.lopx-hero-avatar {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+  border: 1px solid var(--lopx-line);
+  border-radius: 18px;
+  background: #eef4f8;
+  box-shadow: 0 8px 22px rgba(39, 50, 57, 0.1);
+}
+
+.lopx-hero-avatar img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* 右下角状态小卡：沿用全站强调色的渐变块 + 呼吸圆点，
+   观感对齐原版 AnZhiYu 首页右下角那张彩色小卡；文案留空则整块不渲染 */
+.lopx-hero-status {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 11px 13px;
+  border-radius: 12px;
+  background-image: linear-gradient(135deg, #2f6f92 0%, #3a7aa0 100%);
+  color: #ffffff;
+  font-size: 0.78rem;
+  font-weight: 550;
+  line-height: 1.45;
+}
+
+.lopx-hero-status-dot {
+  flex: none;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #cfe8f6;
+  box-shadow: 0 0 0 3px rgba(207, 232, 246, 0.28);
+}
+
+/* 窄屏：单列，头像缩到 96px 与状态卡并排一行 */
+@media screen and (max-width: 768px) {
+  .lopx-hero {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 20px;
+  }
+
+  .lopx-hero-side {
+    flex-direction: row;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .lopx-hero-avatar {
+    flex: none;
+    width: 96px;
+  }
+
+  .lopx-hero-status {
+    /* 2026-10-05：原 flex: 1 1 auto 会把胶囊拉到 195px（内容仅约 145），
+       右侧留出一条 50px 空条；改为按内容收窄，与 96px 头像并排更紧凑。 */
+    flex: 0 1 auto;
+    min-width: 0;
+  }
+}
+
+/* Projects */
+#lopx-home section {
+  margin-top: 48px;
+}
+
+#lopx-home section h2 {
+  margin: 0 0 20px;
+  color: var(--lopx-ink);
+  font-size: 1.35rem;
+  font-weight: 700;
+  letter-spacing: 0;
+}
+
+#recent-writing > p {
+  margin: 0;
+  padding: 20px 0;
+  border-top: 1px solid var(--lopx-line);
+  border-bottom: 1px solid var(--lopx-line);
+  color: var(--lopx-muted);
+}
+
+/* Recent Writing */
+#recent-writing {
+  max-width: 900px;
+}
+
+/* Recent Writing 标题行右侧的订阅入口（RSS，2026-10-01） */
+#lopx-home #recent-writing .section-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+#lopx-home #recent-writing .section-head h2 {
+  margin: 0 0 20px;
+}
+
+#lopx-home .rss-link {
+  flex-shrink: 0;
+  padding: 3px 12px;
+  border: 1px solid var(--lopx-line);
+  border-radius: 999px;
+  font-size: 0.78rem;
+  color: var(--lopx-muted);
+  text-decoration: none;
+  transition: color var(--lopx-dur-fast) ease, border-color var(--lopx-dur-fast) ease;
+}
+
+#lopx-home .rss-link:hover {
+  color: var(--lopx-accent);
+  border-color: var(--lopx-accent);
+}
+
+#recent-writing ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--lopx-line);
+}
+
+#recent-writing li {
+  display: grid;
+  grid-template-columns: 120px minmax(0, 1fr);
+  gap: 20px;
+  align-items: baseline;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--lopx-line);
+}
+
+#recent-writing time {
+  color: var(--lopx-muted);
+  font-size: 0.82rem;
+  font-variant-numeric: tabular-nums;
+}
+
+#recent-writing li a {
+  color: var(--lopx-ink);
+  font-size: 1rem;
+  line-height: 1.5;
+  transition: color var(--lopx-dur-mid) ease;
+}
+
+#recent-writing li a:hover {
+  color: var(--lopx-accent);
+}
+
+/* Responsive */
+@media screen and (max-width: 768px) {
+  #lopx-home {
+    padding: 40px 20px 56px;
+  }
+
+  #lopx-home > section#home-about {
+    margin-bottom: 16px;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  #recent-writing li {
+    display: block;
+    padding: 14px 0;
+  }
+
+  #recent-writing time {
+    display: block;
+    margin-bottom: 4px;
+  }
+}
+
+/* Hardware & Soft */
+#space-tech,
+#space-tech-cat {
+  --hardware-ink: var(--lopx-ink);
+  --hardware-muted: var(--lopx-muted);
+  --hardware-line: var(--lopx-line);
+  --hardware-accent: var(--lopx-accent);
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 48px 32px 72px;
+  color: var(--hardware-ink);
+}
+
+/* Hardware & Soft Header */
+#space-tech > h1,
+#space-tech-cat > h1 {
+  margin: 0;
+  color: var(--hardware-ink);
+  font-size: 2.8rem;
+  font-weight: 750;
+  letter-spacing: 0;
+  line-height: 1.1;
+}
+
+#space-tech > p {
+  max-width: 680px;
+  margin: 14px 0 0;
+  color: var(--hardware-muted);
+  font-size: 1rem;
+  line-height: 1.7;
+}
+
+/* 2026-10-02：旧双段列表（.project-list / section / > article）样式已删，
+   列表改由第 28 节卡片网格渲染；胶囊导航视觉在 20.8、布局在 28.8；
+   窄屏取值统一由 12.6 提供（覆盖本节容器/标题规则）。 */
+#space-tech-cat > h1 {
+  margin-bottom: 22px;
+  color: var(--hardware-ink);
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: 0;
+}
+
+#space-tech-cat > p {
+  margin: 0;
+  padding: 20px 0;
+  border-top: 1px solid var(--hardware-line);
+  border-bottom: 1px solid var(--hardware-line);
+  color: var(--hardware-muted);
+}
+
+/* Indie */
+#space-indie,
+#space-indie-cat {
+  --indie-ink: var(--lopx-ink);
+  --indie-muted: var(--lopx-muted);
+  --indie-line: var(--lopx-line);
+  --indie-accent: var(--lopx-accent);
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 48px 32px 72px;
+  color: var(--indie-ink);
+}
+
+/* Indie Header */
+#space-indie > h1,
+#space-indie-cat > h1 {
+  margin: 0;
+  color: var(--indie-ink);
+  font-size: 2.8rem;
+  font-weight: 750;
+  letter-spacing: 0;
+  line-height: 1.1;
+}
+
+#space-indie > p {
+  max-width: 680px;
+  margin: 14px 0 0;
+  color: var(--indie-muted);
+  font-size: 1rem;
+  line-height: 1.7;
+}
+
+#space-indie-cat > h1 {
+  margin-bottom: 22px;
+  color: var(--indie-ink);
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: 0;
+}
+
+#space-indie-cat > p {
+  margin: 0;
+  padding: 20px 0;
+  border-top: 1px solid var(--indie-line);
+  border-bottom: 1px solid var(--indie-line);
+  color: var(--indie-muted);
+}
+
+/* Garden */
+#garden-space,
+#garden-category {
+  --garden-ink: #1e262c;
+  --garden-muted: #646e76;
+  --garden-line: var(--lopx-line);
+  --garden-accent: #3a7aa0;
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 48px 32px 72px;
+  color: var(--garden-ink);
+}
+
+/* Garden 分类页 Header
+   空间主页 2026-10-11 起不再有页头（h1 只做无障碍保留，样式见第 44 节），
+   所以此处只剩分类页 —— #garden-category 的整套列表样式原样保留。 */
+#garden-category > h1 {
+  margin: 0;
+  color: var(--garden-ink);
+  font-size: 2.8rem;
+  font-weight: 700;
+  letter-spacing: 0;
+  line-height: 1.1;
+}
+
+/* Garden Posts
+   2026-10-05：去掉 max-width:900px（原值见 12.2 同款规则）—— 分类页的列表与
+   上方 nav 行同页，限到 900 会让列表比导航窄 170px，故跟齐容器内容区。 */
+#garden-category > .article-sort {
+  margin-top: 58px;
+}
+
+#garden-category .article-sort {
+  margin-top: 0;
+}
+
+#garden-category .article-sort .article-sort-item {
+  display: grid;
+  grid-template-columns: 120px minmax(0, 1fr);
+  gap: 20px;
+  align-items: baseline;
+  min-height: 0;
+  padding: 16px 0;
+  border-top: 1px solid var(--garden-line);
+  background: transparent;
+}
+
+#garden-category .article-sort .article-sort-item:last-child {
+  border-bottom: 1px solid var(--garden-line);
+}
+
+#garden-category .article-sort .article-sort-item.year {
+  display: block;
+  padding: 30px 0 10px;
+  border: 0;
+  color: var(--garden-muted);
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+}
+
+#garden-category .article-sort .article-sort-item-img {
+  display: none;
+}
+
+#garden-category .article-sort .article-sort-item-info {
+  display: contents;
+}
+
+#garden-category .article-sort .article-sort-item-title {
+  grid-column: 2;
+  grid-row: 1;
+  margin: 0;
+  color: var(--garden-ink);
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.5;
+  transition: color var(--lopx-dur-mid) ease;
+  /* 覆盖主题：解除单行截断与百分比高度，避免标题只显示一半 */
+  display: block;
+  height: auto;
+  overflow: visible;
+  -webkit-line-clamp: unset;
+  text-overflow: clip;
+  white-space: normal;
+}
+
+#garden-category .article-sort .article-sort-item-title:hover {
+  color: var(--garden-accent);
+}
+
+#garden-category .article-sort .article-sort-item-index,
+#garden-category .article-sort .article-meta-wrap {
+  display: none;
+}
+
+#garden-category .article-sort .article-sort-item-time {
+  grid-column: 1;
+  grid-row: 1;
+  color: var(--garden-muted);
+  font-size: 0.78rem;
+  font-variant-numeric: tabular-nums;
+}
+
+#garden-category .article-sort .article-sort-item-time i {
+  display: none;
+}
+
+#garden-category > p {
+  margin-top: 48px;
+  padding: 20px 0;
+  border-top: 1px solid var(--garden-line);
+  border-bottom: 1px solid var(--garden-line);
+  color: var(--garden-muted);
+}
+
+/* Garden Responsive */
+@media screen and (max-width: 768px) {
+  #garden-space,
+  #garden-category {
+    padding: 40px 20px 56px;
+  }
+
+  #garden-category > h1 {
+    font-size: 2.35rem;
+  }
+
+  #garden-category > .article-sort {
+    margin-top: 46px;
+  }
+
+  #garden-category .article-sort .article-sort-item {
+    grid-template-columns: 100px minmax(0, 1fr);
+    gap: 14px;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  #garden-space,
+  #garden-category {
+    padding-right: 20px;
+    padding-left: 20px;
+  }
+
+  #garden-category .article-sort .article-sort-item {
+    display: block;
+    padding: 14px 0;
+  }
+
+  #garden-category .article-sort .article-sort-item-title {
+    display: block;
+  }
+
+  #garden-category .article-sort .article-sort-item-time {
+    display: block;
+    margin-bottom: 4px;
+  }
+}
+
+/* About */
+#about-page {
+  max-width: 1000px;
+  margin: 0 auto;
+  /* 2026-10-05：左右内衬 32px 归零。
+     这层内衬是 2026-10-03「铺满容器 + 内部两栏」方案留下的，副作用是卡片左缘
+     实测 172，而首页 / 动态页都是 140 —— 跨页切页时内容块会横向跳 32px。
+     归零后卡片 1160 @ x=140，三页同一轴线；内部两栏同时由 538 放宽到 570。 */
+  padding: 24px 0 72px;
+  color: var(--lopx-ink);
+}
+
+/* 2026-10-03：首页 hero 改两栏后，以下规则已无命中（探针在 / 与 /about/ 上实测 0 个元素），
+   已删除：#about-page .author-box / .author-tag-left / .author-tag-right / .author-tag /
+   .author-img（含 hover 与各响应式分支）/ .author-content / .myInfoAndSayHello 及其
+   .title1 / .title2 —— 首页改用 .lopx-hero 系列（见第 1 节），
+   /about/ 用的是 .lopx-about-* 系列（见第 29 节）。 */
+
+/* About Responsive：容器内边距仍按页面级调整（正文规则已随 hero 改版删除）。
+   左右内衬一并归零 —— 移动端由外层 #page 提供约 15px 边距，与动态页一致。 */
+@media screen and (max-width: 768px) {
+  #about-page {
+    padding: 16px 0 56px;
+  }
+}
+
+/* ============================================================
+   Stage 5-8: Micro Animations & Interaction Polish
+   仅 hover / transition 微交互，无 animation、无 JS、无布局重设计
+   ============================================================ */
+
+/* Home */
+#recent-writing li a,
+#recent-writing time {
+  transition: color var(--lopx-dur-fast) ease;
+}
+
+#recent-writing li:hover time {
+  color: #4b5560;
+}
+
+/* 2026-10-02：tech / indie 列表的旧 hover 过渡已随旧结构删除，
+   卡片过渡见第 28 节 .lopx-card。 */
+
+/* Garden（空间主页的 hover 过渡已随卡片改版移到第 44 节） */
+#garden-category .article-sort .article-sort-item-title {
+  transition: color var(--lopx-dur-fast) ease;
+}
+
+/* Navigation（沿用主题既有 hover 配色，仅统一过渡时长） */
+#page-header #nav #menus .menus_item > a.site-page,
+#page-header #nav #menus .menus_item > a.site-page:hover {
+  /* 主题对此处强制 transition: color 0s !important，需要同等重要性才能覆盖 */
+  transition: color var(--lopx-dur-fast) ease, background-color var(--lopx-dur-fast) ease, box-shadow var(--lopx-dur-fast) ease !important;
+}
+
+#page-header #nav #nav-right .nav-button a,
+#page-header #nav #nav-right .nav-button a:hover,
+#page-header #nav #nav-right #toggle-menu > a,
+#page-header #nav #nav-right #toggle-menu > a:hover {
+  transition: color var(--lopx-dur-fast) ease, background-color var(--lopx-dur-fast) ease, box-shadow var(--lopx-dur-fast) ease, opacity var(--lopx-dur-fast) ease;
+}
+
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  #recent-writing li a,
+  #recent-writing time,
+  .lopx-card,
+  .lopx-card .lopx-card-title,
+  #garden-space > nav a,
+  #garden-space .article-sort .article-sort-item-title,
+  #garden-category .article-sort .article-sort-item-title,
+  #page-header #nav #nav-right .nav-button a,
+  #page-header #nav #nav-right .nav-button a:hover,
+  #page-header #nav #nav-right #toggle-menu > a,
+  #page-header #nav #nav-right #toggle-menu > a:hover {
+    transition: none;
+  }
+
+  #page-header #nav #menus .menus_item > a.site-page,
+  #page-header #nav #menus .menus_item > a.site-page:hover {
+    transition: none !important;
+  }
+
+  .lopx-card:hover,
+  #garden-space > nav a:hover {
+    transform: none;
+  }
+}
+
+/* 导航精简：PC 端隐藏随机文章与中控台入口（移动端保留，侧边栏仍需要） */
+@media screen and (min-width: 769px) {
+  #page-header #nav #nav-right .nav-button#randomPost_button,
+  #page-header #nav #nav-right #center-console,
+  #page-header #nav #nav-right #center-console + label.widget {
+    display: none;
+  }
+}
+
+/* ============================================================
+   Navigation 15（ReactBits Pro「Quiet nav with a traveling underline」原生复刻）
+   2026-10-12
+   - 桌面 #menus：去掉主题 hover 实心胶囊，改由一条 2px 下划线同时承担
+     「当前项（静止停靠）」与「hover 项（迁移跟随）」两个信号，移出回落。
+   - 移动端 #sidebar-menus：同一逻辑纵向化——左侧 3px 指示条垂直滑动到当前项。
+   - 文字层级：仅「非图片头」态（not-top-img，主题给深色文字）下把当前/hover
+     项染成 --lopx-nav-active；文章页封面白字态不动文字，下划线换成浅色。
+   - 定位用 transform + width（或 height），不触发父级布局。
+   ============================================================ */
+#nav #menus .menus_items {
+  position: relative;
+}
+
+#nav #menus .lopx-nav-indicator {
+  position: absolute;
+  bottom: 10px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--lopx-accent);
+  opacity: 0;
+  pointer-events: none;
+  will-change: transform, width;
+  transition:
+    transform 0.32s var(--lopx-ease),
+    width 0.32s var(--lopx-ease),
+    height 0.32s var(--lopx-ease),
+    opacity 0.2s ease;
+}
+
+/* 图片头（文章页封面等）导航是白字，下划线换浅色才可见 */
+#page-header:not(.not-top-img) #nav #menus .lopx-nav-indicator {
+  background: rgba(238, 238, 238, 0.92);
+}
+
+/* Quiet：hover 不再铺实心胶囊，只留下划线（主题在 not-top-img 态给胶囊） */
+#page-header #nav #menus .menus_item:hover > a.site-page {
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+/* 当前项 / hover 项文字染色 —— 仅深色文字态，避免深蓝压在封面图上 */
+#page-header.not-top-img #nav #menus .menus_items .menus_item.is-active > a.site-page,
+#page-header.not-top-img #nav #menus .menus_items .menus_item:hover > a.site-page {
+  color: var(--lopx-nav-active) !important;
+}
+
+/* ---- 移动端抽屉：纵向滑动指示条 ---- */
+#sidebar #sidebar-menus .menus_items {
+  position: relative;
+}
+
+#sidebar #sidebar-menus .lopx-nav-indicator {
+  position: absolute;
+  top: 0;
+  left: 1px;
+  width: 3px;
+  height: 18px;
+  border-radius: 3px;
+  background: var(--lopx-accent);
+  opacity: 0;
+  pointer-events: none;
+  will-change: transform, height;
+  transition:
+    transform 0.32s var(--lopx-ease),
+    width 0.32s var(--lopx-ease),
+    height 0.32s var(--lopx-ease),
+    opacity 0.2s ease;
+}
+
+#sidebar #sidebar-menus .menus_items .menus_item.is-active > a.site-page {
+  color: var(--lopx-nav-active);
+}
+
+@media screen and (max-width: 768px) {
+  #nav #menus .lopx-nav-indicator {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #nav #menus .lopx-nav-indicator,
+  #sidebar #sidebar-menus .lopx-nav-indicator {
+    transition: none;
+  }
+}
+
+/* 文章页顶部原本的「无封面兜底」已由第 19 节取代：
+   现在统一给头部铺通栏封面图 + 暗色压底，因此标题/导航恢复白字，
+   不再需要按“有无封面”把文字切成深色。 */
+
+/* ============================================================
+   追番页横向滑动图窗（Garden → Anime）
+   数据源：source/_data/anime_gallery.yml
+   ============================================================ */
+#article-container .anime-gallery {
+  display: flex;
+  gap: 14px;
+  margin: 0 0 32px;
+  padding: 4px 4px 14px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-snap-type: x proximity;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 0, 0, 0.18) transparent;
+}
+
+#article-container .anime-gallery::-webkit-scrollbar {
+  height: 6px;
+}
+
+#article-container .anime-gallery::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  background-color: rgba(0, 0, 0, 0.18);
+}
+
+#article-container .anime-gallery::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+
+#article-container .anime-gallery-card {
+  position: relative;
+  flex: 0 0 auto;
+  width: 200px;
+  aspect-ratio: 3 / 4;
+  overflow: hidden;
+  border-radius: 14px;
+  scroll-snap-align: start;
+  background-color: #eef1f3;
+  box-shadow: 0 6px 18px rgba(25, 39, 52, 0.1);
+  /* 覆盖主题正文中的链接样式 */
+  color: inherit;
+  text-decoration: none;
+  transition: transform var(--lopx-dur-fast) ease, box-shadow var(--lopx-dur-fast) ease;
+}
+
+#article-container .anime-gallery-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 26px rgba(25, 39, 52, 0.18);
+}
+
+#article-container .anime-gallery-img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  object-fit: cover;
+  transition: transform 420ms ease;
+}
+
+#article-container .anime-gallery-card:hover .anime-gallery-img {
+  transform: scale(1.06);
+}
+
+#article-container .anime-gallery-title {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  display: -webkit-box;
+  overflow: hidden;
+  padding: 24px 12px 10px;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.78), rgba(0, 0, 0, 0));
+  color: #fff;
+  font-size: 0.82rem;
+  font-weight: 600;
+  line-height: 1.4;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+[data-theme='dark'] #article-container .anime-gallery-card {
+  background-color: #23262d;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.4);
+}
+
+@media screen and (max-width: 768px) {
+  #article-container .anime-gallery {
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+
+  #article-container .anime-gallery-card {
+    width: 150px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #article-container .anime-gallery-card,
+  #article-container .anime-gallery-img {
+    transition: none;
+  }
+
+  #article-container .anime-gallery-card:hover,
+  #article-container .anime-gallery-card:hover .anime-gallery-img {
+    transform: none;
+  }
+}
+
+/* ============================================================
+   导航栏双语副标题（中文主文字 + 英文小字）
+   由 themes/anzhiyu/layout/includes/header/menu_item.pug 渲染：
+   menu 里写成「中文 || English」，English 会输出为 .nav-sub-label
+   说明：父级 a 带 letter-spacing: 0.3rem / font-weight: 700，
+        这里必须显式重置，否则英文小字会被拉得很散。
+        用 opacity 而非 color 调淡，才能跟随 hover 时的反白。
+   ============================================================ */
+.nav-label .nav-sub-label {
+  margin-left: 6px;
+  font-size: 0.72em;
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  opacity: 0.78;
+}
+
+/* ============================================================
+   视觉统一层 —— 2026-09-29
+   背景：站内并存三套配色（首页鼠尾草绿灰 / 空间页蓝灰 / 主题默认宝典蓝），
+        另有列表宽度、字重、留白三处不统一，以及 tech、indie 两页的布局硬伤。
+   本段全部为「覆盖式」声明，删除本段即可完整回退到改造前。
+   ============================================================ */
+
+/* ---- 1. 主色统一：AnZhiYu 默认宝典蓝 → 首页鼠尾草绿灰 ----
+   主题变量链路：--anzhiyu-theme 是源头，--anzhiyu-main / --anzhiyu-main-op /
+   --anzhiyu-shadow-* 全部由它派生。只改 --anzhiyu-main 不够（-op 系列仍是蓝色），
+   必须覆盖源头。用 :root:root 提高权重，稳定压过主题的 :root 与 [data-theme] 定义。 */
+:root:root {
+  --anzhiyu-theme: #3a7aa0;
+  --anzhiyu-theme-op: #3a7aa024;
+  --anzhiyu-theme-op-deep: #3a7aa0dd;
+  --anzhiyu-main: #3a7aa0;
+  --anzhiyu-main-op: #3a7aa024;
+  --anzhiyu-shadow-theme: 0 8px 12px -3px rgba(58, 122, 160, 0.16);
+  --anzhiyu-shadow-main: 0 8px 12px -3px rgba(58, 122, 160, 0.16);
+}
+
+/* ---- 2. 右边缘对齐：首页 Recent Writing 原被限宽 900px，比 Projects 区窄约 194px ---- */
+#recent-writing {
+  max-width: none;
+}
+
+/* ---- 3. 列表标题字重统一为 600（页面主标题才用 700+）---- */
+#recent-writing li a {
+  font-weight: 600;
+}
+
+/* ---- 4 / 5. tech、indie 空间首页的旧列表修复已随旧结构删除（2026-10-02）---- */
+
+/* ---- 6. 正文宽度：已在第 12 节统一处理（容器 1000 / 内容铺满 934），此处不再单独设值 ---- */
+
+/* ---- 7. 留白收紧 ---- */
+#garden-space > section {
+  margin-top: 40px; /* 原 58px；第 12 节统一为 40px */
+}
+
+/* ---- 8. 主题内置的蓝色残留（静态色，不随 --anzhiyu-theme 变化）----
+   ① Pace 页面加载进度条：原为蓝→品红渐变
+   ② --hr-border：主题编译期按旧主色混出的淡蓝，需单独覆盖 */
+.pace-progress {
+  background-image: none !important;
+  background-color: #3a7aa0 !important;
+}
+
+:root:root {
+  --hr-border: rgba(58, 122, 160, 0.16);
+
+  /* 全局设计 token —— 三个 space 与 About 统一引用这一套。
+     历史：首页曾用灰绿、tech 蓝、indie 紫、About 蓝黑，同一站点并存三套色相。
+     2026-09-30：全站收敛为「青蓝 + 中性灰」单一色系（参考 ragnote.top 的 #67b2d0）。 */
+  --lopx-accent: #3a7aa0;
+  --lopx-ink: #1e262c;
+  --lopx-body: #3d464e;
+  --lopx-muted: #646e76;
+  --lopx-line: #e2e8ec;
+  /* 导航当前项文字色（Navigation 15）：亮色取第 29 节已校验的 #2c6688
+     （在 #eef2f7 页底上 5.5:1），暗色取 #9cc3e8（在 #1d1e22 上 ~9:1） */
+  --lopx-nav-active: #2c6688;
+
+  /* 动效节奏 token（2026-10-01）—— fast 微反馈 / mid 卡片位移 / slow 入场；
+     ease 只给位移与入场用，颜色/描边类小过渡用默认 ease 即可。
+     收敛历史：此前并存 160/180/200/220ms 与 0.25/0.28/0.32s 两族杂值。 */
+  --lopx-dur-fast: 180ms;
+  --lopx-dur-mid: 0.25s;
+  --lopx-dur-slow: 0.5s;
+  --lopx-ease: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* ---- 9. 首页横幅（index_img 启用后）----
+   背景图主体（人物）位于画面正中，主题默认把站点标题放在 top: 43% 处，
+   正好压在人物面部——浅肤色上白字对比度不足，实测已糊成一片。
+   处理：① 标题上移到上方区域；② 顶部补一层由深到透明的渐变压暗，
+   顺带稳住悬浮导航与标题的对比度。滚动提示 z-index 为 11，不受遮罩影响。 */
+#page-header.full_page::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(0, 0, 0, 0.42) 0%,
+    rgba(0, 0, 0, 0.18) 22%,
+    rgba(0, 0, 0, 0) 46%
+  );
+  pointer-events: none;
+  z-index: 1;
+}
+
+#page-header.full_page #site-info {
+  top: 22vh;
+  z-index: 2;
+}
+
+/* ---- 10. 文字色相统一（清理主题源码遗留色）----
+   ① 正文：主题 --font-color = #4c4948 是暖灰，改为绿灰调 #3d464e，与标题同色相
+   ② 标题：主题 source/css/var.styl 的 $font-color = #1F2D3D 是深蓝，
+      且不经 CSS 变量下发，编译成字面量写进 h2 / h1.page-title / 文章锚点标题，
+      连 h2 的下划线也是该色，只能在选择器层面覆盖。
+      实测命中：/tech/notes/ h2×5、/indie/devlog/ h2、/tags/ h1.page-title、
+      文章页 h1×2 与 h2×5；/garden/ 各页为 0（已是绿灰）。 */
+:root:root {
+  --font-color: var(--lopx-body);
+}
+
+:root:root #article-container h1,
+:root:root #article-container h2,
+:root:root #article-container h3,
+:root:root #article-container h4,
+:root:root h1.page-title {
+  color: var(--lopx-ink);
+}
+
+:root:root #article-container h2 {
+  border-bottom-color: rgba(58, 122, 160, 0.35);
+}
+
+/* ---- 11. 代码块浅色化后的文字对比度修正 ----
+   highlight_theme 已由 pale night（深蓝紫底）改为 mac light（白底）。
+   实测 mac light 的默认代码文字与行号同为 #90A4AE 蓝灰，
+   在白底上对比度仅 2.59:1（WCAG AA 需 4.5:1），且色相偏蓝、与站点绿灰冲突。
+   语法着色 token（string 等）由主题另行下发，不受本规则影响。 */
+:root:root figure.highlight pre,
+:root:root figure.highlight code,
+:root:root figure.highlight table,
+:root:root figure.highlight .line {
+  color: #3f4a52;
+}
+
+:root:root figure.highlight .gutter,
+:root:root figure.highlight .gutter .line,
+:root:root figure.highlight .line-numbers {
+  color: #a3aeb4;
+}
+
+/* ============================================================
+   12. 布局统一层 —— 2026-09-30
+   问题：三个 space 的容器宽度此前各写各的（tech-notes 964 / indie-devlog 900 /
+        其余 1160），1440 视口下内容左边缘在 x=173 与 x=271 之间跳动，
+        同一个「列表」在不同页面起跑线不同，是跨页观感不一致的直接来源。
+   方案：容器一律 1160px 居中；列表与正文一律 900px 且靠左，与 h1 左边缘对齐。
+        标题分级：space 主页 2.8rem，列表页 2rem。
+
+   —— 2026-10-06 变更：容器 1160 → 1000（收窄，用户反馈「所有页面都有点宽，
+      尤其是主页、动态页、About 这三个」）。列表页自 2026-10-05 起已是铺满容器，
+      不再是 900；本节上面那句「列表与正文一律 900」仅对 <p> 描述文字仍然成立。
+   新数值（1440 视口实测）：容器 1000 @ x=220，内容区 934，内容左缘 252。
+   落点共 7 处 max-width，全部同步为 1000：
+     :10 #lopx-home / :426 #space-tech(-cat) / :477 #space-indie(-cat)
+     / :525 #garden-space(-category) / :750 #about-page
+     / 本节 12.1 六选择器 / :1265 #essay_page
+   ⚠️ 本文件历史注释里的 140 / 172 / 173 / 1099 / 1268 / 1300 等坐标均为
+      1160 容器时代的实测值，收窄后整体右移 79px。为避免逐条改写引入笔误，
+      历史决策记录保留原样，读到时请按此换算，不要当成当前值。
+   ============================================================ */
+
+/* 12.1 容器：统一 1000px 居中（2026-10-06 由 1160 收窄，见本节头部变更记录） */
+#space-tech,
+#space-tech-cat,
+#space-indie,
+#space-indie-cat,
+#garden-space,
+#garden-category {
+  max-width: 1000px;
+  margin-right: auto;
+  margin-left: auto;
+  padding: 48px 32px 72px;
+}
+
+/* 12.2 内容：<p> 是空间描述文字，保持 900 的阅读行宽。
+   2026-10-05：原来这里的 garden 两处列表（#garden-space > section /
+   #garden-category > .article-sort）也限 900，与同页满宽的 nav 行叠出 170px 落差
+   （列表右缘 1099 vs 导航 1268），已改回铺满。tech/indie 的 .article-sort 本来就没限宽，
+   garden 跟齐。 */
+#space-tech-cat > p,
+#space-indie-cat > p {
+  max-width: 900px;
+}
+
+/* 12.3 标题分级：space 主页 2.8rem / 列表页 2rem（原 garden 分类页误用主页字号） */
+:root:root #space-tech > h1,
+:root:root #space-indie > h1,
+:root:root #garden-space > h1 {
+  font-size: 2.8rem;
+}
+
+:root:root #space-tech-cat > h1,
+:root:root #space-indie-cat > h1,
+:root:root #garden-category > h1 {
+  font-size: 2rem;
+}
+
+/* 12.4 garden 列表补回日期
+   原规则把 .article-meta-wrap 整块 display:none，而日期 .article-sort-item-time
+   是它的子元素，于是 garden 列表只剩标题、没有日期（tech/indie 列表都有）。
+   改为 display:contents 让 time 直接参与网格（.article-sort-item-time 已定位到第 1 列），
+   同时单独隐藏 tags，保持列表只有「日期 + 标题」两栏。 */
+#garden-space .article-sort .article-meta-wrap,
+#garden-category .article-sort .article-meta-wrap {
+  display: contents;
+}
+
+#garden-space .article-sort .article-sort-item-tags,
+#garden-category .article-sort .article-sort-item-tags {
+  display: none;
+}
+
+/* 12.5 空态占位：与内容同宽，观感与列表一致（10-05：列表已铺满，占位同步去掉 900 限宽） */
+.space-empty {
+  max-width: none;
+}
+
+/* 12.6 移动端：12.1 / 12.3 用的是 id 选择器且位置在文件末尾，
+   会压过主题原有的窄屏媒体查询，故在此显式补回窄屏取值。 */
+@media screen and (max-width: 768px) {
+  #space-tech,
+  #space-tech-cat,
+  #space-indie,
+  #space-indie-cat,
+  #garden-space,
+  #garden-category {
+    padding: 40px 20px 56px;
+  }
+
+  :root:root #space-tech > h1,
+  :root:root #space-indie > h1,
+  :root:root #garden-space > h1 {
+    font-size: 2.35rem;
+  }
+
+  :root:root #space-tech-cat > h1,
+  :root:root #space-indie-cat > h1,
+  :root:root #garden-category > h1 {
+    font-size: 1.8rem;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  #space-tech,
+  #space-tech-cat,
+  #space-indie,
+  #space-indie-cat,
+  #garden-space,
+  #garden-category {
+    padding-right: 20px;
+    padding-left: 20px;
+  }
+}
+
+/* ============================================================
+   13. 动态页（/essay/）—— 2026-09-30 建立 / 10-01 回归原版 / 10-03 对齐+放大 / 10-05 铺满
+   历史：容器收窄 900 + 卡片两列 48% → 10-01 回归主题原版三列
+        → 10-02 桌面单列 760 居中 → 10-03 单列限宽 900 靠左
+        → 10-05 横幅与列表一起放宽到满容器 1160。
+   现状（10-05，实测 1440）：
+   - 全页一条 1160 的内容柱（横幅 140–1300、列表 140–1300、正文左缘 173），
+     右侧空白 260px → 0；
+   - 10-03 曾把横幅从 1160 收到 900 去对齐同样 900 的列表，两者是对齐了，
+     但整页只用掉容器的 78%，从第 80px 空到第 1875px。10-05 复审确认：
+     首页/About 的内容都铺到 1273/1275（右侧仅 25–27px 的卡片内衬），
+     只有动态页是三位数空白 —— 故结论是「列表 900 才是离群值」，改宽而不是改窄；
+   - 正文 12.8px/700/justify → 15px/400/左对齐；元信息 11.2 → 12.5px；
+   - 图片由主题写死的「4 列 × height:100px」改为按张数自适应
+     （1 张 16:9 铺满 / 2 张两列 4:3 / 3 张起三列 1:1）。
+   主题原样式在 themes/anzhiyu/.../_extra/essay_page/essay_page.css，
+   本节全部为覆盖，不改主题文件；≤1200px 的多列响应式仍交回主题。
+   ============================================================ */
+#essay_page {
+  max-width: 1000px;
+  margin-left: auto;
+  margin-right: auto;
+  /* 主题原版对 essay 页设了 #page{padding:0}，此处对齐 → 横幅满宽 1000 */
+  padding: 0;
+}
+
+@media screen and (min-width: 1200px) {
+
+  /* 横幅宽度：2026-10-09 复核，已与全站同轴，无需额外约束
+     10-05 设为 max-width:none（撑满父容器）。本轮 1440 视口实测：父容器
+     #essay_page 自身就是 max-width:1000 居中，故 .essayPage 实测
+     1000 @215..1215，与首页 section、About、列表完全同轴，
+     不存在「动态页比其它页宽」的问题（此前记的 1270 是 10-05 前的旧值）。
+     继续交给父容器控制。 */
+  #essay_page .essayPage {
+    max-width: none;
+  }
+
+  /* 列表：实测同为 1000 @215..1215，与横幅同轴 */
+  #essay_page #bber .timeline ul#waterfall.list {
+    max-width: none;
+    margin-left: 0;
+    margin-right: 0;
+    padding-left: 0;
+  }
+
+  /* 单列：覆盖主题的 32% 三列与 2% 右间距 */
+  #essay_page #bber .timeline ul li.bber-item {
+    width: 100%;
+    margin-right: 0;
+  }
+}
+
+/* 底部「只展示最近 N 条」与列表同轴（原为整行居中） */
+#essay_page #bber-tips {
+  justify-content: flex-start;
+}
+
+@media screen and (min-width: 1200px) {
+  #essay_page #bber-tips {
+    max-width: none;
+  }
+}
+
+/* ---- 13.1 条目内容放大（不限宽度，移动端同样受益） ---- */
+
+/* 卡片内边距：左右 32 让正文/图片/元信息站上全站内容轴 x=173
+   （横幅标题、space h1、文章正文都在这条线上，10-05 实测）。
+   10-03 时左侧曾单独写 32、右侧 24（主题原为时间线头像留位），
+   左侧现在不放任何标记，改为左右对称。 */
+#essay_page #bber .timeline ul li.bber-item {
+  padding: 20px 32px 14px;
+}
+
+/* 正文：12.8px/700/justify → 15px/400/左对齐（中文短句两端对齐会拉出大空隙） */
+#essay_page #bber .bber-content .datacont {
+  font-size: 0.95rem;
+  font-weight: 400;
+  line-height: 1.75;
+  text-align: left;
+  word-break: normal;
+  overflow-wrap: break-word;
+  margin-bottom: 0.75rem;
+}
+
+/* 元信息胶囊与「链接」：11.2px → 12.5px */
+#essay_page #bber .bber-info-time,
+#essay_page #bber .bber-info-from,
+#essay_page #bber .bber-content-link {
+  font-size: 0.78rem;
+  padding: 2px 10px;
+}
+
+#essay_page #bber .bber-info .anzhiyufont {
+  font-size: 0.78rem;
+}
+
+/* ---- 13.2 图片：写死「4 列 × 100px」→ 按张数自适应 ----
+   主题在图片后追加 3 个 .bber-content-noimg 占位以凑满 4 列，先整体隐藏；
+   再用 grid + :has() 以「第 2 / 3 个孩子是否为图片」判断张数：
+   1 张满宽 16:9 限高 480、2 张两列 4:3、3 张起三列 1:1。
+   10-05 修正：单图原为「4:3 限宽 424」（10-03 为压高度所设），而卡片内容宽
+   842 → 右侧空出 418px（50%），观感像「图片没加载完」；双图/三图/移动端本身正常。
+   改为满宽 + max-height 兜底：既填满整行，又不会比原 424×318 更高。
+   不支持 :has() 的旧浏览器回落为单列小图，仍可读。 */
+
+#essay_page #bber .bber-content-noimg {
+  display: none;
+}
+
+#essay_page #bber .bber-container-img {
+  display: grid;
+  /* 单图满宽（2026-10-05）：原 minmax(0, 424px) 见上方注释
+     —— 已由下方 13.2' 的 620 上限取代 */
+  grid-template-columns: minmax(0, 1fr);
+  gap: 8px;
+  /* 主题原版有 justify-content: center —— 单图会居中悬空，
+     与「正文/双图左对齐」的轴线不一致，显式改回 start */
+  justify-content: start;
+  align-items: start;
+}
+
+#essay_page #bber .bber-content-img,
+#essay_page #bber .bber-content-video {
+  width: 100%;
+  height: auto;
+  margin-bottom: 0;
+}
+
+#essay_page #bber .bber-content-img img,
+#essay_page #bber .bber-content-video video {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: none;
+}
+
+/* 图片一律按原始比例显示（2026-10-09）
+   原先按张数写死裁切比：单图 16:9 + 限高 480、双图 4:3、三图 1:1，
+   配合 object-fit: cover，竖图与方图会被强行裁成横带或压成方块。
+   现改为「宽度撑满该列、高度随原始比例」，不再裁切也不再拉伸。
+   多图仍保留网格分列，只是同行高度不再强行对齐。 */
+
+/* ---- 13.2' 单图尺寸上限 620×480 —— 2026-10-09（用户选定 A 方案）----
+   实测（1440/1200 视口）：#bber li 宽 1000，但内文 .bber-content 宽 934
+   （左缘 248），单图原为满宽 → 934×525，占掉整行；竖图更会到 934×1245，
+   直接冲出卡片。故给单一图片的容器设上限：
+     · 网格列限到 ≤620 → 横图 16:9 变成 620×363
+     · 图片加 max-height:480 → 竖图 3:4 收窄成 360×480
+   又因为 minmax(0, 620px) 的下限是 0，窄视口下这一列自然收到容器宽度
+   （实测 390 视口 → 294 宽），移动端无需额外断点。
+   `:not(:has(...nth-child(2)))` = 容器里只有一张图；两张及以上的分列规则
+   在下方，多图【不】加限高（用户选定：只受列宽约束，保留自由度），
+   所以双图位的竖图仍会是 463×617 这种自然比例。
+   不支持 :has() 的旧浏览器不受此规则影响 → 退回满宽，仍可读。
+
+   ⚠️ 坑：**只写 max-height 不够，必须同时把 width 由 100% 改成 auto。**
+   首版只加了 max-height:480，实测竖图/方图得到的是 620×480 —— 即宽度先被
+   `width:100%`（见 13.2 的 .bber-content-img img 规则）钉死，max-height 只把
+   高度压下来，**不**按固有比例回算宽度；再叠加主题 essay_page.css 的
+   `object-fit: cover`，竖图就被裁成一条 620×480 的横带（肉眼只见中部）。
+   原位实验（同一节点，只改这两个属性）：
+     · width:100% + max-height:480            → 620×480（裁切）
+     · width:auto + max-width:100% + max-height:480 → 360×480（等比收窄）
+   原因是替换元素的约束冲突回算只在**两个尺寸都是 auto** 时生效：
+   width 已是确定值时，max-height 只作用于高度。所以此处用
+   `width:auto; max-width:100%`，让宽度回到「由内容定」，再由 max-height 反算。
+   注：width:auto 后小于 620 的窄图不再被放大，按原始像素显示 —— 符合
+   「给图片留自由度」的诉求。
+   实测（重建后）：横 620×363 / 竖 360×480 / 方 480×480 / 390 视口竖 294×392。
+   还因为图片比容器窄，图片左对齐靠 justify-content:flex-start，
+   圆角改由图片自己承担（容器不再贴合图片，13.3 的 overflow:hidden 贴不到）。 */
+#essay_page #bber .bber-container-img:not(:has(> .bber-content-img:nth-child(2))) {
+  grid-template-columns: minmax(0, 620px);
+}
+
+#essay_page #bber .bber-container-img:not(:has(> .bber-content-img:nth-child(2))) .bber-content-img,
+#essay_page #bber .bber-container-img:not(:has(> .bber-content-img:nth-child(2))) .bber-content-video {
+  justify-content: flex-start;
+}
+
+#essay_page #bber .bber-container-img:not(:has(> .bber-content-img:nth-child(2))) .bber-content-img img,
+#essay_page #bber .bber-container-img:not(:has(> .bber-content-img:nth-child(2))) .bber-content-video video {
+  width: auto;
+  max-width: 100%;
+  max-height: 480px;
+  border-radius: 8px;
+}
+
+/* 两张图：两列 */
+#essay_page #bber .bber-container-img:has(> .bber-content-img:nth-child(2)) {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+/* 三张及以上：三列 */
+#essay_page #bber .bber-container-img:has(> .bber-content-img:nth-child(3)) {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+/* ≤1200px 主题把卡片排两列（每张约 560px），三列过挤：统一两列 */
+@media screen and (max-width: 1200px) {
+
+  #essay_page #bber .bber-container-img:has(> .bber-content-img:nth-child(3)) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* ---- 13.3 横幅取景与移动端文字 —— 2026-10-05 ----
+   背景来自模板内联的 `background: url(...) left 28% / cover no-repeat`
+   （themes/anzhiyu/layout/includes/page/essay.pug:4）。内联声明优先级高于普通
+   作者样式 —— 覆盖 background-position 必须带 !important（同目录 fcirclePage
+   模板的内联写法本身即带 !important，可作参照）。
+   实测（1440 / 375）：
+   · 桌面 900×304（2.96:1）：cover 后只剩原图中部一条横带，垂直 28% 时头顶贴住
+     上边缘 → 下移到 12% 留出额头空间（与文章页封面同一思路，见第 23 节）。
+   · 移动 345×304（近 1:1）：36px 标题折行后「片」单字成孤行；副标题与人物手臂
+     重叠；「回到首页」圆钮压在杯子上。
+     → 高度压到 14rem、标题 clamp 到 ≤24px（10 字一行放得下），
+       并加左侧渐变 scrim，保证任何取景下白字都有暗底。 */
+
+/* 桌面取景：头顶不再贴边 */
+@media screen and (min-width: 1200px) {
+  #essay_page .essayPage {
+    background-position: center 12% !important;
+  }
+}
+
+@media screen and (max-width: 768px) {
+
+  #essay_page .essayPage {
+    height: 14rem;
+    background-position: center 20% !important;
+  }
+
+  /* 标题 36px → ≤24px：10 字（随手记的一些碎片）一行放得下，消除孤字「片」 */
+  #essay_page .essayPage .card-content .author-content-item-title {
+    font-size: clamp(1.5rem, 6.4vw, 2.25rem);
+    line-height: 1.15;
+    margin-bottom: 0.35rem;
+  }
+
+  /* 左侧渐变 scrim：标题与副标题在插画上也有稳定暗底。
+     .card-content 已是 position:absolute + z-index:2，文字保持在 scrim 之上。 */
+  #essay_page .essayPage::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    background: linear-gradient(90deg, rgba(6, 30, 60, 0.5) 0%, rgba(6, 30, 60, 0) 62%);
+  }
+
+  /* 「回到首页」圆钮：贴右下并收进 14px，避开插画主体（杯口） */
+  #essay_page .essayPage .card-content .banner-button-group {
+    right: 14px;
+    bottom: 14px;
+  }
+}
+
+/* ============================================================
+   14. 首页入场 / 页面切换过渡 —— 2026-09-30
+   站点启用了 pjax（_config.anzhiyu.yml pjax.enable = true），
+   切页时 DOM 会被整体替换，因此纯 CSS 动画会在每次切换时自动重放，
+   无需额外 JS 即可得到「不瞬间切换」的效果。
+   仅作用于首页区块，不改动 #page 上主题原有的 slide-in。
+   ============================================================ */
+@keyframes lopx-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+#lopx-home > section {
+  animation: lopx-fade-up var(--lopx-dur-slow) var(--lopx-ease) backwards;
+}
+
+#lopx-home > section:nth-of-type(1) {
+  animation-delay: 0.04s;
+}
+
+#lopx-home > section:nth-of-type(2) {
+  animation-delay: 0.15s;
+}
+
+#lopx-home > section:nth-of-type(3) {
+  animation-delay: 0.26s;
+}
+
+/* 首页文章列表项：逐条错开，避免整体同时出现 */
+#lopx-home #recent-writing li {
+  animation: lopx-fade-up var(--lopx-dur-slow) var(--lopx-ease) backwards;
+}
+
+#lopx-home #recent-writing li:nth-child(1) {
+  animation-delay: 0.34s;
+}
+
+#lopx-home #recent-writing li:nth-child(2) {
+  animation-delay: 0.42s;
+}
+
+#lopx-home #recent-writing li:nth-child(3) {
+  animation-delay: 0.5s;
+}
+
+#lopx-home #recent-writing li:nth-child(n + 4) {
+  animation-delay: 0.58s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+  #lopx-home > section,
+  #lopx-home #recent-writing li {
+    animation: none;
+  }
+}
+
+/* ============================================================
+   15. 分页面卡片效果 —— 2026-09-30
+   参考 blog.anheyu.com（AnZhiYu 官方站）的卡片语言：
+   白底 + 大圆角 + 极淡描边 + 柔和投影，hover 轻微上浮。
+   作用于三个 space 主页的内容区块，以及各列表页的行 hover。
+   不改模板结构，纯覆盖式声明。
+   ============================================================ */
+
+/* 15.1 区块卡片（2026-10-02：tech/indie 主页已改卡片网格，仅 garden 生效）
+   2026-10-05：横向内衬 26 → 32，与全站卡片 token 一致（卡片内容左缘 = 卡片左缘 + 32） */
+#garden-space > section {
+  padding: 22px 32px;
+  border: 1px solid var(--lopx-line);
+  border-radius: 16px;
+  background: var(--lopx-surface);
+  box-shadow: 0 2px 10px rgba(30, 38, 44, 0.04);
+  transition: box-shadow var(--lopx-dur-mid) var(--lopx-ease),
+    transform var(--lopx-dur-mid) var(--lopx-ease),
+    border-color var(--lopx-dur-mid) ease;
+}
+
+#garden-space > section:hover {
+  border-color: rgba(58, 122, 160, 0.3);
+  box-shadow: 0 10px 30px rgba(30, 38, 44, 0.1);
+  transform: translateY(-3px);
+}
+
+/* 15.2 列表页行 hover（garden 分类页；tech/indie 列表页已改卡片网格） */
+#garden-space .article-sort-item,
+#garden-category .article-sort-item {
+  border-radius: 10px;
+  transition: background-color var(--lopx-dur-mid) ease;
+}
+
+#garden-space .article-sort-item:hover,
+#garden-category .article-sort-item:hover {
+  background-color: rgba(58, 122, 160, 0.05);
+}
+
+/* 15.3 列表页整块：加一张外卡片，避免行 hover 悬空在页面底色上 */
+#garden-category {
+  border: 1px solid var(--lopx-line);
+  border-radius: 18px;
+  background: var(--lopx-surface);
+  box-shadow: 0 2px 12px rgba(30, 38, 44, 0.045);
+}
+
+/* 2026-10-05：此处原有一条 #garden-space > section { max-width: 926px }
+   （"卡片内边距会压缩 900 内容，向右放宽 26px 补偿"）。既然 12.2 的 900 限宽已去掉，
+   这条补偿规则一并删除 —— 列表卡片直接铺满容器内容区（172–1268）。 */
+
+/* ============================================================
+   16. 整体风格向 ragnote.top 靠拢 —— 2026-09-30
+   ragnote.top 的设计要素（自其线上 CSS 提取）：
+     主色 #67b2d0 · 高亮描边 #8ab4f8
+     底色 #fafafa（浅）/ #171717（深），卡片 #fff
+     文字 #171717 · #0f172a 近黑，次要 #4b5563 / #8a8a8a
+     描边 #e6e8ee · #e2e8f0 · #d1d5db
+     字体 MiSans
+   本段把全站底色、文字、圆角、阴影、描边统一到该体系。
+   主色沿用已达标的青蓝 #3a7aa0：ragnote 的 #67b2d0 在白底上
+   对比仅 2.4:1，作为文字不可读，故取同色相的加深版。
+   ============================================================ */
+
+:root:root {
+  /* 底色：2026-10-11 由 #fafafa 再降到 #eef2f7（用户选定 A1 方案）。
+     实测（CDP 探针 1440×900）：亮色下卡片 #fff 与底色的对比度只有 1.044:1，
+     三张白卡与页面几乎同色，整页发平；降到 #eef2f7 后为 1.124:1，与暗色侧持平。
+     ⚠️ 这里有**两个**变量都要给，缺一个将来换肤就会出现两套底色：
+       body    -> --global-bg            (_global/index.styl:240)
+       #web_bg -> --anzhiyu-background   (_global/index.styl:284)
+     #web_bg 带 z-index:-999 且为定位元素，绘制在 body 背景**之上** →
+     屏幕实际底色看的是 --anzhiyu-background；--global-bg 只在 #web_bg
+     未覆盖到的旋转边角可见。两者取值必须一致。 */
+  --anzhiyu-background: #eef2f7;
+  --global-bg: #eef2f7;
+  --anzhiyu-card-bg: #ffffff;
+  --anzhiyu-fontcolor: #171717;
+  --anzhiyu-secondtext: #646e76;
+
+  /* 圆角与投影：更柔和、更克制 */
+  --anzhiyu-border-radius: 12px;
+  --anzhiyu-shadow-border: 0 2px 10px rgba(15, 23, 42, 0.04);
+
+  /* 站内统一 token（2026-10-01：卡片底色与强调色提升为全站 token，
+     便于第 22 节用一条暗色覆盖统一处理，不必逐个选择器重写） */
+  --lopx-ink: #171717;
+  --lopx-body: #3d4149;
+  /* 2026-10-03 对比度小修：#8a8f98 白底仅 3.25:1（12–15px 小字 AA 要 4.5），
+     全站亮色灰统一 #646e76（5.2:1）；暗色 #a1a2b8 不动 */
+  --lopx-muted: #646e76;
+  --lopx-line: #e6e8ee;
+  --lopx-surface: #ffffff;
+  --lopx-accent: #3a7aa0;
+  --lopx-radius: 16px;
+}
+
+/* 16.1 字体：MiSans（与 ragnote 同源，加载失败自动回落系统字体） */
+:root:root body,
+:root:root button,
+:root:root input,
+:root:root textarea,
+:root:root select {
+  font-family: 'MiSans', -apple-system, BlinkMacSystemFont, 'Segoe UI',
+    'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+}
+
+/* 16.2 全站圆角与描边统一 */
+:root:root {
+  --style-border: 1px solid var(--lopx-line);
+  --style-border-hover: 1px solid rgba(58, 122, 160, 0.32);
+}
+
+/* 16.3 段落节奏：行高与段距略放松，贴近 ragnote 的呼吸感 */
+:root:root #article-container {
+  line-height: 1.85;
+}
+
+:root:root #article-container p {
+  margin: 0 0 1.15em;
+}
+
+/* ============================================================
+   17. Garden 彩色分类卡片 + 追番页卡片强化 —— 2026-09-30
+   ============================================================ */
+
+/* 17.1 Garden 分类：胶囊 → 彩色卡片（每类一个色相，左下图标的观感）
+   2026-10-05 对比度修正：卡片标签是 16.32px/600 白字（未达 WCAG「大字」门槛，
+   需 ≥4.5:1），而白字压在渐变中段。对线上截图做像素采样实测：
+   Games 4.00 / Anime 3.94 / Music 3.61 / Thoughts 2.96 / 背单词 3.04 —— 5 张全部不达标。
+   修法：把五组渐变的两个端色等比压暗（保持色相与渐变方向不变），
+   使渐变 50%（即标签所在位置）的白字对比度达到 5.0:1。
+   取值由脚本反解：对 50% 处混合色做亮度二分，求出等比系数 k（0.74~0.88）。
+   改后中点 5.00、最亮端 4.08~4.31（标签不在最亮端，留有余量）。 */
+#garden-space > nav {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 28px;
+}
+
+#garden-space > nav a {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: 6px;
+  min-height: 104px;
+  padding: 16px 18px;
+  border: 0;
+  border-radius: 14px;
+  background-image: linear-gradient(135deg, var(--gc1, #3a7aa0), var(--gc2, #4d93bb));
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.35;
+  box-shadow: 0 2px 10px rgba(15, 23, 42, 0.08);
+  transition: transform var(--lopx-dur-mid) var(--lopx-ease),
+    box-shadow var(--lopx-dur-mid) var(--lopx-ease);
+}
+
+#garden-space > nav a:hover {
+  border-color: transparent;
+  background-image: linear-gradient(135deg, var(--gc1, #3a7aa0), var(--gc2, #4d93bb));
+  color: #fff;
+  transform: translateY(-4px);
+  box-shadow: 0 12px 26px rgba(15, 23, 42, 0.18);
+}
+
+#garden-space > nav a small {
+  color: rgba(255, 255, 255, 0.78);
+  font-size: 0.78rem;
+}
+
+#garden-space > nav a:nth-child(1) {
+  --gc1: #336b8c;
+  --gc2: #4380a3; /* Games */
+}
+
+#garden-space > nav a:nth-child(2) {
+  --gc1: #4a5ab1;
+  --gc2: #6b78c9; /* Anime */
+}
+
+#garden-space > nav a:nth-child(3) {
+  --gc1: #6b54a2;
+  --gc2: #8872b3; /* Music */
+}
+
+#garden-space > nav a:nth-child(4) {
+  --gc1: #8e572f;
+  --gc2: #a46e47; /* Thoughts */
+}
+
+#garden-space > nav a:nth-child(5) {
+  --gc1: #2c6f63;
+  --gc2: #428776; /* 背单词 */
+}
+
+@media screen and (max-width: 768px) {
+  #garden-space > nav {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* 17.2 追番页封面卡片：页面自带 <style> 且在 DOM 中靠后，
+   故用 #article-container 前缀抬高特异性以确保生效 */
+#article-container .anime-gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+  gap: 18px;
+}
+
+#article-container .anime-gallery-card {
+  overflow: hidden;
+  border: 1px solid var(--lopx-line);
+  border-radius: 16px;
+  background: var(--lopx-surface);
+  box-shadow: 0 2px 10px rgba(15, 23, 42, 0.05);
+  transition: transform var(--lopx-dur-mid) var(--lopx-ease),
+    box-shadow var(--lopx-dur-mid) var(--lopx-ease),
+    border-color var(--lopx-dur-mid) ease;
+}
+
+#article-container .anime-gallery-card:hover {
+  border-color: rgba(58, 122, 160, 0.35);
+  box-shadow: 0 14px 30px rgba(15, 23, 42, 0.14);
+  transform: translateY(-5px);
+}
+
+#article-container .anime-gallery-img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  object-fit: cover;
+  background: #eef1f4;
+}
+
+#article-container .anime-gallery-title {
+  display: block;
+  padding: 10px 12px 12px;
+  color: var(--lopx-ink);
+  font-size: 0.9rem;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+/* ============================================================
+   18. 首页卡片：极简化 —— 2026-10-01 重构
+   参考 ragnote.top 的卡片语言（自其线上 CSS 提取）：
+     .article-card       { background:#fff; border:1px solid #e4e6e9;
+                           box-shadow:0 1px 2px rgba(0,0,0,.05) }
+     .article-card:hover { background:#f2f3f5; border-color:#0ea5e9;
+                           box-shadow:0 4px 6px rgba(0,0,0,.07) }
+   即「实色底 + 1px 描边 + 贴边浅阴影」，没有毛玻璃、位移与渐变。
+   改前本站首页叠了三层：主题给 #lopx-home 的白卡 → 两团径向光斑
+   → rgba(255,255,255,.68) + blur(18px) 的玻璃卡。白上叠白、边界发糊。
+   本次拆到只剩一层：页面铺 #fafafa，每个内容区块是一张白卡。
+   ============================================================ */
+
+/* 18.1 摘掉主题给 #lopx-home 的「外层大白卡」
+   来源：.layout > div:first-child:not(.recent-posts)，它会给首个子 div 加上
+   background: var(--anzhiyu-card-bg) + 12px 圆角 + 描边投影。
+   与内部区块叠在一起就是「卡套卡」，这里把它还原成透明容器。
+   左右内边距同时归零，使卡片与 /tech/ 等页面共用同一条 1160 容器轴线。 */
+#lopx-home {
+  padding: 56px 0 72px;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  background-image: none;
+  box-shadow: none;
+}
+
+/* 18.2 区块卡片：只有一层，实色底 + 贴边浅阴影
+   2026-10-05 轴线修正：横向内衬 26 → 32。实测全站内容左缘只有首页(167)与
+   About(165)偏离，其余（文章正文、space h1、essay 横幅标题与正文）都在 173
+   = 140(容器) + 1(卡片描边) + 32。故留 32，把这两个离群者对齐，而不是把 4 处
+   都改成 24 —— 32 是站内已有的主流取值。 */
+#lopx-home > section {
+  padding: 24px 32px;
+  border: 1px solid var(--lopx-line);
+  border-radius: 12px;
+  background: var(--lopx-surface);
+  /* 2026-10-11：0 1px 2px / .05 的贴边影太弱，卡片浮不起来（配合底色降档一起做）。
+     改为弥散的双层投影：近层压住边缘、远层扩散出柔和光晕。 */
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.05), 0 8px 24px rgba(15, 23, 42, 0.05);
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+
+/* 18.3 原「拆掉首页 .myInfoAndSayHello 第二层卡片」的规则 —— 2026-10-03 已删：
+   首页 hero 改用 .lopx-hero 结构（第 1 节），该元素在 / 与 /about/ 上均已无命中。 */
+
+/* 18.4 文章列表行：去掉半透明底，改由分隔线与 hover 划分 */
+#lopx-home #recent-writing li {
+  border-radius: 8px;
+  background: transparent;
+  box-shadow: none;
+  transition: background-color var(--lopx-dur-mid) ease;
+}
+
+#lopx-home #recent-writing li:hover {
+  background-color: rgba(58, 122, 160, 0.05);
+}
+
+/* 18.5 原「首页 Projects 空块」规则 —— 2026-10-09 已删：
+   「项目」这条 IA 整体移除（模板 section#home-projects 与 /projects/ 页面同批删除），
+   该 :has() 隐藏规则随之失效。 */
+
+/* 18.6 滚动浮起：保留（进入视口时自下浮起），去掉缩放让位移更克制 */
+@supports (animation-timeline: view()) {
+
+  @keyframes lopx-rise {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  #lopx-home > section,
+  #lopx-home #recent-writing li {
+    animation: lopx-rise linear both;
+    animation-timeline: view();
+    animation-range: entry 4% cover 28%;
+  }
+
+  /* 重置第 14 节按序号设置的固定延迟：滚动驱动下延迟会错位 */
+  #lopx-home > section:nth-of-type(n),
+  #lopx-home #recent-writing li:nth-child(n) {
+    animation-delay: 0s;
+  }
+}
+
+/* 18.6 窄屏：左右留一点边距，卡片不贴屏边 */
+@media screen and (max-width: 768px) {
+  #lopx-home {
+    padding: 40px 16px 56px;
+  }
+
+  #lopx-home > section {
+    padding: 20px 18px;
+  }
+}
+/* ============================================================
+   19. 文章页通栏封面 —— 2026-09-30（任务8）
+   原状：主题靠「图片主色」压底、右侧放一团旋转 10° 的模糊大图来撑起头部。
+        本站 mainTone 关闭 → 头部退化成「透明底 + 白色标题/白导航」，
+        压在浅色页面上几乎看不见；右侧还留出约 500px 空白。
+   处理：整幅封面图铺满头部 + 暗色渐变压底（与首页横幅同一套观感），
+        白字恢复可读，空白被填满，首屏不再「半张白纸」。
+   资源：source/img/1.jpg(1920x1080, 3.0MB) → post-cover.webp(1600x900, 144KB)
+   2026-10-09：底图改为「每篇独立」。
+        主题的 header/index.pug 会把文章 cover 写成内联变量
+        --lopx-post-cover:url('...') 挂在 #page-header 上，这里消费它；
+        未设 cover 的文章自动回落到 post-cover.webp。
+        注意 var() 的兜底必须是【合法图像】—— 写成裸字符串
+        var(--lopx-post-cover, '/img/post-cover.webp') 会被判为无效值，
+        整条 background-image 声明作废（三层全丢）。故兜底写作 url(...)。
+        横向仍是 center；纵向 center 34% 是把 16:9 源图裁成 26rem 通栏时的
+        取景基准（1440x416 的框 → 只可见源图纵向 16.5%~67.9%）。
+   ============================================================ */
+:root:not([data-theme='dark']) #page-header.post-bg {
+  height: 26rem;
+  background-color: #101c24;
+  /* 三层叠加：①左侧斜向压暗 → 标题所在区域；②上下压暗 → 导航与波浪过渡；③封面图 */
+  background-image: linear-gradient(
+      100deg,
+      rgba(8, 18, 26, 0.72) 0%,
+      rgba(8, 18, 26, 0.4) 38%,
+      rgba(8, 18, 26, 0.1) 66%,
+      rgba(8, 18, 26, 0.18) 100%
+    ),
+    linear-gradient(180deg, rgba(8, 18, 26, 0.5) 0%, rgba(8, 18, 26, 0.14) 42%, rgba(8, 18, 26, 0.66) 100%),
+    var(--lopx-post-cover, url('/img/post-cover.webp'));
+  background-repeat: no-repeat, no-repeat, no-repeat;
+  background-size: cover, cover, cover;
+  background-position: center center, center center, center 34%;
+}
+
+/* 19.1 主题那团「右侧旋转模糊大图」会和通栏封面叠影，且本站并不需要它 */
+:root:not([data-theme='dark']) #page-header.post-bg #post-top-cover {
+  display: none;
+}
+
+/* 19.2 顶图区恢复白字（含「原创 / 分类 / 标签」与日期行） */
+:root:not([data-theme='dark']) #page-header.post-bg #post-info .post-title {
+  color: #ffffff;
+  text-shadow: 0 2px 14px rgba(6, 14, 20, 0.45);
+}
+
+:root:not([data-theme='dark']) #page-header.post-bg #post-info :is(time, i, .post-meta-label, .post-meta-separator, .meta-firstline, .meta-secondline, .post-meta-wordcount, .word-count, .post-meta-date) {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+:root:not([data-theme='dark']) #page-header.post-bg #post-info :is(#post-meta, #post-firstinfo) a,
+:root:not([data-theme='dark']) #page-header.post-bg #post-info a span {
+  color: rgba(255, 255, 255, 0.92);
+}
+
+/* 19.3 分类 / 标签 / 「原创」改成半透明玻璃胶囊，压在照片上更干净 */
+:root:not([data-theme='dark']) #page-header.post-bg #post-info :is(.post-meta-original, .post-meta-categories, .article-meta__tags) {
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.16);
+  text-shadow: none;
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+}
+
+/* 19.4 窄屏：横幅矮一点，别把首屏吃满 */
+@media screen and (max-width: 768px) {
+  :root:not([data-theme='dark']) #page-header.post-bg {
+    height: 22rem;
+    min-height: 0;
+    background-position: center center, center center, center 28%;
+  }
+}
+
+/* ============================================================
+   20. 分页面（space）头部色带 —— 2026-09-30（任务8）
+   原状：/tech/、/indie/、/garden/ 及其列表页都是「白卡片 + 一行 h1」，很素。
+   处理：容器顶部压一条贴边的插画色带，标题落在色带上转白；
+        同一张封面图按 space 换裁切位置与色调，三个空间各有脸色，
+        再统一到与文章页通栏封面同一套美术语言。
+   实现：纯 CSS 伪元素，不改模板与页面生成器。
+   ============================================================ */
+
+/* 20.1 色带高度（2026-10-05 按实测重写说明）
+   实际分工（1440 实测）：
+   · tech / indie：色带 232 盖住 h1 + 副标题 + 43px 胶囊导航行（胶囊 245–289，带底 312）→ 余量 23px；
+   · garden：色带 232 只盖住 h1 + 描述行（描述行底 295），下方 104px 的分类大卡落在带外
+     （卡 323–427）。这是 17.1 把胶囊换成大卡后的结果，卡片自带渐变底，所以白字仍可读，
+     属「有意为之」而非事故 —— 旧注释写的「要盖住…胶囊导航行」已过期。
+   2026-10-03：tech/indie 分类化后分类子页与主页同构，导航行一直在；
+       主页在该空间只有一个分类时隐藏胶囊（模板加 .is-solo），色带相应降低。 */
+/* 2026-10-11：Garden 空间主页移出色带体系（改 Bento 卡片，见第 44 节），
+   色带只服务 tech / indie 的空间主页与三个分类列表页。 */
+:is(#space-tech, #space-indie) {
+  --lopx-band-h: 232px;
+}
+
+:is(#space-tech-cat, #space-indie-cat) {
+  --lopx-band-h: 168px;
+}
+
+:is(#space-tech, #space-indie).is-solo {
+  --lopx-band-h: 176px;
+}
+
+#garden-category {
+  --lopx-band-h: 104px;
+}
+
+/* 20.2 容器作为色带的定位基准 */
+:is(#space-tech, #space-tech-cat, #space-indie, #space-indie-cat, #garden-space, #garden-category) {
+  position: relative;
+}
+
+/* 20.3 色带本体：贴容器上沿，圆角沿用容器自身（只取上半），不裁切任何内容
+   2026-10-02：去掉照片。原方案三个空间共用同一张 post-cover.webp，
+   只靠遮罩色调与裁切位置区分，等于「换个角度拍同一张图」，仍属撞图。
+   现在改为纯 CSS：空间识别色深色渐变 + 细网格纹理，各空间独立成色，
+   以后想换回照片，只需把 url() 追加到 background-image 末尾。
+   2026-10-11：Garden 空间主页移出（页头已删，色带会变成一整块无内容绿底）。 */
+:is(#space-tech, #space-tech-cat, #space-indie, #space-indie-cat, #garden-category)::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  height: var(--lopx-band-h, 120px);
+  pointer-events: none;
+  border-radius: inherit;
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 0;
+  background-image: repeating-linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.055) 0 1px,
+      transparent 1px 32px
+    ),
+    repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.045) 0 1px, transparent 1px 32px),
+    var(--lopx-band-glow, none),
+    var(--lopx-band-base, linear-gradient(115deg, #0b2130 0%, #1f6288 100%));
+  background-repeat: repeat, repeat, no-repeat, no-repeat;
+  background-size: 32px 32px, 32px 32px, cover, cover;
+  background-position: left top, left top, center center, center center;
+}
+
+/* 20.4 三个空间各一套渐变色（深底 → 识别色），色相与 26 节首页空间卡同源 */
+:is(#space-tech, #space-tech-cat) {
+  --lopx-band-base: linear-gradient(115deg, #0b2130 0%, #163f57 58%, #1f6288 100%);
+  --lopx-band-glow: radial-gradient(
+    120% 130% at 88% 6%,
+    rgba(24, 95, 165, 0.5) 0%,
+    rgba(24, 95, 165, 0) 62%
+  );
+}
+
+:is(#space-indie, #space-indie-cat) {
+  --lopx-band-base: linear-gradient(115deg, #171432 0%, #2d2760 58%, #4a3f9b 100%);
+  --lopx-band-glow: radial-gradient(
+    120% 130% at 88% 6%,
+    rgba(83, 74, 183, 0.5) 0%,
+    rgba(83, 74, 183, 0) 62%
+  );
+}
+
+:is(#garden-category) {
+  --lopx-band-base: linear-gradient(115deg, #0b2a23 0%, #14503f 58%, #1f6d55 100%);
+  --lopx-band-glow: radial-gradient(
+    120% 130% at 88% 6%,
+    rgba(15, 110, 86, 0.5) 0%,
+    rgba(15, 110, 86, 0) 62%
+  );
+}
+
+/* 暗色下页面底色本身就是深色，给色带补一条下沿发丝线保证边界可见 */
+[data-theme='dark'] :is(#space-tech, #space-tech-cat, #space-indie, #space-indie-cat, #garden-space, #garden-category)::before {
+  box-shadow: inset 0 -1px 0 rgba(255, 255, 255, 0.08);
+}
+
+/* 20.5 色带是绝对定位元素，会把非定位兄弟盖住；所有直接子元素提到它之上 */
+:is(#space-tech, #space-tech-cat, #space-indie, #space-indie-cat, #garden-space, #garden-category) > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* 20.6 色带上的标题转白
+   2026-10-02：色带恒为深底（不再是「亮色主题下的照片 + 遮罩」），
+   因此 20.6 / 20.7 / 20.8 一并去掉 :not([data-theme='dark']) 限制，
+   两个主题共用同一套白字。 */
+:root:root :is(#space-tech, #space-tech-cat, #space-indie, #space-indie-cat, #garden-category) > h1 {
+  color: #ffffff;
+  text-shadow: 0 2px 12px rgba(6, 14, 20, 0.42);
+}
+
+/* 20.7 副标题（tech / indie 的空间说明、garden 的分类串）转浅白 */
+:root:root :is(#space-tech, #space-indie) > p {
+  color: rgba(255, 255, 255, 0.78);
+}
+
+/* 20.7b Garden 的分类串在 941 行带一对浅灰发丝线（原本用于白底分隔），
+   移到深色色带上会变成两条突兀的杂线，这里统一透明，只留文字；
+   分隔交给色带自身的下沿。 */
+:root:root :is(#garden-category) > p {
+  border-color: transparent;
+}
+
+/* 20.8 色带上的空间导航胶囊（玻璃质感，压在渐变上）
+   与 28 节的卡片网格配套：主页给 Projects / Notes，列表页给空间主页 + 同级列表。 */
+:root:root :is(#space-tech, #space-indie, #garden-space, #space-tech-cat, #space-indie-cat, #garden-category) > nav.lopx-space-nav > a,
+:root:root :is(#space-tech, #space-indie, #garden-space, #space-tech-cat, #space-indie-cat, #garden-category) > nav.lopx-space-nav > span {
+  display: inline-flex;
+  align-items: center;
+  padding: 7px 16px;
+  border: 1px solid rgba(255, 255, 255, 0.26);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.13);
+  color: #ffffff;
+  font-size: 0.82rem;
+  font-weight: 650;
+  text-decoration: none;
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  transition: background-color var(--lopx-dur-mid) ease, border-color var(--lopx-dur-mid) ease;
+}
+
+:root:root :is(#space-tech, #space-indie, #garden-space, #space-tech-cat, #space-indie-cat, #garden-category) > nav.lopx-space-nav > a:hover {
+  border-color: rgba(255, 255, 255, 0.5);
+  background: rgba(255, 255, 255, 0.26);
+  color: #ffffff;
+}
+
+/* 当前页胶囊：不可点，靠底色与描边区分 */
+:root:root :is(#space-tech, #space-indie, #garden-space, #space-tech-cat, #space-indie-cat, #garden-category) > nav.lopx-space-nav > span.is-active {
+  border-color: rgba(255, 255, 255, 0.62);
+  background: rgba(255, 255, 255, 0.28);
+}
+
+/* 数量：胶囊内的次要信息，不抢标题 */
+:root:root :is(#space-tech, #space-indie, #garden-space, #space-tech-cat, #space-indie-cat, #garden-category) > nav.lopx-space-nav small {
+  margin-left: 6px;
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 0.78rem;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}
+
+/* 20.9 列表页：色带只有 104px 高，把第一条内容推离色带下沿，别贴在一起 */
+:is(#space-tech-cat, #space-indie-cat, #garden-category) > :is(article, .article-sort, p):first-of-type {
+  margin-top: 24px;
+}
+
+/* 20.10 窄屏
+   2026-10-02：列表页新增胶囊导航，窄屏下导航可能折到第二行，色带同步加高。
+   2026-10-05：实测 375 下 tech 的胶囊底 263 与带底 270 只差 7px，贴得太紧 →
+       tech / indie 单独提到 220（余量 27px）。garden 窄屏下是大卡（3 行，本身在带外），
+       维持 200，不必跟着加高。 */
+@media screen and (max-width: 768px) {
+  :is(#space-tech, #space-indie) {
+    --lopx-band-h: 220px;
+  }
+
+  :is(#space-tech-cat, #space-indie-cat) {
+    --lopx-band-h: 168px;
+  }
+
+  #garden-category {
+    --lopx-band-h: 92px;
+  }
+}
+
+/* ============================================================
+   21. 文章页「左文右纲」收口 —— 2026-09-30（任务9）
+   排查结果：侧栏与文章目录其实主题本来就有（aside.enable / toc.post 一直开着），
+   之所以看起来「没有右栏」，是两个原因：
+     a) toc.style_simple 为 false → 文章页侧栏会依次渲染作者卡、公告卡、
+        微信卡、置顶卡，目录被挤到首屏之外，第一屏只看得到「吃瘪了才有力气干活」；
+     b) 两篇文章在 front-matter 里写了 aside: false，直接变成全宽特例。
+   本次：style_simple 置 true（文章页侧栏只留目录，即 Butterfly 的「大纲」形态），
+        并删掉 Snake-Game 那篇的 aside: false，再把目录卡的观感并入全站卡片语言。
+   注：《网站装修记录》正文没有标题层级，toc() 输出为空 → 保留 aside: false。
+        否则侧栏会退回「作者卡 + 公告卡 + 标签 + 归档」的整摞卡片，比留白更吵。
+   ============================================================ */
+/* 21.1 目录卡并入全站卡片语言
+   注意主题用的是 #aside-content #card-toc ... 这一串（2 个 id），
+   只写 #card-toc 会被它压过去，必须同样带上 #aside-content 才生效。 */
+#aside-content #card-toc {
+  border: 1px solid var(--lopx-line);
+  box-shadow: 0 2px 10px rgba(30, 38, 44, 0.04);
+}
+
+#aside-content #card-toc .item-headline {
+  color: var(--lopx-ink);
+}
+
+/* 21.2 目录条目常态可读
+   主题原设计把「非当前条目」压到 opacity .6 再叠 1px 模糊，只有鼠标悬停整张
+   卡时才恢复清晰；#8a8f98 × 0.6 在白底上等效对比约 1.9:1，既读不了、也不像大纲。
+   这里取消模糊与降透明，仅靠颜色/字重区分当前条目。 */
+#aside-content #card-toc .toc-content .toc-link {
+  color: #4a5058;
+}
+
+#aside-content #card-toc .toc-content .toc-link:not(.active) span,
+#aside-content #card-toc:hover .toc-content .toc-link:not(.active) span {
+  opacity: 1;
+  filter: none;
+  -webkit-filter: none;
+}
+
+#aside-content #card-toc .toc-content .toc-link:not(.active) span:hover {
+  color: var(--anzhiyu-main);
+}
+
+/* 21.3 当前条目：主题给的是「卡片同色底 + 主色字」，底色看不出选中，补一层淡主色 */
+#aside-content #card-toc .toc-content .toc-link.active {
+  background-color: rgba(58, 122, 160, 0.1);
+  color: var(--anzhiyu-main);
+  font-weight: 600;
+}
+
+/* 21.4 窄屏：主题把目录改成右下角浮层（901–1200px 也是），补一点圆角描边 */
+@media screen and (max-width: 1200px) {
+  #aside-content #card-toc {
+    border-radius: 12px;
+    box-shadow: 0 8px 30px rgba(20, 26, 32, 0.16);
+  }
+}
+
+/* ============================================================
+   22. 浮游菜单下线 + 导航栏暗色切换 + 暗色模式收口 —— 2026-10-01
+   三件事：
+     ① 右下角 #rightside 浮游菜单隐藏（入口挪位）
+     ② 暗色切换按钮移到导航栏（样式）
+     ③ 暗色 token 收口 —— 第 16 节把底色/文字/描边写成了亮色常量，
+        暗色下首页与各 space 卡片仍是死白，本段整套换掉
+   ============================================================ */
+
+/* 22.1 隐藏右下角浮游菜单
+   原 #rightside 承载：设置齿轮、阅读模式、繁简、暗色、隐藏侧栏、目录、评论、回到顶部。
+   · 「回到顶部」导航栏本来就有（#nav-totop，带百分比），功能不丢；
+   · 「暗色切换」由 /js/nav-darkmode.js 挪到导航栏右侧。
+   注意：此处只隐藏、不删 DOM —— 主题对 #rightside 用的是事件委托
+   （main.js 在 #rightside 上监听 click，再按 e.target.id 派发到 rightSideFn），
+   #darkmode 必须留在容器内，转发点击才生效。 */
+#rightside {
+  display: none !important;
+}
+
+/* 22.2 导航栏暗色按钮：沿用 #nav-right .nav-button 的既有观感 */
+#page-header #nav #nav-right .lopx-darkmode-btn a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#page-header #nav #nav-right .lopx-darkmode-btn i {
+  font-size: 1.05rem;
+}
+
+#page-header #nav #nav-right .lopx-darkmode-btn a:hover {
+  color: var(--anzhiyu-main);
+}
+
+/* 22.3 暗色 token（全站）
+   两条线要一起修：
+   a) 本站 token。取值对齐主题自身的暗色体系（底 #18171d / 卡 #1d1e22 / 描边 #42444a），
+      避免「我的卡片」与「主题组件」两套暗度。强调色在暗底上必须提亮：
+      #3a7aa0 压 #1d1e22 只有约 3.5:1，换成 ragnote 暗色所用的 #67b2d0（约 7.1:1）。
+   b) 主题 token。⚠️ 关键坑：第 16 节的 `:root:root`（特异性 0,2,0）**高于**
+      主题的 `[data-theme="dark"]`（0,1,0），于是第 16 节写下的亮色值在暗色下依然生效，
+      主题自己的暗色定义被整体压掉 —— 最直观的症状是 #web_bg 一直是 #fafafa，
+      页面底色根本没变暗。必须用 (0,3,0) 的 `:root:root[data-theme='dark']` 才拿得回来。 */
+:root:root[data-theme='dark'] {
+  /* a) 本站 token */
+  --lopx-ink: #f7f7fa;
+  --lopx-body: #c9cad6;
+  --lopx-muted: #a1a2b8;
+  --lopx-line: #42444a;
+  --lopx-surface: #1d1e22;
+  --lopx-accent: #67b2d0;
+  --lopx-nav-active: #9cc3e8;
+  --style-border-hover: 1px solid rgba(103, 178, 208, 0.42);
+  --hr-border: rgba(103, 178, 208, 0.2);
+
+  /* b) 主题 token —— 把第 16 节锁死的亮色值在暗色下换回来（取值同主题 [data-theme="dark"]） */
+  --anzhiyu-background: #18171d;
+  --anzhiyu-card-bg: #1d1e22;
+  --anzhiyu-fontcolor: #f7f7fa;
+  --anzhiyu-secondtext: #a1a2b8;
+  --anzhiyu-shadow-border: 0 2px 10px rgba(0, 0, 0, 0.4);
+  /* 2026-10-11：第 16 节的 :root:root（0,2,0）高于主题的 [data-theme="dark"]（0,1,0），
+     新加的 --global-bg 会被它在暗色下也染成浅色，故这里必须显式换回。
+     取值沿用主题既有的 #0d0d0d（原样，不改动暗色观感）。 */
+  --global-bg: #0d0d0d;
+}
+
+/* 22.4 首页在第 1 节里另定义了一套同名 token，作用域是 #lopx-home（特异性 1,0,0
+   高于 :root），22.3 到不了它，需按同等选择器权重再写一遍。 */
+[data-theme='dark'] #lopx-home {
+  --lopx-ink: #f7f7fa;
+  --lopx-muted: #a1a2b8;
+  --lopx-line: #42444a;
+  --lopx-surface: #1d1e22;
+  --lopx-accent: #67b2d0;
+}
+
+/* 22.5 卡片阴影：亮色用弥散浅影，暗色要更深才看得出层次 */
+[data-theme='dark'] #lopx-home > section,
+[data-theme='dark'] #garden-space > section,
+[data-theme='dark'] #garden-category,
+[data-theme='dark'] #article-container .anime-gallery-card {
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+/* 22.6 hover 反馈：亮色的淡主色底在暗色下几乎看不见，提高不透明度 */
+[data-theme='dark'] #lopx-home #recent-writing li:hover,
+[data-theme='dark'] #garden-space .article-sort-item:hover,
+[data-theme='dark'] #garden-category .article-sort-item:hover {
+  background-color: rgba(103, 178, 208, 0.1);
+}
+
+/* 22.7 目录：第 21 节的 #4a5058 是亮色专用，暗底上读不出来 */
+[data-theme='dark'] #aside-content #card-toc .toc-content .toc-link {
+  color: #b8bcc8;
+}
+
+[data-theme='dark'] #aside-content #card-toc .toc-content .toc-link.active {
+  background-color: rgba(103, 178, 208, 0.14);
+}
+
+/* 22.8 Garden 分类彩卡：暗色下渐变底过亮，压暗一档 */
+[data-theme='dark'] #garden-space > nav a {
+  filter: brightness(0.78) saturate(0.9);
+}
+
+[data-theme='dark'] #garden-space > nav a:hover {
+  filter: brightness(0.95) saturate(1);
+}
+
+/* ============================================================
+   23. 暗色走查修正 —— 2026-10-01
+   方法：对首页 / 三个 space / 列表页 / 动态 / About / 追番 / 文章 / 404
+        共 13 个页面，在亮暗两态下跑「对比度探针」——遍历 main 内所有文本叶子，
+        沿父链找到最近的不透明底色，按 WCAG 公式算对比度，列出 < 4.5:1 的项。
+        下面是这份客观清单对应的修复。
+   注意：截图看「文字发灰/看不见」有一种假象——首页 section 带 lopx-rise 入场动画，
+        用整页截图（captureBeyondViewport）会在动画中途光栅化，把白字拍成灰字。
+        首页「你好，我是 Fanbo」实测计算色是 rgb(247,247,250)，属于该假象，非缺陷。
+   ============================================================ */
+
+/* 23.1 Garden 是全站唯一把 ink/muted/accent 写成字面量色值的 space
+   （tech 是 --hardware-ink: var(--lopx-ink)，indie 同理，所以它们暗色下自动跟随）。
+   探针实测：/garden/ 的 h1、h2、「Recent Garden」、列表文章标题在暗色下
+   color 仍是 #1e262c，压在 #1d1e22 卡片上只有 1.09:1 —— 等于完全不可见。 */
+[data-theme='dark'] #garden-space,
+[data-theme='dark'] #garden-category {
+  --garden-ink: var(--lopx-ink);
+  --garden-muted: var(--lopx-muted);
+  --garden-line: var(--lopx-line);
+  --garden-accent: var(--lopx-accent);
+}
+
+/* 23.2 代码块：mac light 的语法配色是为白底设计的，而主题在 mac light 下把
+   代码块底色取成 var(--anzhiyu-card-bg)（暗色下自动变暗卡色）——
+   于是「深色字 + 深色底」，探针实测每一行 .line 只有 1.83:1。
+   这里在暗色下换一套暗底可读的 token 配色，底色仍沿用主题的卡片色。 */
+[data-theme='dark'] #article-container figure.highlight .line {
+  color: #c9d1d9;
+}
+
+[data-theme='dark'] #article-container figure.highlight .gutter,
+[data-theme='dark'] #article-container figure.highlight .gutter .line,
+[data-theme='dark'] #article-container figure.highlight .line-numbers {
+  color: #6e7681;
+}
+
+[data-theme='dark'] #article-container figure.highlight :is(.comment, .quote) {
+  color: #8b949e;
+}
+
+[data-theme='dark'] #article-container figure.highlight :is(.keyword, .selector-tag, .built_in, .type) {
+  color: #79b8ff;
+}
+
+[data-theme='dark'] #article-container figure.highlight :is(.string, .attr, .addition, .regexp) {
+  color: #9ecb9b;
+}
+
+[data-theme='dark'] #article-container figure.highlight :is(.number, .literal, .symbol, .bullet, .meta .number) {
+  color: #e6a06a;
+}
+
+[data-theme='dark'] #article-container figure.highlight :is(.title, .function, .section, .name) {
+  color: #c9a7f5;
+}
+
+[data-theme='dark'] #article-container figure.highlight :is(.variable, .template-variable, .selector-id, .selector-class) {
+  color: #e3b341;
+}
+
+[data-theme='dark'] #article-container figure.highlight :is(.meta, .deletion, .tag) {
+  color: #ff8a80;
+}
+
+/* 23.3 About / 首页的能力标签与次要文字 —— 2026-10-03 已删：
+   原规则针对 .author-tag / .title1（首页 hero 旧结构），改版后 .lopx-hero-chips
+   已用 var(--lopx-muted) 与 var(--lopx-line)，暗色下随 token 自动适配。 */
+
+/* 23.4 文章页通栏封面：第 19 节整段是 :root:not([data-theme='dark'])，暗色下不生效，
+   文章头部会退回主题默认（纯黑底、无图）。这里给暗色补同一套三层背景，
+   只把压暗层加重一档 —— 暗色页面里封面要更沉，白字才压得住。
+   底图同样消费 --lopx-post-cover（见第 19 节说明），兜底 post-cover.webp。 */
+[data-theme='dark'] #page-header.post-bg {
+  height: 26rem;
+  background-color: #0f1419;
+  background-image: linear-gradient(
+      100deg,
+      rgba(6, 10, 14, 0.86) 0%,
+      rgba(6, 10, 14, 0.6) 38%,
+      rgba(6, 10, 14, 0.26) 66%,
+      rgba(6, 10, 14, 0.36) 100%
+    ),
+    linear-gradient(180deg, rgba(6, 10, 14, 0.62) 0%, rgba(6, 10, 14, 0.3) 42%, rgba(6, 10, 14, 0.78) 100%),
+    var(--lopx-post-cover, url('/img/post-cover.webp'));
+  background-repeat: no-repeat, no-repeat, no-repeat;
+  background-size: cover, cover, cover;
+  background-position: center center, center center, center 34%;
+}
+
+[data-theme='dark'] #page-header.post-bg #post-top-cover {
+  display: none;
+}
+
+@media screen and (max-width: 768px) {
+  [data-theme='dark'] #page-header.post-bg {
+    height: 22rem;
+    min-height: 0;
+    background-position: center center, center center, center 28%;
+  }
+}
+
+/* 23.5 动态页横幅：essay-cover 是高饱和青蓝插画，暗色下是一整块发光的亮色矩形。
+   用 filter 整流压暗 —— 文字与底图等比缩放，对比度基本不变。
+   ⚠️ 容器 id 是下划线写法 `#essay_page`，写成 `#essay-page` 不匹配（第 13 节沿用）。 */
+[data-theme='dark'] #essay_page .essayPage {
+  filter: brightness(0.72) saturate(0.85);
+}
+
+[data-theme='dark'] #essay_page .essayPage:hover {
+  filter: brightness(0.82) saturate(0.92);
+}
+
+/* 23.6 404：左侧是「红黑线稿 + 浅灰底」的 gif，暗色下是一块刺眼的白方块。
+   反相（invert）会把线稿反成粉红，配色与站点冲突，因此改为压暗 + 降饱和，
+   保留原插画色相，只让它沉进暗底。 */
+[data-theme='dark'] .error-img {
+  filter: brightness(0.45) saturate(0.5) contrast(1.08);
+}
+
+/* 23.7 小标签与「原创」胶囊的残留项 —— 2026-10-02：原选择器
+   :is(#about-page, #lopx-home) .author-content-item-tips 已无命中（About 改版后
+   该元素只存在于侧栏 console 卡内，不在两个根节点之下），故删除。 */
+
+/* ============================================================
+   24. 文章页并入站内统一轴线 —— 2026-10-01（版式对齐收尾）
+   量到的事实（1440 视口，探针实测）：
+     · space 页：容器 x=140 / 宽 1160，内容左缘 172 / 宽 900
+     · About 页：容器原 1060 / x=190 → 已并入 1160（见「About」段）
+     · 动态页  ：容器原 900 / x=270 → 已并入 1160，内容 900 靠左
+     · 文章页  ：容器 x=44 / 宽 1400；标题左缘 44、正文左缘 85（宽 970）
+                 —— 页内标题与正文差 41px，跨页又比 space 页左移 128px；
+                 无侧栏的那篇正文宽 1270，是第三套宽度
+   处理：文章页收进同一轴线 —— 容器 1224（= 1160 内容 + 双侧 32 padding），
+        正文卡片内边距 40 → 32（右移 8px），使正文左缘正好落在 172；
+        头部标题区同轴右移，与正文左缘对齐。
+   两栏宽度：1160 - 300(侧栏) = 860 卡片 → 正文 796px（约 50 汉字/行）；
+        无侧栏时把卡片锁到 860，避免正文独自拉宽到 1270。
+   断点：仅 ≥1225px 生效。1224 以下容器已无左右余量，
+        此时交回主题自身规则（≤1400 时主题把头部改成 left:0 + padding 56px），
+        否则 calc 会算出负偏移。
+
+   —— 2026-10-06 现状（重要，勿误判为漏改）：
+      本节这套 1224 轴线**保持不变**。当日全站其余容器由 1160 收窄到 1000，
+      全站内容左缘随之由 173 变为 253（见第 12 节头部变更记录），文章页仍是 173,
+      故**跨页切换时内容左缘会跳 80px**。这是用户知悉后明确选择的：
+      曾提供「一并收窄到 1064（正文行宽 794 → 约 700）」与「保持不动」两个选项，
+      用户选择**保持不动**。
+      **不要以「轴线不一致」为由修改本节。**
+   —— 2026-10-09 二次确认：这轮「排版收敛」用户再次选择**保持不动**，
+      理由不变。此后若再有「统一宽度」的提议，请直接引用本条，不必重复询问。
+   ============================================================ */
+@media screen and (min-width: 1225px) {
+  #content-inner.layout {
+    max-width: 1224px;
+    padding: 1.25rem 32px;
+  }
+
+  /* 正文左缘 = 容器内容左缘(140) + 32 = 172，与 space 页内容列对齐 */
+  #content-inner #post {
+    padding: 2rem;
+  }
+
+  /* 无侧栏文章（front-matter 写了 aside: false）：卡片与两栏时同宽。
+     ⚠️ 主题 .layout 是 justify-content: center，限宽后卡片会被居中飘走，必须拉回左缘 */
+  #content-inner:not(:has(#aside-content)) #post {
+    max-width: 860px;
+    margin-right: auto;
+  }
+
+  /* 头部标题区：从主题的 1400 轴线移到 1224 轴线，再内缩 32px 与正文同左缘 */
+  #page-header #post-info {
+    left: calc((100% - 1224px) / 2 + 64px);
+    width: 1096px;
+    padding-left: 0;
+    padding-right: 0;
+  }
+}
+
+/* ============================================================
+   25. 正文阅读体验（2026-10-01）
+   只作用于 #article-container，不动 --global-font-size，
+   避免整站 UI（导航/侧栏/卡片）跟着一起缩放。
+   中文的"美化"核心是正文：17px / 行高 1.85 / 段距呼吸感。
+   ============================================================ */
+#article-container {
+  font-size: 17px;
+  line-height: 1.85;
+}
+
+#article-container p {
+  margin: 0 0 1.25em;
+  line-height: 1.85;
+}
+
+#article-container li {
+  line-height: 1.8;
+}
+
+#article-container ul,
+#article-container ol {
+  margin: 1.25em 0;
+  padding-left: 1.6em;
+}
+
+#article-container blockquote {
+  margin: 1.5em 0;
+  line-height: 1.8;
+}
+
+#article-container figure {
+  margin: 1.75em auto;
+}
+
+/* 窄屏回落：17px 在 375px 宽下换行太碎 */
+@media (max-width: 768px) {
+  #article-container {
+    font-size: 1rem;
+  }
+}
+
+/* ============================================================
+   26. 首页三空间入口带 —— 2026-10-01
+   背景：首页此前只有 About / Projects / Recent Writing 三段，
+        三个 space 的存在感全靠导航，进首页扫不到「这站有什么」。
+   处理：About 与 Projects 之间加三条色卡（Tech/Indie/Garden），
+        各带身份色小方块 + 一句话 + 最新一篇。
+   配色与第 20 节 space 色带同源（tech 深蓝 / indie 深紫 / garden 深绿），
+        亮色取 600 阶（描边/小方块），暗色取 200 阶。
+   2026-10-09：#home-projects 段落已整体移除，首页 section 由 4 段减为 3 段
+        （home-about / home-spaces / recent-writing），原先专为 Projects 位置补的
+        nth-of-type(4) 入场延迟规则一并删除。
+   ============================================================ */
+
+#lopx-home .space-list {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+/* ⚠️ pangu（_config.anzhiyu.yml 中已启用）会在中英文之间注入 <pangu> </pangu>，
+   它落在 flex/grid 容器里会被当成一个布局项：
+     · 首页 .space-list（grid）→ 实测把三张卡挤成「两行 3+2」
+     · 文章页侧栏 .card-tag-cloud（flex-wrap）→ 每个标签链接之间多出 4 个占位项
+   注入元素本身只承载一个空格，在这些容器里纯粹是噪声，直接隐藏。
+   跨页扫描脚本见下方注释；新增 flex/grid 组件后应重跑一次污染扫描。 */
+#lopx-home .space-list > pangu,
+#article-container .anime-gallery > pangu,
+.card-tag-cloud > pangu {
+  display: none;
+}
+
+#lopx-home .space-card {
+  --lopx-space-accent: #3a7aa0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 18px 20px 16px;
+  border: 1px solid var(--lopx-line);
+  border-radius: 12px;
+  background: var(--lopx-surface);
+  text-decoration: none;
+  color: inherit;
+  transition:
+    transform var(--lopx-dur-mid, 0.28s) var(--lopx-ease, ease),
+    border-color var(--lopx-dur-mid, 0.28s) ease,
+    box-shadow var(--lopx-dur-mid, 0.28s) ease;
+}
+
+#lopx-home .space-card-tech {
+  --lopx-space-accent: #185FA5;
+}
+
+#lopx-home .space-card-indie {
+  --lopx-space-accent: #534AB7;
+}
+
+#lopx-home .space-card-garden {
+  --lopx-space-accent: #0F6E56;
+}
+
+#lopx-home .space-card-top {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+}
+
+#lopx-home .space-name {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--lopx-ink);
+}
+
+/* 身份色小方块：与 space 色带同源的识别符，不占额外 DOM */
+#lopx-home .space-name::before {
+  content: '';
+  display: inline-block;
+  width: 9px;
+  height: 9px;
+  margin-right: 9px;
+  border-radius: 2px;
+  background: var(--lopx-space-accent);
+}
+
+#lopx-home .space-label {
+  font-size: 0.78rem;
+  color: var(--lopx-muted);
+}
+
+#lopx-home .space-description {
+  margin: 0;
+  font-size: 0.82rem;
+  line-height: 1.6;
+  color: var(--lopx-muted);
+}
+
+#lopx-home .space-latest {
+  display: flex;
+  gap: 8px;
+  align-items: baseline;
+  margin-top: 2px;
+  padding-top: 12px;
+  border-top: 1px dashed var(--lopx-line);
+}
+
+#lopx-home .space-latest-caption {
+  flex-shrink: 0;
+  padding: 1px 8px;
+  border: 1px solid var(--lopx-space-accent);
+  border-radius: 999px;
+  font-size: 0.7rem;
+  color: var(--lopx-space-accent);
+}
+
+#lopx-home .space-latest-title {
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  font-size: 0.82rem;
+  color: var(--lopx-ink);
+}
+
+/* hover：与第 15 节卡片同一套语言（上浮 + 描边靠近身份色） */
+#lopx-home .space-card:hover {
+  transform: translateY(-3px);
+  border-color: var(--lopx-space-accent);
+  box-shadow: 0 10px 24px -10px rgba(30, 38, 44, 0.25);
+}
+
+/* 入场逐卡错开（section 延迟 0.15s 之后起排） */
+#lopx-home .space-list > .space-card {
+  animation: lopx-fade-up var(--lopx-dur-slow, 0.5s) var(--lopx-ease, cubic-bezier(0.22, 1, 0.36, 1)) backwards;
+}
+
+#lopx-home .space-list > .space-card:nth-child(1) {
+  animation-delay: 0.23s;
+}
+
+#lopx-home .space-list > .space-card:nth-child(2) {
+  animation-delay: 0.29s;
+}
+
+#lopx-home .space-list > .space-card:nth-child(3) {
+  animation-delay: 0.35s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #lopx-home .space-list > .space-card {
+    animation: none;
+  }
+
+  #lopx-home .space-card:hover {
+    transform: none;
+  }
+}
+
+/* 暗色：卡面沿用 token，身份色换 200 阶，hover 阴影加深 */
+[data-theme='dark'] #lopx-home .space-card-tech {
+  --lopx-space-accent: #85B7EB;
+}
+
+[data-theme='dark'] #lopx-home .space-card-indie {
+  --lopx-space-accent: #AFA9EC;
+}
+
+[data-theme='dark'] #lopx-home .space-card-garden {
+  --lopx-space-accent: #5DCAA5;
+}
+
+[data-theme='dark'] #lopx-home .space-card:hover {
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.5);
+}
+
+/* Spotlight hover：ReactBits SpotlightCard 的纯 CSS 复刻。
+   光斑层在鼠标进入卡片时显示，位置由 JS 写入 --mouse-x/--mouse-y。 */
+#lopx-home .space-card {
+  position: relative;
+  overflow: hidden;
+}
+
+#lopx-home .space-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0;
+  background: radial-gradient(
+    550px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+    rgba(255, 255, 255, 0.16),
+    transparent 45%
+  );
+  transition: opacity 0.25s ease;
+}
+
+#lopx-home .space-card:hover::before {
+  opacity: 1;
+}
+
+#lopx-home .space-card > * {
+  position: relative;
+  z-index: 1;
+}
+
+[data-theme='dark'] #lopx-home .space-card::before {
+  background: radial-gradient(
+    550px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+    rgba(255, 255, 255, 0.10),
+    transparent 45%
+  );
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #lopx-home .space-card::before {
+    display: none;
+  }
+}
+
+/* 窄屏：三卡纵排，最新一行给足换行空间 */
+@media (max-width: 768px) {
+  #lopx-home .space-list {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ============================================================
+   27.（已废弃，保留编号占位）首页「当前状态」条 —— 2026-10-03 删除
+   历史：2026-10-02 曾把状态做成 hero 卡下方的 1160×42 通栏细条（方案 C）。
+   2026-10-03：反馈「位置不协调」+ hero 右侧空 700px，两条问题一起解决 ——
+   状态改为 hero 右下角的渐变小卡（.lopx-hero-status，样式见第 1 节），
+   通栏条及其暗色分支全部删除。about.yml 的 status.text 仍在使用（首页 + About 页 Now）。
+   ============================================================ */
+
+/* ============================================================
+   28. 空间页卡片网格（2026-10-02 建立 / 10-03 随分类化调整）
+   背景：/tech/、/indie/ 原本是「白卡片 + 行行文字链接」，内容少时版面失衡；
+        主页的 Latest Projects 段又因站内暂无 project 文章而恒为空。
+   形态：空间主页与分类子页统一为 3 列卡片网格 ——
+        渐变文字封面（空间识别色深底，不依赖封面图）+ 标题 + 元信息行（日期 · 标签 ≤2）；
+        文章补了 cover 字段则优先显示图片（分类名降为左下角角标）。
+   2026-10-03：封面由固定 104px 高改为 16:10；去掉「项目 / 笔记」类型徽章
+        （该维度已取消，分类由导航胶囊与封面表达）；
+        页面 id 统一为 #space-tech(-cat) / #space-indie(-cat)。
+        顶部胶囊导航样式见 20.8，分类与数量由 scripts/generators/space-pages.js 算出。
+   色板：与 26 节首页空间卡同源（Tech #185FA5 / Indie #534AB7）。
+   ============================================================ */
+
+/* 28.1 每个空间一套卡片配色：渐变两端 + 强调色（暗色另给强调色，见 28.7） */
+:is(#space-tech, #space-tech-cat) {
+  --lopx-card-from: #0b2130;
+  --lopx-card-to: #1f6288;
+  --lopx-card-accent: #185FA5;
+}
+
+:is(#space-indie, #space-indie-cat) {
+  --lopx-card-from: #171432;
+  --lopx-card-to: #4a3f9b;
+  --lopx-card-accent: #534AB7;
+}
+
+/* Garden 本轮仍是列表形态，取值先备好，日后统一时不必重新定色 */
+:is(#garden-space, #garden-category) {
+  --lopx-card-from: #0b2a23;
+  --lopx-card-to: #1f6d55;
+  --lopx-card-accent: #0F6E56;
+}
+
+/* 28.2 网格：固定三列（2026-10-06 由 auto-fit 改回）
+   2026-10-05 曾为了让 /indie/ 的唯一一张卡不孤零零贴左，改成 auto-fit 自适应：
+   卡数 ≤3 时铺满整行。但那样在 1440 下会导致「一篇文的分类页」把卡片拉成
+   1094px 宽的巨幅卡，而同页的 tech 五卡仍是 350px —— 同一套组件出现两种尺度，
+   且与「容器 1000」的收窄方向相反。
+   用户 2026-10-06 明确要求：技术与独立游戏这一块就正常三栏，不要自动拉宽。
+   故改回固定三列。代价是 /indie/ 单卡只占第一列、右侧留两列空白 —— 这是
+   用户已知并接受的取舍，不是缺陷，勿再以「留白难看」为由改回 auto-fit。
+   卡片实测宽：1440 下 297px（1000 容器内容区 934，减 2×22 gap 后三等分）。
+   ≤960 / ≤600 的收口见 28.6。 */
+.lopx-cards {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 22px;
+  margin-top: 40px;
+}
+
+/* 28.3 卡片外壳 */
+.lopx-card {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid var(--lopx-line);
+  border-radius: 12px;
+  background: var(--lopx-surface);
+  box-shadow: 0 4px 16px rgba(32, 42, 49, 0.045);
+  transition:
+    transform var(--lopx-dur-mid) ease,
+    border-color var(--lopx-dur-mid) ease,
+    box-shadow var(--lopx-dur-mid) ease;
+}
+
+.lopx-card:hover {
+  transform: translateY(-3px);
+  border-color: var(--lopx-card-accent);
+  box-shadow: 0 10px 24px rgba(32, 42, 49, 0.09);
+}
+
+/* 28.4 渐变文字封面：空间识别色 + 与色带同源的细网格纹理
+   2026-10-03：由固定 height:104px（348×104 ≈ 3.4:1，太扁）改为 16:10，
+   3 列时约 348×218；将来文章补了 cover 字段，图片在这个比例下才像封面。
+   2026-10-05：配合 28.2 的自适应列数补 max-height:300px —— 单卡铺满整行时
+   16:10 会算到 685px 高（控制整张卡），封顶后为 1096×300（约 3.7:1）的特征卡，
+   多列时（218px）够不到上限，取值不变。
+   2026-10-06：28.2 已改回固定三栏，单卡铺满整行的情况不再发生，本上限当前
+   无命中（三栏卡片 297px → 16:10 算出 186px）。保留作兜底：将来若再引入
+   自适应列数，没有它会算出 685px 的巨幅封面。 */
+.lopx-card-cover {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 16 / 10;
+  max-height: 300px;
+  background-image: repeating-linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.055) 0 1px,
+      transparent 1px 26px
+    ),
+    repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.045) 0 1px, transparent 1px 26px),
+    linear-gradient(135deg, var(--lopx-card-from, #0b2130) 0%, var(--lopx-card-to, #1f6288) 100%);
+  background-repeat: repeat, repeat, no-repeat;
+  background-size: 26px 26px, 26px 26px, cover;
+  background-position: left top, left top, center center;
+  text-decoration: none;
+}
+
+.lopx-card-cover-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.lopx-card-cat {
+  color: #ffffff;
+  font-size: 0.9rem;
+  font-weight: 650;
+  letter-spacing: 0.14em;
+  text-shadow: 0 2px 10px rgba(6, 14, 20, 0.35);
+}
+
+/* 有封面图时，分类名降为左下角角标 */
+.lopx-card-cover.has-img .lopx-card-cat {
+  position: absolute;
+  left: 10px;
+  bottom: 10px;
+  padding: 3px 9px;
+  border-radius: 999px;
+  background: rgba(6, 14, 20, 0.55);
+  font-size: 0.7rem;
+  letter-spacing: 0.06em;
+  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px);
+}
+
+/* 28.5 卡片正文：标题两行封顶，元信息贴底（同一行卡片对齐底部） */
+.lopx-card-body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 12px;
+  padding: 14px 16px 16px;
+}
+
+.lopx-card-title {
+  display: -webkit-box;
+  overflow: hidden;
+  color: var(--lopx-ink);
+  font-size: 0.95rem;
+  font-weight: 650;
+  line-height: 1.45;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  transition: color var(--lopx-dur-mid) ease;
+}
+
+.lopx-card:hover .lopx-card-title {
+  color: var(--lopx-card-accent);
+}
+
+.lopx-card-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 8px;
+  margin-top: auto;
+  color: var(--lopx-muted);
+  font-size: 0.78rem;
+  line-height: 1.4;
+}
+
+/* 2026-10-03：分类徽章（.lopx-card-kind）已删 —— 分类名在封面正中/角标上已有，
+   元信息行只留「日期 + 标签」，不再重复标注「项目 / 笔记」这个已取消的维度。 */
+
+.lopx-card-date {
+  font-variant-numeric: tabular-nums;
+}
+
+.lopx-card-tag {
+  padding: 1px 8px;
+  border-radius: 999px;
+  background: rgba(58, 122, 160, 0.09);
+  color: var(--lopx-muted);
+  font-size: 0.7rem;
+}
+
+/* 28.6 响应式：≤960 两列，≤600 单列 */
+@media screen and (max-width: 960px) {
+  .lopx-cards {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .lopx-cards {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 16px;
+    margin-top: 32px;
+  }
+}
+
+/* 28.7 暗色：强调色换亮阶（与 26 节空间卡同源），阴影收敛 */
+[data-theme='dark'] :is(#space-tech, #space-tech-cat) {
+  --lopx-card-accent: #85B7EB;
+}
+
+[data-theme='dark'] :is(#space-indie, #space-indie-cat) {
+  --lopx-card-accent: #AFA9EC;
+}
+
+[data-theme='dark'] :is(#garden-space, #garden-category) {
+  --lopx-card-accent: #5DCAA5;
+}
+
+[data-theme='dark'] .lopx-card {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.32);
+}
+
+[data-theme='dark'] .lopx-card:hover {
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.44);
+}
+
+[data-theme='dark'] .lopx-card-tag {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+/* 28.8 色带上的胶囊导航：主页沿 537 / 278 行的既有 flex 规则，
+   子列表页原本没有 nav，这里补上一样的排布；视觉由 20.8 提供 */
+.lopx-space-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 26px;
+}
+
+/* 28.9 空态：与卡片网格同一上沿间距 */
+:is(#space-tech, #space-tech-cat, #space-indie, #space-indie-cat) > p.space-empty {
+  margin-top: 40px;
+}
+
+/* ============================================================
+   29. About 信息页（/about/）—— 2026-10-02
+   背景：原版与首页 hero 完全重复（同一张头像、同样四个能力标签、
+   同一句 Hello），同一信息一屏出现三次，1087px 页面里卡片只占 480px。
+   现在换成「紧凑页头 + Now + 时间线 + 联系方式」，模板见
+   themes/anzhiyu/layout/includes/page/about.pug，数据在 source/_data/about.yml。
+   作用域全部限定在 .lopx-about（只存在于 /about/），
+   首页内联的 #about-page 副本与既有 #about-page 规则不受影响。
+   颜色全部走 --lopx-* token（亮暗在全局分别定义），无需额外暗色覆盖。
+   ============================================================ */
+
+/* 29.0 内容宽度：铺满容器（1000 - 32×2 = 936；2026-10-06 由 1160 / 1096 收窄）。
+   2026-10-02 建版时为「内容限宽 900 靠左」，以对齐其它页「容器 1160 / 内容 900」的轴线；
+   但 About 只有四块卡片、没有长文本，靠左后实测左 172 / 右 368，重心左偏约 98px，
+   观感「歪」。2026-10-03 改为铺满容器 + 内部两栏（见 29.2），左右对称且页面更饱满。
+   注意：容器属性不能写 .lopx-about { max-width } —— #about-page 是 id 选择器，权重更高。 */
+
+/* 链接用的可读强调色：--lopx-accent(#3a7aa0) 在白底上对比约 4.3:1，
+   作正文链接偏低；沿用第 27 节状态条已校验过的同一组取值。 */
+.lopx-about {
+  --lopx-about-link: #2c6688;
+}
+
+[data-theme='dark'] .lopx-about {
+  --lopx-about-link: #9cc3e8;
+}
+
+/* 29.1 紧凑页头：头像退回 64px 缩略尺寸，只在这里出现一次 */
+.lopx-about-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 18px;
+  padding: 20px 24px;
+  border: 1px solid var(--lopx-line);
+  border-radius: 16px;
+  background: var(--lopx-surface);
+  box-shadow: 0 2px 10px rgba(30, 38, 44, 0.04);
+}
+
+.lopx-about-avatar {
+  flex: none;
+  width: 64px;
+  height: 64px;
+  overflow: hidden;
+  border: 1px solid var(--lopx-line);
+  border-radius: 16px;
+}
+
+.lopx-about-avatar img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.lopx-about-headline {
+  flex: 1 1 150px;
+  min-width: 0;
+}
+
+.lopx-about-name {
+  margin: 0;
+  color: var(--lopx-ink);
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.lopx-about-intro {
+  margin: 8px 0 0;
+  color: var(--lopx-muted);
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+/* 方向标签：小号 chips，替代原来被放大成 8 个胶囊的能力标签 */
+.lopx-about-dirs {
+  flex: 1 1 100%;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 6px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.lopx-about-dirs li {
+  padding: 4px 11px;
+  border: 1px solid var(--lopx-line);
+  border-radius: 999px;
+  color: var(--lopx-muted);
+  font-size: 0.78rem;
+  font-weight: 550;
+  line-height: 1.5;
+}
+
+/* 29.2 区块外壳：三块内容共用（横向内衬 24 → 32，文字左缘 165 → 173，
+   与首页 / space 页 / 文章正文同轴，2026-10-05 实测） */
+.lopx-about-block {
+  padding: 22px 32px;
+  border: 1px solid var(--lopx-line);
+  border-radius: 16px;
+  background: var(--lopx-surface);
+  box-shadow: 0 2px 10px rgba(30, 38, 44, 0.04);
+}
+
+/* 29.2b 两栏内容区（2026-10-03）
+   左窄列 = 目前/Now（上）+ 联系方式（下），右宽列 = 时间线（跨两行）。
+   DOM 顺序是 now → timeline → contact（移动端单列的阅读顺序即此）。
+   2026-10-03（第三轮）：用户更喜欢上下结构 → 桌面端改为
+   「目前 + 联系方式」并排一行（各半宽），时间线通栏在下。 */
+.lopx-about-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-areas:
+    'now contact'
+    'timeline timeline';
+  gap: 20px;
+  align-items: stretch;
+  margin-top: 20px;
+}
+
+.lopx-about-grid > .lopx-about-block {
+  margin-top: 0;
+}
+
+.lopx-about-grid > .is-now {
+  grid-area: now;
+}
+
+.lopx-about-grid > .is-timeline {
+  grid-area: timeline;
+}
+
+.lopx-about-grid > .is-contact {
+  grid-area: contact;
+}
+
+.lopx-about-block-title {
+  display: flex;
+  align-items: baseline;
+  gap: 9px;
+  margin: 0 0 18px;
+  color: var(--lopx-ink);
+  font-size: 1.05rem;
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.lopx-about-block-title small {
+  color: var(--lopx-muted);
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* 29.3 Now 列表 */
+.lopx-about-now-list {
+  display: grid;
+  gap: 13px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.lopx-about-now-list li {
+  display: flex;
+  gap: 11px;
+  align-items: baseline;
+}
+
+.lopx-about-now-label {
+  flex: none;
+  padding: 2px 9px;
+  border-radius: 6px;
+  background: rgba(58, 122, 160, 0.08);
+  color: var(--lopx-about-link);
+  font-size: 0.78rem;
+  font-weight: 650;
+  line-height: 1.6;
+}
+
+[data-theme='dark'] .lopx-about-now-label {
+  background: rgba(103, 178, 208, 0.14);
+}
+
+.lopx-about-now-text {
+  color: var(--lopx-muted);
+  font-size: 0.9rem;
+  line-height: 1.7;
+}
+
+/* 29.4 当前状态：2026-10-05 从「目前」卡底部上移到页头右侧。
+   原来是一条整行宽的状态条（强调色浅底 + 左竖线），页头右侧因此空掉约 43%；
+   现在改为页头右端的胶囊，与首页 hero 左下角的状态小卡同一套语言
+   （渐变底 + 白字 + 呼吸点），同时「目前」卡高度减少约 50px。 */
+.lopx-about-head-status {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  flex: 0 0 auto;
+  margin: 0 0 0 auto;
+  padding: 9px 14px;
+  border-radius: 999px;
+  background-image: linear-gradient(135deg, #2f6f92 0%, #3a7aa0 100%);
+  color: #ffffff;
+  font-size: 0.78rem;
+  font-weight: 550;
+  line-height: 1.4;
+  white-space: nowrap;
+}
+
+.lopx-about-head-status-dot {
+  flex: none;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #cfe8f6;
+  box-shadow: 0 0 0 3px rgba(207, 232, 246, 0.28);
+}
+
+/* 窄屏：胶囊换到独立一行时不再靠右，避免右缘出现突兀缺口 */
+@media screen and (max-width: 600px) {
+  .lopx-about-head-status {
+    margin-left: 0;
+  }
+}
+
+/* 29.5 时间线：年份分组 + 左侧细轴 + 圆点 */
+.lopx-tl-group + .lopx-tl-group {
+  margin-top: 22px;
+}
+
+.lopx-tl-year {
+  margin: 0 0 12px;
+  color: var(--lopx-muted);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  font-variant-numeric: tabular-nums;
+}
+
+.lopx-tl-list {
+  display: grid;
+  gap: 18px;
+  margin: 0;
+  padding: 0 0 2px 18px;
+  border-left: 1px solid var(--lopx-line);
+  list-style: none;
+}
+
+.lopx-tl-item {
+  position: relative;
+  display: grid;
+  grid-template-columns: 84px minmax(0, 1fr);
+  gap: 14px;
+  align-items: start;
+}
+
+.lopx-tl-item::before {
+  content: '';
+  position: absolute;
+  top: 6px;
+  left: -23px;
+  width: 9px;
+  height: 9px;
+  border: 2px solid var(--lopx-accent);
+  border-radius: 50%;
+  background: var(--lopx-surface);
+}
+
+.lopx-tl-date {
+  padding-top: 2px;
+  color: var(--lopx-muted);
+  font-size: 0.78rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.lopx-tl-title {
+  margin: 0;
+  color: var(--lopx-ink);
+  font-size: 0.95rem;
+  font-weight: 600;
+  line-height: 1.5;
+}
+
+.lopx-tl-text {
+  margin: 5px 0 0;
+  color: var(--lopx-muted);
+  font-size: 0.9rem;
+  line-height: 1.7;
+}
+
+/* 29.6 联系方式 */
+.lopx-contact-list {
+  display: grid;
+  gap: 11px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.lopx-contact-list li {
+  display: flex;
+  gap: 12px;
+  align-items: baseline;
+}
+
+.lopx-contact-label {
+  flex: none;
+  min-width: 62px;
+  color: var(--lopx-muted);
+  font-size: 0.82rem;
+}
+
+.lopx-contact-list a {
+  color: var(--lopx-about-link);
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-decoration: none;
+  word-break: break-all;
+}
+
+.lopx-contact-list a:hover {
+  text-decoration: underline;
+}
+
+.lopx-contact-value {
+  color: var(--lopx-muted);
+  font-size: 0.9rem;
+}
+
+/* 29.6b 窄屏回落：≤900px「目前+联系方式」并排过窄，
+   改为单列，顺序 = 目前 / 时间线 / 联系方式（与 DOM 顺序一致）。 */
+@media screen and (max-width: 900px) {
+  .lopx-about-grid {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      'now'
+      'timeline'
+      'contact';
+  }
+}
+
+/* 29.7 窄屏：时间线日期换行到标题上方（与 12.6 的窄屏策略一致） */
+@media screen and (max-width: 600px) {
+  .lopx-about-head,
+  .lopx-about-block {
+    padding-right: 18px;
+    padding-left: 18px;
+  }
+
+  .lopx-tl-item {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 4px;
+  }
+}
+
+/* ============================================================
+   30. 段标题中英统一 —— 2026-10-02
+   现状：导航是「技术 Tech」的中英并列，首页与 Garden 的段标题却只有英文
+   （Projects / Recent Writing / Recent Garden），中英混排风格不统一。
+   这里统一为「中文 + 英文小字」：英文用小号、字距加宽、次要色，不抢中文主标题。
+   作用域限定首页与 Garden 页，避免波及文章正文里的 h2 > small。
+   ============================================================ */
+
+:is(#lopx-home, #garden-space) :is(h2, h3) > small {
+  margin-left: 8px;
+  color: var(--lopx-muted);
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* 30.2 空间分类子页标题：分类名 + 空间名小字 —— 2026-10-03
+   分类页 h1 是分类名（如「建站」），补一个空间名小字说明归属。
+   色带上标题是白字，小字降一档透明度；只在 /tech/<分类>/、/indie/<分类>/ 出现。 */
+:is(#space-tech-cat, #space-indie-cat) > h1 > small {
+  margin-left: 10px;
+  color: rgba(255, 255, 255, 0.68);
+  font-size: 0.82rem;
+  font-weight: 550;
+  letter-spacing: 0.12em;
+  vertical-align: 0.12em;
+}
+
+/* ============================================================
+   31. 短页面内容贴顶 —— 2026-10-05
+   现象：内容不足一屏的页面，正文会随浏览器窗口高度上下漂移。
+   实测（同一份 HTML，只改视口高度）：/indie/ 的容器起点
+   123px@vh900 → 373px@vh1400（+250px）；/about/ 80 → 200（+120px）；
+   内容超过一屏的 /tech/ 稳定在 60px。
+   根因：主题 themes/anzhiyu/source/css/_page/common.styl 的
+   `#body-wrap { display:flex; flex-direction:column; min-height:100vh;
+   justify-content:space-between }` —— header / main / footer 三个 flex 子项被
+   均分，main 被推到中间；窗口越高，推得越远。
+   注意：根因在主题目录，主题升级会被覆盖，所以覆盖写在 custom.css（本文件）。
+   修法：改 flex-start 让内容固定贴顶，再用 #footer{margin-top:auto}
+   保留「页脚贴底」——两者都保留，不用二选一。
+   ============================================================ */
+
+#body-wrap {
+  justify-content: flex-start;
+}
+
+#footer {
+  margin-top: auto;
+}
+
+/* ============================================================
+   32. 消除「点击菜单后整页横向抽动」 —— 2026-10-05
+   现象：点顶部菜单文字（技术/独立游戏/生活/动态/关于）时，整页会
+   瞬间横向放大一下再弹回，很像「整页缩放」。
+   实测（无头 Chrome + CDP 逐帧采样 30ms）：
+     首页 → /indie/   clientW 1430→1440  navPadL 39px→44px  contentX 103→108
+   根因：两类页面「有无垂直滚动条」不同 → documentElement.clientWidth
+   差 10px（1430/1440）；而主题 _layout/head.styl 的
+     `#nav { position:fixed; width:100%;
+             padding:0 calc((100% - 1400px + 3rem)/2); transition:.3s }`
+   内衬按 100%（= clientWidth）计算，于是整条导航栏连同内容右移 5px；
+   又因为 `transition:.3s` 是简写（= all），这 5px 的瞬时变化被拉成
+   0.3s 平滑动画 —— 肉眼即「整页缩放又弹回」。
+   哪些页会触发：内容「恰好一屏」因而不出滚动条的页面。
+     实测 vh900/950 只有 /indie/；vh1080 时 /indie/、/garden/、/about/
+     三者都无滚动条（受本文件第 31 节「短页贴顶」影响，正文高度固定）。
+   修法：html 常驻预留滚动条槽 → clientWidth 恒定 → 内衬不再变。
+   代价：短页会常驻一条约 10px 的空白预留槽（非可见轨道，视觉近乎无感）。
+   注意：不支持的旧浏览器自动忽略本行，退回原状，属渐进增强。
+   验证：注入后重测 首页→/indie/ 全程 navPadL=39px / contentX=103 恒定。
+   ============================================================ */
+
+html {
+  scrollbar-gutter: stable;
+}
+
+/* ============================================================
+   33. 文章页底部：上一篇 / 下一篇 + 相关文章 —— 2026-10-07
+   现象：文章页底部「上一篇 / 下一篇」两个黑块，以及「喜欢这篇文章的人也看了」
+        每张卡，左上角都挂着一个破图图标 + 英文 alt 文案
+        （"cover of previous post" / "cover of next post" / "cover"）。
+   实测（无头 Chrome + CDP，1440 视口，文章 /建站/网站装修记录/）：
+     .prev-post > a   397×150，img data-lazy-src="/"，naturalSize 0×0
+     .next-post > a   397×150，同上
+     .relatedPosts-list 每卡 img 259×200，同上
+   根因两层：
+     1) 8 篇文章都没有 cover 字段，主题 filters/random_cover.js 在
+        cover.default_cover 未配置时把 cover 置为 false；
+     2) 本版本的 randomcover 从未被赋值，于是
+          pagination.pug: prev.cover === false ? prev.randomcover : prev.cover
+        这两个渲染分支恒为 undefined → url_for(undefined) 得到 "/"，
+        浏览器把「当前页 URL」当图片地址再请求一次。
+        兜底图 error_img.post_page 指向的 /img/404.jpg 站内并不存在，故一直破图。
+        ⚠️ 2026-10-10 更正：上面这句结论**是错的**。`/img/404.jpg`（141KB）与
+           `/img/friend_404.gif`（604KB）确实存在 —— 在 `public/img/` 里，且线上
+           也返回 200（因为 `public/` 从未 clean 过、旧文件被一起部署了）。
+           但它们是**孤儿**：`source/img/` 里没有，一旦谁跑通 `hexo clean` 就会消失，
+           兜底随即变破图。已把 `error_img`（两个键）改指 `/img/404-skeleton.webp`
+           （7KB，source 内受 git 跟踪）。
+   处理：
+     · 模板侧（pagination.pug / related_post.js）无封面时不再输出 <img>；
+     · 样式侧改用第 28 节「渐变文字封面」的同一套语言 —— 空间识别色深底 +
+       细网格纹理，让这两块从「纯黑洞口」变成与空间卡同族的色块。
+   色板：取 28.1 的 Tech 一组（#0b2130 → #1f6288）。
+   对比度：白字压渐变浅端 #1f6288 为 6.7:1；窄带上标签所在的 92% 处提到
+        88% 白为 4.78:1；相关卡内文字沿用主题取值（#eee / #fff）实测 9.3:1 / 10.7:1。
+   ============================================================ */
+
+/* 33.1 上一篇 / 下一篇：整条底带换成渐变。两半各占 50%、自身透明，
+   所以只需把底色刷在容器上，渐变自然连成一条。 */
+#pagination.pagination-post {
+  background-color: transparent;
+  background-image:
+    repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.055) 0 1px, transparent 1px 26px),
+    repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.045) 0 1px, transparent 1px 26px),
+    linear-gradient(135deg, #0b2130 0%, #1f6288 100%);
+  background-repeat: repeat, repeat, no-repeat;
+  background-size: 26px 26px, 26px 26px, cover;
+  background-position: left top, left top, center center;
+}
+
+/* 两半之间的发丝分隔；只有「两篇都在」时才出现（pull-right） */
+#pagination.pagination-post .next-post.pull-right {
+  border-left: 1px solid rgba(255, 255, 255, 0.14);
+}
+
+/* 33.2 带上的文字。主题给的是 var(--light-grey)，压在渐变上偏弱。
+   注：标签在窄带上位于渐变 92% 处（实测背景 ≈ #1d5d81），
+   82% 白只有 4.35:1（受 26px 网格的白色发丝线影响），提到 88% 白为 4.78:1。 */
+#pagination.pagination-post .label {
+  color: rgba(255, 255, 255, 0.88);
+}
+
+#pagination.pagination-post .prev_info,
+#pagination.pagination-post .next_info {
+  color: #ffffff;
+}
+
+/* 33.3 相关文章：每张卡各自一套渐变（与 28.4 卡片封面同配方） */
+.relatedPosts > .relatedPosts-list > div {
+  background-color: transparent;
+  background-image:
+    repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.055) 0 1px, transparent 1px 26px),
+    repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.045) 0 1px, transparent 1px 26px),
+    linear-gradient(135deg, #0b2130 0%, #1f6288 100%);
+  background-repeat: repeat, repeat, no-repeat;
+  background-size: 26px 26px, 26px 26px, cover;
+  background-position: left top, left top, center left;
+}
+
+/* 卡内文字不需要覆盖：主题的 .content .date = var(--light-grey) #eee、
+   .content .title = var(--white) #fff，实测落在渐变中段（≈#15415c）上分别是
+   9.3:1 与 10.7:1，均富余；沿用主题取值即可，勿再叠加规则。 */
+
+/* ============================================================
+   34. 正文加粗文字对比度 —— 2026-10-07（第 1 批第 4 轮）
+   实测（无头 Chrome + CDP 探针，light 模式，禁过渡后取终值）：
+   主题 `b, strong { color: var(--anzhiyu-lighttext) }`，而
+   `--anzhiyu-lighttext: var(--anzhiyu-main)` = #3a7aa0。压在正文底
+   #f7f9fe 上 = 4.46:1，差 0.04 未达 AA（4.5）。
+   注意：--anzhiyu-lighttext 全站 19 处在用（链接 a、目录 card-toc 高亮、
+   article-sort hover、banner-button.secondary…），**不能改这个变量**，
+   否则全站主色一起偏移，且目录/链接会连带变成新色。
+   处理：只对正文容器内的 b/strong 加深到 #38769b（实测 4.71:1）。
+   限定亮色模式 —— 暗色分支原本已达标（全站暗色走查违规为 0）。
+   实际命中范围：8 篇文章中只有「考研记录（二）」正文里的
+   `**[日期]**` 粗体伪标题（8 处，17px/700，背景 #f7f9fe）。
+   ============================================================ */
+:root:not([data-theme='dark']) #article-container b,
+:root:not([data-theme='dark']) #article-container strong {
+  color: #38769b;
+}
+
+/* ============================================================
+   35. 代码块语法着色：亮色分支（第 11 节遗留缺口的补全）—— 2026-10-07（第 1 批第 4 轮）
+   问题：highlight_theme 是 mac light（白底），但主题下发的 token 色是**深色方案**的取值。
+   实测（无头 Chrome 探针，代码块底 rgb(255,255,255)，12 种 token 全量）：
+     .built_in               #ffb62c → 1.75  ❌
+     .string / .number       #91b859 → 2.28  ❌
+     .keyword / .title / .class_  #39adb5 → 2.69  ❌
+     .comment                #969896 → 2.91  ❌
+     .literal / .params      #f76d47 → 2.90  ❌
+     .type / .function       #6182b8 → 3.89  ❌
+     .meta                   #7c4dff → 4.81  ✅（唯一达标项）
+     .gutter .line（行号）    #a3aeb4 → 2.12  ❌
+   影响面：全站 4 个页面 51 个代码块共 **484 处**违规
+     （Snake-Game 436 / hexo-bangumi 35 / 已复活 8 / 常见Git命令 5）。
+   第 11 节的注释已自认这个缺口：「语法着色 token（string 等）由主题另行下发，
+   不受本规则影响」；暗色分支已在第 23.2 节补过一整套，**亮色分支一直缺失**。
+   方案：**保持色相语义、只压明度**（不照搬 23.2 的分组，因为主题给 built_in /
+   keyword / type 三种不同色相，合并会丢失代码块的可读层次）。
+   取值全部 ≥4.9:1，留出余量。勿删——删掉即回到 1.75。
+   ============================================================ */
+:root:not([data-theme='dark']) #article-container figure.highlight :is(.comment, .quote) {
+  color: #61696f; /* 5.59 —— 灰 */
+}
+
+:root:not([data-theme='dark']) #article-container figure.highlight :is(.keyword, .selector-tag, .title, .class_) {
+  color: #0f6b72; /* 6.24 —— 青 */
+}
+
+:root:not([data-theme='dark']) #article-container figure.highlight :is(.built_in) {
+  color: #96601a; /* 5.27 —— 橙 */
+}
+
+:root:not([data-theme='dark']) #article-container figure.highlight :is(.type, .function, .name, .section) {
+  color: #2b4f8a; /* 8.11 —— 蓝 */
+}
+
+:root:not([data-theme='dark']) #article-container figure.highlight :is(.string, .number, .attr, .addition, .regexp) {
+  color: #4a6b1e; /* 6.15 —— 绿 */
+}
+
+:root:not([data-theme='dark']) #article-container figure.highlight :is(.literal, .params, .symbol, .bullet) {
+  color: #a03a14; /* 6.75 —— 橙红 */
+}
+
+:root:not([data-theme='dark']) #article-container figure.highlight :is(.variable, .template-variable, .selector-id, .selector-class) {
+  color: #8a6d00; /* 4.92 —— 黄（与第 23.2 节暗色分支同语义） */
+}
+
+:root:not([data-theme='dark']) #article-container figure.highlight :is(.meta, .deletion, .tag) {
+  color: #6a3fd0; /* 6.49 —— 紫 */
+}
+
+/* 行号：第 11 节给的 #a3aeb4 在白底上只有 2.12:1，一并提高。
+   注意代码块实际底色是 #f7f7f9 而非纯白，取值要按更暗的底算。 */
+:root:not([data-theme='dark']) #article-container figure.highlight :is(.gutter, .gutter .line, .line-numbers) {
+  color: #656d76; /* 4.90（按 #f7f7f9 底计） */
+}
+
+/* ============================================================
+   36. 无障碍：跳转到主内容（skip link）—— 2026-10-09
+   原站无任何 skip 机制，键盘 / 读屏用户每次都要 Tab 穿过
+   整个顶部导航才能进正文（WCAG 2.4.1 Bypass Blocks）。
+   模板落点：includes/layout.pug 内 <body> 之后的第一个元素，
+   href 指向 #content-inner（该容器已加 tabindex="-1"）。
+   默认视觉隐藏（transform 移出视口），获得焦点时滑入左上角。
+   配色用 #1f6288（与第 28.4 节渐变封面同色系），白字对比 6.64:1。
+   ============================================================ */
+.lopx-skip-link {
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  z-index: 10001;
+  padding: 10px 18px;
+  border-radius: 8px;
+  background: #1f6288;
+  color: #ffffff;
+  font-size: 0.9rem;
+  font-weight: 600;
+  line-height: 1.4;
+  text-decoration: none;
+  transform: translateY(-250%);
+  transition: transform 0.18s ease;
+}
+
+.lopx-skip-link:focus {
+  transform: translateY(0);
+  outline: 2px solid #ffffff;
+  outline-offset: 2px;
+}
+
+/* 目标是程序化聚焦容器，不显示整块焦点框 */
+#content-inner:focus {
+  outline: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lopx-skip-link {
+    transition: none;
+  }
+}
+
+/* ============================================================
+   37. 字号碎片化收敛（近邻合并）—— 2026-10-09
+   背景：探针普查发现全站**实际生效 37 档字号**，其中一大部分是本文件
+   自己引入的（0.78 / 0.82 / 0.85 / 0.86 / 0.88 / 0.92 / 0.95 / 0.98 /
+   1.02rem，以及 12.5 / 15 / 16px），与主题原生比例尺（0.7 / 0.75 /
+   0.8 / 0.875 / 0.9 / 1 / 1.1 / 1.2 / 1.3 / 1.5 / 1.8 / 2rem）混在一起。
+
+   处理：**只做近邻合并**——把相距 ≤ 0.64px 的取值摞到同簇中
+   出现次数最多的那个上。本文件内 28 档 → 15 档，最大视觉偏差 0.64px。
+
+     0.68 / 0.72rem        -> 0.7rem
+     0.75 / 0.8rem, 12.5px -> 0.78rem
+     0.85 / 0.86rem        -> 0.82rem
+     0.88 / 0.92rem        -> 0.9rem
+     15px / 0.98rem        -> 0.95rem
+     16px / 1.02rem        -> 1rem
+
+   刻意保留（不是漏改）：
+     · `.nav-label .nav-sub-label` 的 0.72em —— em 相对父级（12px）计算，
+       实际 8.64px；改成 rem 会变成 11.2px，放大 30%，必须保持 em。
+     · `#article-container` 的 17px —— 第 25 节的正文基准，刻意设定。
+     · 1.05rem —— 与 17px 仅差 0.2px，但语义不同（UI 标题 vs 正文），不强行合并。
+     · 21.6px 以上（1.35 / 1.5 / 1.8 / 2 / 2.35 / 2.8rem）—— 各自独立层级，无近邻。
+   注意：主题自身的字号未动，仍会贡献若干档；如需进一步收敛要覆写主题规则，
+   收益低于风险，暂不做。
+   ============================================================ */
+
+/* ============================================================
+   38. 页脚站点统计（总访问量 / 独立访客）—— 2026-10-09
+   问题：主题原生的 `card_webinfo` 只在 widget/index.pug 的「非文章页」分支渲染，
+   于是**文章页（访问量最大的一类页面）看不到站点总 PV/UV**。
+   做法：把 card_webinfo 里的两个 busuanzi 块**整体删除**，改由 includes/footer.pug
+   无条件输出。全站 43 个页面生效，实测 71 页 **0 处重复 id**。
+   （曾试图用「有侧栏就跳过」的守卫条件绕开重复 id，但 /archives/ 与 /tags/
+     的 page.aside 并非 false，守卫失效 → 才改为「删除源块、只留页脚一处」。）
+   文字颜色继承页脚（深浅色模式各自适配），不写死颜色。
+   ============================================================ */
+#footer-site-stats {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: baseline;
+  gap: 4px 20px;
+  margin-top: 10px;
+  font-size: 0.78rem;
+  line-height: 1.6;
+  /* 页脚底色是浅色渐变（#footer 用 --anzhiyu-card-bg），文字继承 --anzhiyu-fontcolor。
+     下面三处 opacity 会逐层相乘，最低有效 alpha 必须 ≥ 0.76 —— 在此值下
+     浅色模式对白底约 5.3:1、暗色模式约 7.0:1，均高于正文 4.5 的门槛。
+     不要再调低，否则单位字（次/人）会掉到 4.5 以下。 */
+  opacity: 0.9;
+}
+
+.footer-stat {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 5px;
+}
+
+.footer-stat-label {
+  opacity: 0.9;
+}
+
+.footer-stat-value {
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.footer-stat-unit {
+  opacity: 0.85;
+}
+
+/* ============================================================
+   39. 移动端显示缺陷修复 —— 2026-10-10
+   诊断方式：无头 Chrome 在 390×844 / 360×800 / 320×568 三档视口
+   对 13 个页面跑几何 + 「裁切/重叠」双探针，并逐页截图做像素扫描。
+   结论：全站无横向溢出、无文字竖排、无媒体越界；以下 3 处是真实缺陷。
+
+   ---------- 39.1 /garden/anime/ 追番图窗在 ≤768px 塌成竖排小卡 ----------
+   现状：3 张卡竖向堆叠、每张 150×200 贴左，右侧空 220px（像素扫描实测）。
+   根因：第 17.2 节（约 1692 行）把图窗从「横向滑动 flex」改成 grid：
+         display:grid; grid-template-columns:repeat(auto-fill, minmax(170px,1fr))
+         但它没接管更早那一版（约 803 行）留下的 padding:4px 4px 14px
+         与 overflow:auto hidden —— auto-fill 按「内容宽 350px」计算轨道数
+         ⇒ floor((350+18)/(170+18)) = 1 列 350px；而卡片在 ≤768px 仍是 150px 宽
+         ⇒ 一格 350px 里塞 150px 的卡，右空 200px，3 张竖向堆叠。
+   处理：移动端改回 2 列等宽网格，并清掉那一版遗留的 padding / overflow。
+   ============================================================ */
+
+/* 39.1b 桌面端：卡片定宽 200px 塞进 179px 轨道 → 相邻卡重叠 3px
+   实测：画廊 778px、`repeat(auto-fill, minmax(170px,1fr))` 且仍有 padding 4px
+         ⇒ 内容宽 770px ⇒ floor((770+18)/188) = 4 轨，每轨 (770-54)/4 = 179px；
+         而卡片定宽 200px ⇒ 每张溢出轨道 21px ⇒ 相邻卡 gap = -3px
+         （2x 截图可见后一张卡的圆角压住前一张的右边框）。
+   处理：卡片改为跟随列宽（全局，不只窄屏）。桌面卡 200 → 179px，间隙恢复 18px；
+         移动端本来就该跟随列宽，原先写在媒体查询里的那条已合并到这里。 */
+#article-container .anime-gallery-card {
+  width: auto;
+}
+
+@media screen and (max-width: 768px) {
+
+  #article-container .anime-gallery {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+    padding: 0;
+    /* 原 overflow-x:auto 是为横向滑动条准备的；改成网格后它只会裁掉 hover 投影 */
+    overflow: visible;
+  }
+}
+
+/* ---------- 39.2 归档页 /archives/ 列表项把日期裁掉（全视口，非移动端独有）----------
+   现状：每条只有标题 + 标签，日期（2026-09-19）在桌面 1440 上也完全看不见。
+   根因：主题 `archives.styl` 给 `.article-sort-item-info` 固定 height/max-height 80px，
+         内部 `.article-meta-wrap` 取 height:35% = 28px，且它是 display:block ——
+         子项 `.article-sort-item-tags`(inline, 22px) 与
+         `div.article-sort-item-time`(block, 32px) 只能竖向堆叠，共需约 64px；
+         超出的部分被 `.article-sort-item { overflow: hidden }` 裁掉，日期整行消失。
+   处理：把 meta 改成「标签 + 日期同一行」的 flex 行并放开高度 —— 这正是主题原意
+         （35% 的 28px 本来就只够放一行）。行高不变（item 仍 80px），
+         只有日期这一行「回来」；窄屏放不下时自动换行，info 内容 74px < 80px 不会被裁。
+   变体：动态页 /essay/ 横幅底部胶囊同属「容器过矮」一类，但实测未被裁，本轮不动。
+   ============================================================ */
+#archive .article-sort .article-meta-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0 8px;
+  height: auto;
+  min-height: 22px;
+}
+
+#archive .article-sort .article-meta-wrap .article-sort-item-time {
+  /* 原为 block，会独占一行；改为行内参与上面的 flex 行 */
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  /* ≤360px 时 info 列只有 ~91px，`2026-09-19` 会在连字符处断成两行。
+     用 nowrap + flex-shrink:0 把日期钉成不可压缩的整体：放不下时整块换行，
+     而不是内部折断。实测 320/360 下日期回归单行。 */
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* ---------- 39.3 首页空间卡在 ≤340px 被右侧裁掉 21px ----------
+   现状：320 视口下三张 .space-card 各自溢出 .space-list 右缘 21px（被祖先裁掉）。
+   根因：移动端把 .space-list 写成 `grid-template-columns: 1fr`，
+         而 `1fr` = `minmax(auto, 1fr)`，其自动最小尺寸 = 卡片自身的 min-content。
+         卡片里 `.space-latest-title` 是 white-space:nowrap，min-content = 整串标题宽
+         （indie 卡「用 EasyX 制作 Snake Game 记录」= 192px）
+         ⇒ 卡片 min-content = 192 + 8(gap) + 29(caption) + 40(padding) + 2(border) = 271.25px
+         ⇒ 轨道被顶到 271.25px，而容器（320 视口）只有 250px ⇒ 溢出 21px。
+   处理：用 `minmax(0, 1fr)` 去掉自动最小尺寸，轨道回到容器宽，
+         标题按既有的 `min-width:0 + nowrap + ellipsis` 正常出省略号。
+         桌面端一并从 `repeat(3, 1fr)` 改为 `repeat(3, minmax(0, 1fr))` ——
+         当前 min-content(271) < 轨道(≈320) 故为**零视觉变化**，仅防同类回归。
+   ============================================================ */
+#lopx-home .space-list {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+@media screen and (max-width: 768px) {
+  #lopx-home .space-list {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* ---------- 39.4 本轮确认「不是缺陷」的项（勿重复排查）----------
+   · 首页三段 section 的卡片边框轴实测左右缘均为 15 / 374（像素扫描 7 行全部一致）。
+     探针里 `#recent-writing l=16` 与 `#about-page l=35` 的差值是
+     「卡片边框轴 vs 卡片内文轴」的错觉（SKILL 坑 18），不是错位。
+   · 移动端导航汉堡图标 `i.anzhiyu-icon-bars` 比 `.site-page` 下溢 7px，
+     但 #nav 不裁切，放大 3 倍截图确认三条线完整 —— 非缺陷。
+   · 文章页 H2 的 `a.headerlink` 下溢 13px、归档计数 `span.card-archive-list-count`
+     溢出 3px，均为主题原生且不可见，非缺陷。
+   · 追番页番剧简介 `p` 被压到 72px：npm 包 hexo-bilibili-bangumi 自带
+     `-webkit-line-clamp:3` + ellipsis，是**有意的 3 行截断**。
+   · 抽屉菜单（.anzhiyu-icon-bars 打开）实测内容自 y=30 起完整可见，无裁切。
+   ============================================================ */
+
+/* ============================================================
+   40. 分类页入口 + 首页技能标签改版 —— 2026-10-10（第二轮·观感）
+
+   ---------- 40.1 /categories/ 的分类入口改等宽网格卡片 ----------
+   现状（探针实测）：
+     · 390 视口 —— 容器 288px，5 个胶囊高 51px、宽 102～181px 不等，
+       因主题给了 `justify-content:center`，居中后排成 1+1+2+1 共四行，
+       看着像一堆零散标签，而且每行留白不均、参差感强。
+     · 1440 视口 —— 容器 1078px，5 个胶囊挤成一行 41px 高的细小胶囊，
+       下面整屏 800+px 全是空白。
+   根因：真源 `themes/anzhiyu/source/css/_page/tag_page.styl` 末尾
+     `body[data-type="tags"],body[data-type="categories"] #tag #tag-page-tags`
+     只给了 flex 换行 + 居中，胶囊宽度按文字自适应 → 既不等宽也不成阵。
+   处理：改成等宽网格卡片。
+     · 移动端 2 列（≤360px 自动降 1 列），每卡高 60px；
+     · 桌面端 `auto-fill(190px)`，1440 下恰好 5 列一行（5×190+4×12=998 ≤ 1078）；
+     · 卡内「# 名称」左对齐、篇数徽章靠右（`margin-left:auto`），
+       整卡可点（min-height 60～64px，远超 44px 的移动端最小点击面积）。
+
+   ⚠️ 只命中 `#tag > .category-lists#tag-page-tags`：
+     `/categories/` 的容器是 `<div class="category-lists" id="tag-page-tags">`，
+     `/tags/` 的同名容器**没有 .category-lists 类**（外面多套一层
+     `.tag-cloud-list.is-center`），因此标签页不受影响 —— 这是刻意保留的。
+   ⚠️ 特异性 `#page #tag > .category-lists#tag-page-tags` = (3,1,0)，
+     高于主题的 (2,1,1)，无需依赖加载顺序；但主题给 a 的
+     `color: … !important` 与 hover 的 `color: … !important` 必须照样用
+     `!important` 才能覆盖。
+   ============================================================ */
+#page #tag > .category-lists#tag-page-tags {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+  gap: 12px;
+  justify-content: initial;
+}
+
+#page #tag > .category-lists#tag-page-tags > a {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  min-height: 64px;
+  margin: 0;
+  padding: 0 16px;
+  border: 1px solid var(--lopx-line);
+  border-radius: 12px;
+  background: var(--lopx-surface);
+  color: var(--lopx-ink) !important;
+  font-size: 1rem;
+  line-height: 1.3;
+  transition: border-color 0.25s, box-shadow 0.25s, transform 0.25s, color 0.25s;
+}
+
+#page #tag > .category-lists#tag-page-tags > a .tags-punctuation {
+  margin-right: 3px;
+  color: var(--lopx-muted);
+}
+
+#page #tag > .category-lists#tag-page-tags > a .tagsPageCount {
+  margin-left: auto;
+  min-width: 24px;
+  padding: 3px 7px;
+  border: 0;
+  border-radius: 999px;
+  background: rgba(58, 122, 160, 0.1);
+  color: var(--lopx-muted);
+  font-size: 0.72rem;
+  line-height: 1.4;
+  text-align: center;
+}
+
+#page #tag > .category-lists#tag-page-tags > a:hover {
+  border-color: var(--anzhiyu-main);
+  background: var(--lopx-surface);
+  color: var(--anzhiyu-main) !important;
+  box-shadow: 0 6px 18px rgba(58, 122, 160, 0.14);
+  transform: translateY(-2px);
+}
+
+#page #tag > .category-lists#tag-page-tags > a:hover .tagsPageCount {
+  background: var(--anzhiyu-main);
+  color: #fff;
+}
+
+[data-theme='dark'] #page #tag > .category-lists#tag-page-tags > a .tagsPageCount {
+  background: rgba(103, 178, 208, 0.14);
+}
+
+@media screen and (max-width: 768px) {
+  #page #tag > .category-lists#tag-page-tags {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+
+  #page #tag > .category-lists#tag-page-tags > a {
+    min-height: 60px;
+    padding: 0 12px;
+    font-size: 0.95rem;
+  }
+}
+
+/* ≤360px 两列会挤到每列 100px 出头，「游戏开发」+ 徽章放不下 → 降为一列 */
+@media screen and (max-width: 360px) {
+  #page #tag > .category-lists#tag-page-tags {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* ---------- 40.2 首页技能标签：手机端去掉胶囊，改一行灰字 ----------
+   现状（探针实测，390 视口）：
+     `.lopx-hero-chips` 是 flex-wrap，4 个胶囊宽 82 / 66 / 59 / 82px，
+     加 3 处 gap(8px) 与 4×2px 边框 = 321px，**比容器 320px 只宽 1px**，
+     于是 `Indie Game` 被挤到第二行 → 视觉上「第一排 3 个、第二排 1 个」。
+   处理：手机端不再用胶囊外形，改成一行浅灰小字，标签之间用小圆点分隔。
+     去掉 padding/border 后字号降到 0.76rem，四个词合计约 274px < 320px，
+     **恰好一行放得下**，不会再出现 3+1；320px 窄屏放不下时会像普通文本
+     那样自然折行，不会再有「半行孤岛」。
+   桌面端（>768px）保持原有胶囊一行，不动。
+   ============================================================ */
+@media screen and (max-width: 768px) {
+  #lopx-home .lopx-hero-chips {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 2px 0;
+    margin-top: 14px;
+    color: var(--lopx-muted);
+    font-size: 0.76rem;
+    line-height: 1.7;
+  }
+
+  #lopx-home .lopx-hero-chips li {
+    display: inline-flex;
+    align-items: center;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: none;
+    color: inherit;
+    font-size: inherit;
+    font-weight: 500;
+  }
+
+  /* 分隔圆点：比「·」更收敛，且用 currentColor 自动跟随明暗主题 */
+  #lopx-home .lopx-hero-chips li:not(:last-child)::after {
+    content: '';
+    display: inline-block;
+    width: 3px;
+    height: 3px;
+    margin: 0 9px;
+    border-radius: 50%;
+    background: currentColor;
+    opacity: 0.4;
+  }
+}
+
+/* ≤355px：四个词（约 276px）放不进 250px 的容器，会折成 3+1 且行末残留一个分隔圆点。
+   改为两列对齐排布并去掉分隔点 —— 此时换成网格自然成阵，不再需要圆点。
+   断点取 355 而非 360：360px 容器宽 284px ≥ 276px，本来就能一行放下，不该误伤。 */
+@media screen and (max-width: 355px) {
+  #lopx-home .lopx-hero-chips {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 4px 0;
+  }
+
+  #lopx-home .lopx-hero-chips li:not(:last-child)::after {
+    content: none;
+  }
+}
+
+/* ============================================================
+   41. 全站亮色柔光球 —— 2026-10-11（用户选定 C5）
+   背景层 #web_bg 是一块纯色。配合第 16 节的底色降档，再补一层极淡的色相流动，
+   把暗色模式已有的「宇宙粒子」（theme.universe）在亮色下做同构呼应；
+   纯 CSS，零资产、零请求。
+   ------------------------------------------------------------
+   挂载点选 body::before 而不是 #web_bg 的伪元素，原因：
+     #web_bg 带 transform: rotate(-1deg)，且宽高为 200%、left/top 为 -50%，
+     它会成为内部 fixed 伪元素的包含块 —— 百分比坐标被整体平移 0.5 个视口、
+     再被旋转 1°，定位完全不可控。body::before 是相对视口的 fixed 层，
+     百分比即视口坐标，直观且可维护。
+   层叠位置（同一根层叠上下文）：
+     body 背景 → #web_bg(z:-999) → body::before(z:-1) → 正常流内容
+     负 z-index 后代绘制在父元素背景之上，故 -1 压住 -999、又被内容压住，
+     不遮挡卡片也不吃点击（已加 pointer-events: none）。
+   参数若要调：三团光斑的透明度每 +0.02 约等于背景色相偏移一档，
+   建议 0.05–0.12 之间；位置为视口百分比，半径单位 px。
+   ============================================================ */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image:
+    radial-gradient(720px circle at 12% 4%, rgba(58, 122, 160, 0.1), transparent 68%),
+    radial-gradient(620px circle at 88% 14%, rgba(103, 178, 208, 0.09), transparent 68%),
+    radial-gradient(560px circle at 52% 98%, rgba(58, 122, 160, 0.06), transparent 70%);
+  background-repeat: no-repeat;
+}
+
+/* 暗色不叠加：那里已有 universe 粒子，再铺一层反而浑。
+   直接 display: none，同时省掉一整层 fixed 合成。 */
+[data-theme='dark'] body::before {
+  display: none;
+}
+
+/* ============================================================
+   42. 归档页条目序号弱化 —— 2026-10-11
+   主题原生（themes/anzhiyu/source/css/_page/archives.styl:61-68）给条目右侧
+   序号 2.5rem（40px）斜体 + opacity .5 + 绝对定位右上角。条目本身只有 80px 高，
+   40px 的字号占去一半，与文章标题抢注意力（1440 实测截图确认）。
+   序号承担「第 N 篇」的计数语义，故保留，只做三件事：降字号、去斜体、压透明度。
+   容器 id 是 #archive（单数），不是 #archives —— 见 public/archives/index.html。 */
+#archive .article-sort-item-index {
+  top: 0.5rem;
+  right: 0.85rem;
+  font-size: 1.3rem;
+  font-style: normal;
+  font-weight: 500;
+  opacity: 0.3;
+}
+
+/* ============================================================
+   43. 站内导航收尾带 —— 2026-10-11
+   只出现在 /tags/、/categories/、/about/ 三个页面。
+   背景（实测 /categories/，视口 1000）：#body-wrap 是 flex column，main#blog-container
+   只有 262px 高，而 #footer 贴底在 y=850 —— 中间空出 512px 纯背景。
+   原因：这三个页面内容只有一张卡，页脚仍被推到底。
+   处理：在 main 内、#content-inner 之后补一条「继续浏览」入口带，并让 main 撑满，
+   使带子落到页脚上方，页面被"收住"而不是吊着一大片空白。
+   挂载：themes/anzhiyu/layout/includes/tail-nav.pug（由 layout.pug 条件 include）。
+   轴线：与 .layout 一致（max-width 1200 / 内衬 1.5rem）。
+   ============================================================ */
+main#blog-container:has(.lopx-tail-nav) {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.lopx-tail-nav {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1.5rem 1.5rem;
+  box-sizing: border-box;
+}
+
+.lopx-tail-caption {
+  display: block;
+  margin-bottom: 10px;
+  color: var(--lopx-muted);
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+}
+
+.lopx-tail-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.lopx-tail-card {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 14px 16px;
+  border: 1px solid var(--lopx-line);
+  border-radius: 12px;
+  background: var(--lopx-surface);
+  transition: transform 0.3s ease, border-color 0.3s ease;
+}
+
+.lopx-tail-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(58, 122, 160, 0.32);
+}
+
+.lopx-tail-name {
+  color: var(--lopx-ink);
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.lopx-tail-label {
+  color: var(--lopx-muted);
+  font-size: 0.72rem;
+}
+
+@media screen and (max-width: 768px) {
+  .lopx-tail-nav {
+    padding: 0 16px 24px;
+  }
+
+  .lopx-tail-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* ============================================================
+   44. Garden 空间主页：Bento 动效卡片 —— 2026-10-11
+   取代原「h1 大标题 + 分类名一行 + 胶囊 nav + 最近更新列表」四段式页头：
+   前三段都是说明性内容，首屏约 300px 没有任何「内容本身」。
+   结构 themes/anzhiyu/layout/garden.pug；入场动效 includes/additional-js.pug。
+
+   动效分两层，两层都能降级：
+     ① 进场 —— 错峰上浮淡入 + 数字滚动 + 环形/刻度生长。
+        隐藏态一律挂在 html.js 前缀下（脚本自己加），所以：
+          · 脚本不执行 → 卡片、环形、刻度都是最终态，正常可见；
+          · prefers-reduced-motion → 脚本直接补 is-in，跳过全部动画。
+     ② 悬停 —— 上浮 3px + 边框加深 + 阴影扩散。纯 CSS，无 JS 也生效。
+
+   ⚠️ 隐藏态写成「默认最终态 + .js 下初始态」而不是反过来：
+      反过来（默认隐藏、is-in 显示）一旦脚本在加 is-in 之前抛错，内容就永久消失。
+   ⚠️ 卡片不是整块 <a>：--wide / --foot 内含多条链接（见 garden.pug 注释）。
+   ============================================================ */
+
+/* 视觉隐藏但保留给读屏 / SEO 的 h1。全站通用，定义在这里只是因为目前只有
+   Garden 主页需要（空间页的 h1 是可见的）。 */
+.lopx-visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+#garden-space .garden-bento {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  grid-auto-rows: minmax(104px, auto);
+  gap: 12px;
+}
+
+#garden-space .garden-tile {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 16px 18px;
+  overflow: hidden;
+  border: 1px solid var(--garden-line);
+  border-radius: 12px;
+  background: var(--lopx-surface);
+  color: var(--garden-ink);
+  text-decoration: none;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.05), 0 8px 24px rgba(15, 23, 42, 0.05);
+  transition: opacity 0.5s ease, transform 0.55s cubic-bezier(0.22, 0.61, 0.36, 1),
+    border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+/* 跨度：2×2 均分（每行 7 + 5 列）。
+   2026-10-11 首版大卡是「7 列跨 2 行 + 右侧两卡叠放 + 底部通栏」，实测大卡
+   285px 高而内容只有 128px，中段空 157px —— 因为右侧两卡被环形/刻度撑到
+   144/130，两行合计 286，而 Garden 当时只有 2 篇文章喂不满那个高度。
+   改成 2×2 后页面总高不变（仍是 286），大卡回落到 144 与内容贴合。
+   DOM 顺序 --wide / --anime / --study / --foot 正好落成
+   「最近记录 + 追番」/「背单词 + 通道」，无需调整模板。 */
+#garden-space .garden-tile--wide {
+  grid-column: span 7;
+}
+
+#garden-space .garden-tile--anime,
+#garden-space .garden-tile--study {
+  grid-column: span 5;
+}
+
+#garden-space .garden-tile--foot {
+  grid-column: span 7;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+#garden-space .garden-tile-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+#garden-space .garden-tile-label {
+  color: var(--garden-muted);
+  font-size: 0.78rem;
+  letter-spacing: 0.04em;
+}
+
+#garden-space .garden-tile-note,
+#garden-space .garden-tile-sub {
+  color: var(--garden-muted);
+  font-size: 0.78rem;
+}
+
+#garden-space .garden-tile-note {
+  font-variant-numeric: tabular-nums;
+}
+
+/* 最近记录 */
+#garden-space .garden-log {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+#garden-space .garden-log-link {
+  display: grid;
+  grid-template-columns: 6.5rem minmax(0, 1fr);
+  gap: 12px;
+  align-items: baseline;
+  padding: 10px 0;
+  border-top: 1px solid var(--garden-line);
+}
+
+#garden-space .garden-log-date {
+  color: var(--garden-muted);
+  font-size: 0.78rem;
+  font-variant-numeric: tabular-nums;
+}
+
+#garden-space .garden-log-title {
+  color: var(--garden-ink);
+  font-size: 0.95rem;
+  font-weight: 600;
+  transition: color var(--lopx-dur-fast) ease;
+}
+
+#garden-space .garden-log-link:hover .garden-log-title {
+  color: var(--garden-accent);
+}
+
+/* 追番 / 背单词：大数字 + 图形 */
+#garden-space .garden-metric {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: auto;
+}
+
+#garden-space .garden-figure {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+}
+
+#garden-space .garden-figure-num {
+  color: var(--garden-ink);
+  font-size: 1.75rem;
+  font-weight: 700;
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+}
+
+#garden-space .garden-figure-unit {
+  color: var(--garden-muted);
+  font-size: 0.8rem;
+}
+
+/* 环形：r=22 → 周长 138.2。默认落在「最终比例」上，.js 下才退回空环 */
+#garden-space .garden-ring {
+  width: 48px;
+  height: 48px;
+  flex: none;
+}
+
+#garden-space .garden-ring-track {
+  fill: none;
+  stroke: rgba(58, 122, 160, 0.14);
+  stroke-width: 5;
+}
+
+#garden-space .garden-ring-val {
+  fill: none;
+  stroke: var(--garden-accent);
+  stroke-width: 5;
+  stroke-linecap: round;
+  stroke-dasharray: 138.2px;
+  stroke-dashoffset: calc(138.2px * (1 - var(--garden-ring-ratio, 0)));
+  transform: rotate(-90deg);
+  transform-origin: 50% 50%;
+  transition: stroke-dashoffset 1s cubic-bezier(0.22, 0.61, 0.36, 1) 0.25s;
+}
+
+/* 分组刻度（背单词）：默认点亮，.js 下才从 0 生长 */
+#garden-space .garden-scale {
+  display: flex;
+  gap: 4px;
+}
+
+#garden-space .garden-scale i {
+  display: block;
+  width: 18px;
+  height: 6px;
+  border-radius: 3px;
+  background: var(--garden-accent);
+  transform: scaleX(1);
+  transform-origin: left center;
+  transition: transform 0.6s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+/* 通道卡 */
+#garden-space .garden-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+#garden-space .garden-chip {
+  padding: 5px 12px;
+  border: 1px solid var(--garden-line);
+  border-radius: 999px;
+  color: var(--garden-muted);
+  font-size: 0.78rem;
+  line-height: 1.4;
+  transition: color var(--lopx-dur-fast) ease, border-color var(--lopx-dur-fast) ease;
+}
+
+#garden-space .garden-chip:hover {
+  border-color: var(--garden-accent);
+  color: var(--garden-ink);
+}
+
+/* —— 进场：html.js 由 additional-js.pug 里的脚本添加 —— */
+.js #garden-space .garden-tile {
+  opacity: 0;
+  transform: translateY(16px);
+}
+
+.js #garden-space .garden-tile.is-in {
+  opacity: 1;
+  transform: none;
+}
+
+.js #garden-space .garden-tile .garden-ring-val {
+  stroke-dashoffset: 138.2px;
+}
+
+.js #garden-space .garden-tile.is-in .garden-ring-val {
+  stroke-dashoffset: calc(138.2px * (1 - var(--garden-ring-ratio, 0)));
+}
+
+.js #garden-space .garden-tile .garden-scale i {
+  transform: scaleX(0);
+}
+
+.js #garden-space .garden-tile.is-in .garden-scale i {
+  transform: scaleX(1);
+}
+
+.js #garden-space .garden-tile.is-in .garden-scale i:nth-child(2) {
+  transition-delay: 0.12s;
+}
+
+.js #garden-space .garden-tile.is-in .garden-scale i:nth-child(3) {
+  transition-delay: 0.24s;
+}
+
+/* —— 悬停 ——
+   .is-in 前缀是为了压过上面那条 .js 的 transform: none（同为 1 id，它多两个类）。 */
+#garden-space .garden-tile:hover {
+  border-color: rgba(58, 122, 160, 0.32);
+  box-shadow: 0 2px 6px rgba(15, 23, 42, 0.06), 0 14px 30px rgba(15, 23, 42, 0.09);
+}
+
+.js #garden-space .garden-tile.is-in:hover {
+  transform: translateY(-3px);
+}
+
+:root:root[data-theme='dark'] #garden-space .garden-tile {
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+:root:root[data-theme='dark'] #garden-space .garden-tile:hover {
+  border-color: rgba(122, 168, 200, 0.4);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.55);
+}
+
+/* Garden 卡片响应式 */
+@media screen and (max-width: 768px) {
+  #garden-space .garden-bento {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  #garden-space .garden-tile--wide,
+  #garden-space .garden-tile--anime,
+  #garden-space .garden-tile--study,
+  #garden-space .garden-tile--foot {
+    grid-column: auto;
+    grid-row: auto;
+  }
+
+  #garden-space .garden-tile--foot {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  #garden-space .garden-log-link {
+    grid-template-columns: 5.5rem minmax(0, 1fr);
+    gap: 10px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #garden-space .garden-tile,
+  #garden-space .garden-ring-val,
+  #garden-space .garden-scale i,
+  #garden-space .garden-log-title {
+    transition: none !important;
+  }
+
+  #garden-space .garden-tile {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  #garden-space .garden-scale i {
+    transform: scaleX(1) !important;
+  }
+}
+
+/* ============================================================
+   45. 追番页（Garden → Anime）PC 与移动端统一 —— 2026-10-11
+
+   问题（探针实测，改前）：
+     · 图窗 PC 端——`auto-fill` 算出 4 轨却只有 3 张卡，保留空轨 ⇒ 右侧空 197px（1440 实测）
+     · 图窗移动端——§39.1 强制 2 列 ⇒ 3 张卡排成 2+1，第二行右侧空 185px（390 实测）
+     · 图窗标题——`position` 来自 §12.4（absolute + 黑渐变）而 `color` 来自 §17.2（深色）
+       ⇒ 级联合并成「深色字压封面」，深色封面直接糊掉
+     · 字段名金色 #f2b94b vs 卡片底 #f7f9fc = 1.68:1，全页 2047 个文本节点
+       （来源 themes/anzhiyu/source/css/_extra/fix/bilibili-bangumi.css——
+        那是给旧版插件的补丁，与新版插件自带的蓝色体系 --bangumi-accent 打架）
+     · 移动端 tabs 排成 168 / 168 + 344 两行
+
+   本节只做覆盖，不改主题文件、不动旧节，便于回滚。
+   ============================================================ */
+
+/* 45.1 桌面图窗：auto-fill → auto-fit
+   auto-fill 保留空轨（3 张撑不满 4 轨 ⇒ 右空一轨）；auto-fit 折叠空轨，
+   现有卡均分整行 ⇒ 1440 下 3 张各约 247px 铺满。 */
+#article-container .anime-gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  gap: 18px;
+  margin: 0 0 32px;
+  padding: 0;
+  overflow: visible;
+}
+
+/* 45.2 卡片高度改由「图 + 标题」内容决定：去掉 §12.4 的 3 / 4 定比
+   （那个定比是把标题盖在图上时代的做法，标题移出后会把标题挤出卡片）。 */
+#article-container .anime-gallery-card {
+  width: auto;
+  aspect-ratio: auto;
+  overflow: hidden;
+  border: 1px solid var(--lopx-line);
+  border-radius: 14px;
+  background: var(--lopx-surface);
+  box-shadow: 0 2px 10px rgba(15, 23, 42, 0.05);
+  transition: transform var(--lopx-dur-mid) var(--lopx-ease),
+    box-shadow var(--lopx-dur-mid) var(--lopx-ease),
+    border-color var(--lopx-dur-mid) ease;
+}
+
+#article-container .anime-gallery-card:hover {
+  border-color: rgba(58, 122, 160, 0.35);
+  box-shadow: 0 14px 30px rgba(15, 23, 42, 0.14);
+  transform: translateY(-5px);
+}
+
+#article-container .anime-gallery-img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 3 / 4;
+  margin: 0;
+  object-fit: cover;
+  background: #eef1f4;
+}
+
+/* 标题移到图片下方：position / background 覆盖 §12.4 的「绝对定位 + 黑渐变」。
+   卡片等高交给网格/弹性拉伸（实测 PC 三张均 362 高、移动端三张均 242 高），
+   标题一律顶对齐，单行卡下方留白即为自然节奏。 */
+#article-container .anime-gallery-title {
+  position: static;
+  display: -webkit-box;
+  overflow: hidden;
+  padding: 10px 12px 12px;
+  background: none;
+  color: var(--lopx-ink);
+  font-size: 0.85rem;
+  font-weight: 600;
+  line-height: 1.4;
+  text-align: left;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+/* 45.3 移动端图窗：恢复横向滑动（anime_gallery.yml 注释里的原设计）
+   一屏 2 张 + 露出第三张约 30%，既不出现 2+1 空行，卡片也不至于缩到 111px。
+   卡宽 min((100% - 36px)/2.2, 180px) 随视口自适应：
+   320 → 111px（露 31%），390 → 143px（露 29%），≥600 起封顶 180px。 */
+@media screen and (max-width: 768px) {
+  #article-container .anime-gallery {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 12px;
+    padding: 4px 4px 14px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-snap-type: x proximity;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(0, 0, 0, 0.18) transparent;
+  }
+
+  #article-container .anime-gallery::-webkit-scrollbar {
+    height: 6px;
+  }
+
+  #article-container .anime-gallery::-webkit-scrollbar-thumb {
+    border-radius: 999px;
+    background-color: rgba(0, 0, 0, 0.18);
+  }
+
+  #article-container .anime-gallery-card {
+    flex: 0 0 min(calc((100% - 36px) / 2.2), 180px);
+    width: auto;
+    scroll-snap-align: start;
+  }
+}
+
+/* 45.4 字段名染色：金色 #f2b94b（1.68:1）→ 站点蓝加深 #2f6b8f（5.45:1）
+   值 em 实测已是插件给的深色 #1d2733，无需处理；只改被主题补丁染金的 span。 */
+#article-container .bangumi-info-item span {
+  color: #2f6b8f;
+}
+
+[data-theme='dark'] #article-container .bangumi-info-item span {
+  color: #8fc2e0;
+}
+
+/* 45.5 追番 tabs：移动端三等分；active 字色提纯到 #fff（4.39 → 4.70:1） */
+#page #article-container .bangumi-tab.bangumi-active {
+  background: var(--lopx-accent);
+  color: #ffffff;
+}
+
+/* 暗色下 --lopx-accent 会翻成浅蓝 #67b2d0，白字只剩 2.37:1
+   ⇒ 改成与浅底配套的深字（实测 8.09:1）。 */
+[data-theme='dark'] #page #article-container .bangumi-tab.bangumi-active {
+  color: #0d0d0d;
+}
+
+@media screen and (max-width: 768px) {
+  #article-container .bangumi-tabs {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 6px;
+  }
+
+  #article-container .bangumi-tabs .bangumi-tab {
+    flex: 1 1 0;
+    min-width: 0;
+    text-align: center;
+  }
+}
+
+/* ============================================================
+   46. 追番页：去掉右侧栏后的容器对齐 —— 2026-10-11
+
+   需求：追番页不要右侧栏。
+   开关落在 _config.yml 的 bangumi.extra_options.aside:false ——
+   本页由 hexo-bilibili-bangumi 生成，没有 front matter 可写，
+   只能从这里下发；主题 layout.pug 判 page.aside === false 后
+   给 #content-inner 加 .hide-aside 且不挂 widget。
+   （不动模板代码，也不改主题 aside 配置。）
+
+   副作用（探针实测 1440）：
+     有侧栏 → #page 用 calc(100% - 300px)，#article-container 宽 778
+     无侧栏 → .hide-aside > div{width:100%} 解除了那 300px 限制，
+              #article-container 涨到 1078，图窗卡片 247 → 347。
+   而站内 #lopx-home / #space-tech / #space-indie / #garden-space /
+   #about-page / #essay_page 一律 max-width:1000px（内容区 936），
+   追番页作为 garden 的子页反而宽出 78px，横向也不与 garden 主页同轴。
+
+   本节把 #article-container 收进同一条 1000 轴线：
+     实测 #article-container 落在 x=215 / w=1000，
+     与 /tech/ 的 #space-tech 容器完全重合；内容左缘 247 一致。
+   仅 ≥1225px 需要——该断点以下主题 .layout.hide-aside 的
+   max-width:1000px 未被 §24 覆盖，本来就已经是 1000 轴线；
+   且不设媒体查询的话，移动端会被再加 32px 内衬（#page 已给 15px）。
+   ============================================================ */
+
+@media screen and (min-width: 1225px) {
+  #page:has(.bangumi-container) #article-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding-right: 32px;
+    padding-left: 32px;
+    box-sizing: border-box;
+  }
+}
+
+/* ============================================================
+   47. 首页背景 Particles —— 2026-10-12 晚 重构
+   旧版（同日早些时候）是把 Canvas 2D 粒子铺在 #home-about 卡内，
+   视觉上像「装在卡面里」；按用户要求改为官方 ReactBits Particles
+   （WebGL2 版）的 1:1 原生移植，运行在**页面背景**。
+   实现见 source/js/lopx-particles.js（自管挂载/卸载，pjax 安全）。
+
+   层叠位置（根层叠上下文，同第 41 节）：
+     body 背景 → #web_bg(z:-999) → body::before(z:-1) → 本容器(z:-1，
+     树序在 body::before 之后故在其上) → 正常流内容（卡片不透明，
+     粒子从卡片间隙、页边距与页头区域透出）。
+   挂载点由 JS 直挂 <body>：首页 section 的入场动画带 transform，
+   任何 transform 祖先都会把 fixed 容器变成相对定位（见 §41 同款坑）。
+
+   参数调法（JS 端 mount() 里）：particleCount 密度 / speed 漂移 /
+   particleBaseSize 颗粒大小 / glow 光晕 / twinkle 闪烁；
+   整体浓淡用下方 opacity（每 ±0.1 约一档），颜色用两个 CSS 变量。
+   ============================================================ */
+
+#lopx-bg-particles {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0.55;
+}
+
+#lopx-bg-particles canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* 粒子颜色由 JS 读取这两个变量（官方 lightMode 墨水转换未启用，直接给目标色） */
+#lopx-bg-particles {
+  --lopx-particle-1: rgba(47, 107, 143, 0.95);
+  --lopx-particle-2: rgba(103, 178, 208, 0.95);
+}
+
+[data-theme='dark'] #lopx-bg-particles {
+  --lopx-particle-1: rgba(255, 255, 255, 0.9);
+  --lopx-particle-2: rgba(143, 194, 224, 0.9);
+  opacity: 0.45;
+}
+
+/* 尊重用户动效偏好（JS 侧同样有 matchMedia 拦截，这里是兜底） */
+@media (prefers-reduced-motion: reduce) {
+  #lopx-bg-particles {
+    display: none;
+  }
+}
