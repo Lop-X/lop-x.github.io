@@ -1,6 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>WorkBuddy 初体验</title>
+    <url>/Workbuddy%E5%88%9D%E4%BD%93%E9%AA%8C/</url>
+    <content><![CDATA[<p>看到了b站打的广告，安装了腾讯的workbuddy,体验一下。</p>
+<p>不得不说界面还是很美观的，和codex很像，看看国产agent使用体验怎么样。</p>
+<p>想先用这个清理一下C盘看看效果，目前容量 剩下 26.4G&#x2F;199G<br><img src="/img/Workbuddy%E5%88%9D%E4%BD%93%E9%AA%8C/Cpan-before.png"></p>
+<p>告诉他：<br><code>帮我完整分析 C 盘全部目录空间占用，区分可安全清理的临时文件、缓存、安装包、日志，标注高风险禁止删除的系统文件夹，生成详细清理清单并标注每一项可释放空间大小。</code></p>
+<p>过了5min8s，给我返回了结果，<br>WB返给我的分析的数据，自动做成了一个html，比较详细直观的看到文件结构了。<br><img src="/img/Workbuddy%E5%88%9D%E4%BD%93%E9%AA%8C/Cpan-data.png"></p>
+<p>输入：<br><code>删除可以安全清楚的部分，直接删除不放入回收站。</code><br>电脑风扇疯狂转动，在删除 DXCache 的时候，进度卡住了10min左右，自动检测然后修正了任务。<br><img src="/img/Workbuddy%E5%88%9D%E4%BD%93%E9%AA%8C/workbuddyImg1.png"></p>
+<p>大约20min后依然没有效果，于是选择重新执行命令。</p>
+<p>最后花费36分钟，战况：<br><img src="/img/Workbuddy%E5%88%9D%E4%BD%93%E9%AA%8C/Cpan-after.png"></p>
+<h4 id="总结："><a href="#总结：" class="headerlink" title="总结："></a>总结：</h4><p>效果不错，但是预计的时间比我想的要长，新用户赠送的2000免费额度可以干很多事情了，暂时推荐。</p>
+]]></content>
+      <categories>
+        <category>工具</category>
+      </categories>
+      <tags>
+        <tag>WorkBuddy</tag>
+        <tag>AI</tag>
+        <tag>工具</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Hexo 配置 Bangumi 追番页面</title>
     <url>/hexo%E9%85%8D%E7%BD%AEbangumi%E8%BF%BD%E7%95%AA%E9%A1%B5%E9%9D%A2/</url>
     <content><![CDATA[<h2 id="终于成功啦"><a href="#终于成功啦" class="headerlink" title="终于成功啦"></a>终于成功啦</h2><p><strong>Todo 目前不挂梯子无法显示封面，待解决！！！</strong></p>
@@ -24,106 +46,6 @@
       <tags>
         <tag>hexo</tag>
         <tag>bangumi</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>使用 Obsidian 编辑笔记</title>
-    <url>/%E4%BD%BF%E7%94%A8obsidian%E7%BC%96%E8%BE%91%E7%AC%94%E8%AE%B0/</url>
-    <content><![CDATA[<p>使用Vscode编辑markdown显示效果不好，使用Typora编辑只能一次打开一篇文章，<br>为了解决编辑文章的痛点，可以使用obsidian。</p>
-<h3 id="obsidian下载"><a href="#obsidian下载" class="headerlink" title="obsidian下载"></a>obsidian下载</h3><p><a href="https://obsidian.md/download">Download - Obsidian</a></p>
-<h3 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h3><p>选择hexo现有的 <code>_post</code>文件夹作为obsidian地址，<br>可以看到本地生成了 <code>.obsidian</code>文件夹，<br>就可以愉快的管理编辑笔记啦</p>
-<h3 id="模版"><a href="#模版" class="headerlink" title="模版"></a>模版</h3><p>在<code>_post</code>文件夹下面新建文件夹<code>_templates</code>,里面直接添加<code>XX.md</code>作为模版，<br>将需要的属性模版打上去，注意日期要按照格式，详见obsidian设置页面<code>模版</code><br>将文件夹<code>_templates</code>添加进去，注意是相对地址，即可使用模版。</p>
-<h3 id="复制设置"><a href="#复制设置" class="headerlink" title="复制设置"></a>复制设置</h3><p>根目录下<code>.obsidian</code>文件夹保存着obsidian的所有设置，包括插件和主题，<br><strong>记得复制的时候删除<code>workspace.json</code>文件，里面保存的当前界面布局</strong></p>
-<p>目前支<code>ctrl+shift+p</code>一键同步当前文章到本地博客仓库</p>
-<h3 id="现在的完整工作流"><a href="#现在的完整工作流" class="headerlink" title="现在的完整工作流"></a>现在的完整工作流</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">在 Obsidian 里写  →  Ctrl+Shift+P 一键同步到 _posts  →  hexo d 手动上线</span><br><span class="line">                  ↘  每 10 分钟自动备份到 GitHub（无需操作）</span><br></pre></td></tr></table></figure>
-]]></content>
-      <categories>
-        <category>工具</category>
-      </categories>
-      <tags>
-        <tag>obsidian</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>常见 Git 命令学习使用</title>
-    <url>/%E5%B8%B8%E8%A7%81Git%E5%91%BD%E4%BB%A4%E5%AD%A6%E4%B9%A0/</url>
-    <content><![CDATA[<h1 id="Git-基础使用"><a href="#Git-基础使用" class="headerlink" title="Git 基础使用"></a>Git 基础使用</h1><p>Git 是本地代码版本管理工具，用来记录修改历史、恢复旧版本。<br>GitHub 是把 Git 仓库托管到网上的平台。</p>
-<h2 id="1-第一次配置"><a href="#1-第一次配置" class="headerlink" title="1. 第一次配置"></a>1. 第一次配置</h2><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git config --global user.name <span class="string">&quot;Fanbo&quot;</span></span><br><span class="line">git config --global user.email <span class="string">&quot;你的GitHub邮箱&quot;</span></span><br><span class="line">git config --global --list</span><br></pre></td></tr></table></figure>
-<p>可以使用下面的命令检查配置：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git config --global --list</span><br></pre></td></tr></table></figure>
-
-<p>如果看到类似：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">user.name=Fanbo</span><br><span class="line">user.email=xxxx@example.com</span><br></pre></td></tr></table></figure>
-
-<p>就说明配置成功了。</p>
-<h2 id="2-创建仓库"><a href="#2-创建仓库" class="headerlink" title="2. 创建仓库"></a>2. 创建仓库</h2><p>在项目文件夹中执行：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git init</span><br></pre></td></tr></table></figure>
-
-<p>会生成隐藏的 <code>.git</code> 文件夹，不要删除。</p>
-<p>先创建 <code>.gitignore</code>，告诉 Git 哪些文件不管理，列如：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">node_modules/</span><br><span class="line">.env</span><br><span class="line">*.log</span><br><span class="line">.DS_Store</span><br></pre></td></tr></table></figure>
-
-<p>如果某个文件不想被忽略，用 <code>!</code>：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">!important.log</span><br></pre></td></tr></table></figure>
-
-<h2 id="3-第一次提交并上传-GitHub"><a href="#3-第一次提交并上传-GitHub" class="headerlink" title="3. 第一次提交并上传 GitHub"></a>3. 第一次提交并上传 GitHub</h2><p>在 GitHub 新建仓库，然后本地执行：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git add .</span><br><span class="line">git commit -m <span class="string">&quot;Initial commit&quot;</span></span><br><span class="line">git branch -M main</span><br><span class="line">git remote add origin 你的仓库地址</span><br><span class="line">git push -u origin main</span><br></pre></td></tr></table></figure>
-
-<p>如果提示 <code>src refspec main does not match any</code>，通常是还没提交，或分支不是 <code>main</code>。先执行：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git add .</span><br><span class="line">git commit -m <span class="string">&quot;Initial commit&quot;</span></span><br><span class="line">git branch -M main</span><br></pre></td></tr></table></figure>
-
-<p>如果远程仓库已有 README，先合并再推送：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git pull origin main --allow-unrelated-histories</span><br><span class="line">git push -u origin main</span><br></pre></td></tr></table></figure>
-
-<h2 id="4-以后每次修改"><a href="#4-以后每次修改" class="headerlink" title="4. 以后每次修改"></a>4. 以后每次修改</h2><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git add .</span><br><span class="line">git commit -m <span class="string">&quot;说明修改内容&quot;</span></span><br><span class="line">git push</span><br></pre></td></tr></table></figure>
-
-<p>记住这三条即可。</p>
-<h2 id="5-常用命令"><a href="#5-常用命令" class="headerlink" title="5. 常用命令"></a>5. 常用命令</h2><table>
-<thead>
-<tr>
-<th>命令</th>
-<th>作用</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><code>git init</code></td>
-<td>创建 Git 仓库</td>
-</tr>
-<tr>
-<td><code>git status</code></td>
-<td>查看当前状态</td>
-</tr>
-<tr>
-<td><code>git add .</code></td>
-<td>暂存所有修改</td>
-</tr>
-<tr>
-<td><code>git commit -m &quot;...&quot;</code></td>
-<td>创建新版本</td>
-</tr>
-<tr>
-<td><code>git push</code></td>
-<td>上传到 GitHub</td>
-</tr>
-<tr>
-<td><code>git pull</code></td>
-<td>获取远程最新代码</td>
-</tr>
-<tr>
-<td><code>git log</code></td>
-<td>查看提交历史</td>
-</tr>
-<tr>
-<td><code>git remote -v</code></td>
-<td>查看远程仓库</td>
-</tr>
-</tbody></table>
-]]></content>
-      <categories>
-        <category>Git</category>
-      </categories>
-      <tags>
-        <tag>Git</tag>
       </tags>
   </entry>
   <entry>
@@ -255,6 +177,120 @@
         <tag>hexo</tag>
         <tag>网站</tag>
         <tag>复活</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>智能汽车竞赛</title>
+    <url>/%E6%99%BA%E8%83%BD%E6%B1%BD%E8%BD%A6%E7%AB%9E%E8%B5%9B/</url>
+    <content><![CDATA[<p><img src="/img/%E6%99%BA%E8%83%BD%E6%B1%BD%E8%BD%A6%E7%AB%9E%E8%B5%9B/wallhaven-yxpwmx.png"></p>
+]]></content>
+      <categories>
+        <category>项目</category>
+      </categories>
+      <tags>
+        <tag>大学</tag>
+        <tag>竞赛</tag>
+        <tag>项目</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>使用 Obsidian 编辑笔记</title>
+    <url>/%E4%BD%BF%E7%94%A8obsidian%E7%BC%96%E8%BE%91%E7%AC%94%E8%AE%B0/</url>
+    <content><![CDATA[<p>使用Vscode编辑markdown显示效果不好，使用Typora编辑只能一次打开一篇文章，<br>为了解决编辑文章的痛点，可以使用obsidian。</p>
+<h3 id="obsidian下载"><a href="#obsidian下载" class="headerlink" title="obsidian下载"></a>obsidian下载</h3><p><a href="https://obsidian.md/download">Download - Obsidian</a></p>
+<h3 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h3><p>选择hexo现有的 <code>_post</code>文件夹作为obsidian地址，<br>可以看到本地生成了 <code>.obsidian</code>文件夹，<br>就可以愉快的管理编辑笔记啦</p>
+<h3 id="模版"><a href="#模版" class="headerlink" title="模版"></a>模版</h3><p>在<code>_post</code>文件夹下面新建文件夹<code>_templates</code>,里面直接添加<code>XX.md</code>作为模版，<br>将需要的属性模版打上去，注意日期要按照格式，详见obsidian设置页面<code>模版</code><br>将文件夹<code>_templates</code>添加进去，注意是相对地址，即可使用模版。</p>
+<h3 id="复制设置"><a href="#复制设置" class="headerlink" title="复制设置"></a>复制设置</h3><p>根目录下<code>.obsidian</code>文件夹保存着obsidian的所有设置，包括插件和主题，<br><strong>记得复制的时候删除<code>workspace.json</code>文件，里面保存的当前界面布局</strong></p>
+<p>目前支<code>ctrl+shift+p</code>一键同步当前文章到本地博客仓库</p>
+<h3 id="现在的完整工作流"><a href="#现在的完整工作流" class="headerlink" title="现在的完整工作流"></a>现在的完整工作流</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">在 Obsidian 里写  →  Ctrl+Shift+P 一键同步到 _posts  →  hexo d 手动上线</span><br><span class="line">                  ↘  每 10 分钟自动备份到 GitHub（无需操作）</span><br></pre></td></tr></table></figure>
+]]></content>
+      <categories>
+        <category>工具</category>
+      </categories>
+      <tags>
+        <tag>obsidian</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>常见 Git 命令学习使用</title>
+    <url>/%E5%B8%B8%E8%A7%81Git%E5%91%BD%E4%BB%A4%E5%AD%A6%E4%B9%A0/</url>
+    <content><![CDATA[<h1 id="Git-基础使用"><a href="#Git-基础使用" class="headerlink" title="Git 基础使用"></a>Git 基础使用</h1><p>Git 是本地代码版本管理工具，用来记录修改历史、恢复旧版本。<br>GitHub 是把 Git 仓库托管到网上的平台。</p>
+<h2 id="1-第一次配置"><a href="#1-第一次配置" class="headerlink" title="1. 第一次配置"></a>1. 第一次配置</h2><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git config --global user.name <span class="string">&quot;Fanbo&quot;</span></span><br><span class="line">git config --global user.email <span class="string">&quot;你的GitHub邮箱&quot;</span></span><br><span class="line">git config --global --list</span><br></pre></td></tr></table></figure>
+<p>可以使用下面的命令检查配置：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git config --global --list</span><br></pre></td></tr></table></figure>
+
+<p>如果看到类似：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">user.name=Fanbo</span><br><span class="line">user.email=xxxx@example.com</span><br></pre></td></tr></table></figure>
+
+<p>就说明配置成功了。</p>
+<h2 id="2-创建仓库"><a href="#2-创建仓库" class="headerlink" title="2. 创建仓库"></a>2. 创建仓库</h2><p>在项目文件夹中执行：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git init</span><br></pre></td></tr></table></figure>
+
+<p>会生成隐藏的 <code>.git</code> 文件夹，不要删除。</p>
+<p>先创建 <code>.gitignore</code>，告诉 Git 哪些文件不管理，列如：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">node_modules/</span><br><span class="line">.env</span><br><span class="line">*.log</span><br><span class="line">.DS_Store</span><br></pre></td></tr></table></figure>
+
+<p>如果某个文件不想被忽略，用 <code>!</code>：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">!important.log</span><br></pre></td></tr></table></figure>
+
+<h2 id="3-第一次提交并上传-GitHub"><a href="#3-第一次提交并上传-GitHub" class="headerlink" title="3. 第一次提交并上传 GitHub"></a>3. 第一次提交并上传 GitHub</h2><p>在 GitHub 新建仓库，然后本地执行：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git add .</span><br><span class="line">git commit -m <span class="string">&quot;Initial commit&quot;</span></span><br><span class="line">git branch -M main</span><br><span class="line">git remote add origin 你的仓库地址</span><br><span class="line">git push -u origin main</span><br></pre></td></tr></table></figure>
+
+<p>如果提示 <code>src refspec main does not match any</code>，通常是还没提交，或分支不是 <code>main</code>。先执行：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git add .</span><br><span class="line">git commit -m <span class="string">&quot;Initial commit&quot;</span></span><br><span class="line">git branch -M main</span><br></pre></td></tr></table></figure>
+
+<p>如果远程仓库已有 README，先合并再推送：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git pull origin main --allow-unrelated-histories</span><br><span class="line">git push -u origin main</span><br></pre></td></tr></table></figure>
+
+<h2 id="4-以后每次修改"><a href="#4-以后每次修改" class="headerlink" title="4. 以后每次修改"></a>4. 以后每次修改</h2><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git add .</span><br><span class="line">git commit -m <span class="string">&quot;说明修改内容&quot;</span></span><br><span class="line">git push</span><br></pre></td></tr></table></figure>
+
+<p>记住这三条即可。</p>
+<h2 id="5-常用命令"><a href="#5-常用命令" class="headerlink" title="5. 常用命令"></a>5. 常用命令</h2><table>
+<thead>
+<tr>
+<th>命令</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>git init</code></td>
+<td>创建 Git 仓库</td>
+</tr>
+<tr>
+<td><code>git status</code></td>
+<td>查看当前状态</td>
+</tr>
+<tr>
+<td><code>git add .</code></td>
+<td>暂存所有修改</td>
+</tr>
+<tr>
+<td><code>git commit -m &quot;...&quot;</code></td>
+<td>创建新版本</td>
+</tr>
+<tr>
+<td><code>git push</code></td>
+<td>上传到 GitHub</td>
+</tr>
+<tr>
+<td><code>git pull</code></td>
+<td>获取远程最新代码</td>
+</tr>
+<tr>
+<td><code>git log</code></td>
+<td>查看提交历史</td>
+</tr>
+<tr>
+<td><code>git remote -v</code></td>
+<td>查看远程仓库</td>
+</tr>
+</tbody></table>
+]]></content>
+      <categories>
+        <category>Git</category>
+      </categories>
+      <tags>
+        <tag>Git</tag>
       </tags>
   </entry>
   <entry>
@@ -419,42 +455,6 @@
       </categories>
       <tags>
         <tag>考研</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>WorkBuddy 初体验</title>
-    <url>/Workbuddy%E5%88%9D%E4%BD%93%E9%AA%8C/</url>
-    <content><![CDATA[<p>看到了b站打的广告，安装了腾讯的workbuddy,体验一下。</p>
-<p>不得不说界面还是很美观的，和codex很像，看看国产agent使用体验怎么样。</p>
-<p>想先用这个清理一下C盘看看效果，目前容量 剩下 26.4G&#x2F;199G<br><img src="/img/Workbuddy%E5%88%9D%E4%BD%93%E9%AA%8C/Cpan-before.png"></p>
-<p>告诉他：<br><code>帮我完整分析 C 盘全部目录空间占用，区分可安全清理的临时文件、缓存、安装包、日志，标注高风险禁止删除的系统文件夹，生成详细清理清单并标注每一项可释放空间大小。</code></p>
-<p>过了5min8s，给我返回了结果，<br>WB返给我的分析的数据，自动做成了一个html，比较详细直观的看到文件结构了。<br><img src="/img/Workbuddy%E5%88%9D%E4%BD%93%E9%AA%8C/Cpan-data.png"></p>
-<p>输入：<br><code>删除可以安全清楚的部分，直接删除不放入回收站。</code><br>电脑风扇疯狂转动，在删除 DXCache 的时候，进度卡住了10min左右，自动检测然后修正了任务。<br><img src="/img/Workbuddy%E5%88%9D%E4%BD%93%E9%AA%8C/workbuddyImg1.png"></p>
-<p>大约20min后依然没有效果，于是选择重新执行命令。</p>
-<p>最后花费36分钟，战况：<br><img src="/img/Workbuddy%E5%88%9D%E4%BD%93%E9%AA%8C/Cpan-after.png"></p>
-<h4 id="总结："><a href="#总结：" class="headerlink" title="总结："></a>总结：</h4><p>效果不错，但是预计的时间比我想的要长，新用户赠送的2000免费额度可以干很多事情了，暂时推荐。</p>
-]]></content>
-      <categories>
-        <category>工具</category>
-      </categories>
-      <tags>
-        <tag>WorkBuddy</tag>
-        <tag>AI</tag>
-        <tag>工具</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>智能汽车竞赛</title>
-    <url>/%E6%99%BA%E8%83%BD%E6%B1%BD%E8%BD%A6%E7%AB%9E%E8%B5%9B/</url>
-    <content><![CDATA[<p><img src="/img/%E6%99%BA%E8%83%BD%E6%B1%BD%E8%BD%A6%E7%AB%9E%E8%B5%9B/wallhaven-yxpwmx.png"></p>
-]]></content>
-      <categories>
-        <category>项目</category>
-      </categories>
-      <tags>
-        <tag>大学</tag>
-        <tag>竞赛</tag>
-        <tag>项目</tag>
       </tags>
   </entry>
 </search>
