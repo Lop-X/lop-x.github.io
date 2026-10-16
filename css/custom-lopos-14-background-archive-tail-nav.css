@@ -1,0 +1,131 @@
+/* ============================================================
+   41. 全站亮色柔光球 —— 2026-10-11（用户选定 C5）
+   背景层 #web_bg 是一块纯色。配合第 16 节的底色降档，再补一层极淡的色相流动，
+   把暗色模式已有的「宇宙粒子」（theme.universe）在亮色下做同构呼应；
+   纯 CSS，零资产、零请求。
+   ------------------------------------------------------------
+   挂载点选 body::before 而不是 #web_bg 的伪元素，原因：
+     #web_bg 带 transform: rotate(-1deg)，且宽高为 200%、left/top 为 -50%，
+     它会成为内部 fixed 伪元素的包含块 —— 百分比坐标被整体平移 0.5 个视口、
+     再被旋转 1°，定位完全不可控。body::before 是相对视口的 fixed 层，
+     百分比即视口坐标，直观且可维护。
+   层叠位置（同一根层叠上下文）：
+     body 背景 → #web_bg(z:-999) → body::before(z:-1) → 正常流内容
+     负 z-index 后代绘制在父元素背景之上，故 -1 压住 -999、又被内容压住，
+     不遮挡卡片也不吃点击（已加 pointer-events: none）。
+   参数若要调：三团光斑的透明度每 +0.02 约等于背景色相偏移一档，
+   建议 0.05–0.12 之间；位置为视口百分比，半径单位 px。
+   ============================================================ */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image:
+    radial-gradient(760px circle at 12% 4%, rgba(58, 122, 160, 0.17), transparent 68%),
+    radial-gradient(640px circle at 88% 14%, rgba(103, 178, 208, 0.15), transparent 68%),
+    radial-gradient(600px circle at 52% 98%, rgba(58, 122, 160, 0.11), transparent 70%);
+  background-repeat: no-repeat;
+}
+
+/* 暗色不叠加：那里已有 universe 粒子，再铺一层反而浑。
+   直接 display: none，同时省掉一整层 fixed 合成。 */
+[data-theme='dark'] body::before {
+  display: none;
+}
+
+/* ============================================================
+   42. 归档页条目序号弱化 —— 2026-10-11
+   主题原生（themes/anzhiyu/source/css/_page/archives.styl:61-68）给条目右侧
+   序号 2.5rem（40px）斜体 + opacity .5 + 绝对定位右上角。条目本身只有 80px 高，
+   40px 的字号占去一半，与文章标题抢注意力（1440 实测截图确认）。
+   序号承担「第 N 篇」的计数语义，故保留，只做三件事：降字号、去斜体、压透明度。
+   容器 id 是 #archive（单数），不是 #archives —— 见 public/archives/index.html。 */
+#archive .article-sort-item-index {
+  top: 0.5rem;
+  right: 0.85rem;
+  font-size: 1.3rem;
+  font-style: normal;
+  font-weight: 500;
+  opacity: 0.3;
+}
+
+/* ============================================================
+   43. 站内导航收尾带 —— 2026-10-11
+   只出现在 /categories/、/about/ 两个页面（/tags/ 已于 2026-10-12 取消，
+   带子由 4 卡改 3 卡：归档 / 分类 / 订阅）。
+   背景（实测 /categories/，视口 1000）：#body-wrap 是 flex column，main#blog-container
+   只有 262px 高，而 #footer 贴底在 y=850 —— 中间空出 512px 纯背景。
+   原因：这三个页面内容只有一张卡，页脚仍被推到底。
+   处理：在 main 内、#content-inner 之后补一条「继续浏览」入口带，并让 main 撑满，
+   使带子落到页脚上方，页面被"收住"而不是吊着一大片空白。
+   挂载：themes/anzhiyu/layout/includes/tail-nav.pug（由 layout.pug 条件 include）。
+   轴线：与 .layout 一致（max-width 1200 / 内衬 1.5rem）。
+   ============================================================ */
+main#blog-container:has(.lopx-tail-nav) {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.lopx-tail-nav {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1.5rem 1.5rem;
+  box-sizing: border-box;
+}
+
+.lopx-tail-caption {
+  display: block;
+  margin-bottom: 10px;
+  color: var(--lopx-muted);
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+}
+
+.lopx-tail-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.lopx-tail-card {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 14px 16px;
+  border: 1px solid var(--lopx-line);
+  border-radius: 12px;
+  background: var(--lopx-surface);
+  transition: transform 0.3s ease, border-color 0.3s ease;
+}
+
+.lopx-tail-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(58, 122, 160, 0.32);
+}
+
+.lopx-tail-name {
+  color: var(--lopx-ink);
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.lopx-tail-label {
+  color: var(--lopx-muted);
+  font-size: 0.72rem;
+}
+
+@media screen and (max-width: 768px) {
+  .lopx-tail-nav {
+    padding: 0 16px 24px;
+  }
+
+  .lopx-tail-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+  }
+}
+

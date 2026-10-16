@@ -1,0 +1,205 @@
+
+/* ============================================================
+   31. 短页面内容贴顶 —— 2026-10-05
+   现象：内容不足一屏的页面，正文会随浏览器窗口高度上下漂移。
+   实测（同一份 HTML，只改视口高度）：/indie/ 的容器起点
+   123px@vh900 → 373px@vh1400（+250px）；/about/ 80 → 200（+120px）；
+   内容超过一屏的 /tech/ 稳定在 60px。
+   根因：主题 themes/anzhiyu/source/css/_page/common.styl 的
+   `#body-wrap { display:flex; flex-direction:column; min-height:100vh;
+   justify-content:space-between }` —— header / main / footer 三个 flex 子项被
+   均分，main 被推到中间；窗口越高，推得越远。
+   注意：根因在主题目录，主题升级会被覆盖，所以覆盖写在 custom.css（本文件）。
+   修法：改 flex-start 让内容固定贴顶，再用 #footer{margin-top:auto}
+   保留「页脚贴底」——两者都保留，不用二选一。
+   ============================================================ */
+
+#body-wrap {
+  justify-content: flex-start;
+}
+
+#footer {
+  margin-top: auto;
+}
+
+/* ============================================================
+   32. 消除「点击菜单后整页横向抽动」 —— 2026-10-05
+   现象：点顶部菜单文字（技术/独立游戏/生活/动态/关于）时，整页会
+   瞬间横向放大一下再弹回，很像「整页缩放」。
+   实测（无头 Chrome + CDP 逐帧采样 30ms）：
+     首页 → /indie/   clientW 1430→1440  navPadL 39px→44px  contentX 103→108
+   根因：两类页面「有无垂直滚动条」不同 → documentElement.clientWidth
+   差 10px（1430/1440）；而主题 _layout/head.styl 的
+     `#nav { position:fixed; width:100%;
+             padding:0 calc((100% - 1400px + 3rem)/2); transition:.3s }`
+   内衬按 100%（= clientWidth）计算，于是整条导航栏连同内容右移 5px；
+   又因为 `transition:.3s` 是简写（= all），这 5px 的瞬时变化被拉成
+   0.3s 平滑动画 —— 肉眼即「整页缩放又弹回」。
+   哪些页会触发：内容「恰好一屏」因而不出滚动条的页面。
+     实测 vh900/950 只有 /indie/；vh1080 时 /indie/、/garden/、/about/
+     三者都无滚动条（受本文件第 31 节「短页贴顶」影响，正文高度固定）。
+   修法：html 常驻预留滚动条槽 → clientWidth 恒定 → 内衬不再变。
+   代价：短页会常驻一条约 10px 的空白预留槽（非可见轨道，视觉近乎无感）。
+   注意：不支持的旧浏览器自动忽略本行，退回原状，属渐进增强。
+   验证：注入后重测 首页→/indie/ 全程 navPadL=39px / contentX=103 恒定。
+   ============================================================ */
+
+html {
+  scrollbar-gutter: stable;
+}
+
+/* ============================================================
+   33. 文章页底部：上一篇 / 下一篇 + 相关文章 —— 2026-10-07
+   现象：文章页底部「上一篇 / 下一篇」两个黑块，以及「喜欢这篇文章的人也看了」
+        每张卡，左上角都挂着一个破图图标 + 英文 alt 文案
+        （"cover of previous post" / "cover of next post" / "cover"）。
+   实测（无头 Chrome + CDP，1440 视口，文章 /建站/网站装修记录/）：
+     .prev-post > a   397×150，img data-lazy-src="/"，naturalSize 0×0
+     .next-post > a   397×150，同上
+     .relatedPosts-list 每卡 img 259×200，同上
+   根因两层：
+     1) 8 篇文章都没有 cover 字段，主题 filters/random_cover.js 在
+        cover.default_cover 未配置时把 cover 置为 false；
+     2) 本版本的 randomcover 从未被赋值，于是
+          pagination.pug: prev.cover === false ? prev.randomcover : prev.cover
+        这两个渲染分支恒为 undefined → url_for(undefined) 得到 "/"，
+        浏览器把「当前页 URL」当图片地址再请求一次。
+        兜底图 error_img.post_page 指向的 /img/404.jpg 站内并不存在，故一直破图。
+        ⚠️ 2026-10-10 更正：上面这句结论**是错的**。`/img/404.jpg`（141KB）与
+           `/img/friend_404.gif`（604KB）确实存在 —— 在 `public/img/` 里，且线上
+           也返回 200（因为 `public/` 从未 clean 过、旧文件被一起部署了）。
+           但它们是**孤儿**：`source/img/` 里没有，一旦谁跑通 `hexo clean` 就会消失，
+           兜底随即变破图。已把 `error_img`（两个键）改指 `/img/404-skeleton.webp`
+           （7KB，source 内受 git 跟踪）。
+   处理：
+     · 模板侧（pagination.pug / related_post.js）无封面时不再输出 <img>；
+     · 样式侧改用第 28 节「渐变文字封面」的同一套语言 —— 空间识别色深底 +
+       细网格纹理，让这两块从「纯黑洞口」变成与空间卡同族的色块。
+   色板：取 28.1 的 Tech 一组（#0b2130 → #1f6288）。
+   对比度：白字压渐变浅端 #1f6288 为 6.7:1；窄带上标签所在的 92% 处提到
+        88% 白为 4.78:1；相关卡内文字沿用主题取值（#eee / #fff）实测 9.3:1 / 10.7:1。
+   ============================================================ */
+
+/* 33.1 上一篇 / 下一篇：整条底带换成渐变。两半各占 50%、自身透明，
+   所以只需把底色刷在容器上，渐变自然连成一条。 */
+#pagination.pagination-post {
+  background-color: transparent;
+  background-image:
+    repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.055) 0 1px, transparent 1px 26px),
+    repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.045) 0 1px, transparent 1px 26px),
+    linear-gradient(135deg, #0b2130 0%, #1f6288 100%);
+  background-repeat: repeat, repeat, no-repeat;
+  background-size: 26px 26px, 26px 26px, cover;
+  background-position: left top, left top, center center;
+}
+
+/* 两半之间的发丝分隔；只有「两篇都在」时才出现（pull-right） */
+#pagination.pagination-post .next-post.pull-right {
+  border-left: 1px solid rgba(255, 255, 255, 0.14);
+}
+
+/* 33.2 带上的文字。主题给的是 var(--light-grey)，压在渐变上偏弱。
+   注：标签在窄带上位于渐变 92% 处（实测背景 ≈ #1d5d81），
+   82% 白只有 4.35:1（受 26px 网格的白色发丝线影响），提到 88% 白为 4.78:1。 */
+#pagination.pagination-post .label {
+  color: rgba(255, 255, 255, 0.88);
+}
+
+#pagination.pagination-post .prev_info,
+#pagination.pagination-post .next_info {
+  color: #ffffff;
+}
+
+/* 33.3 相关文章：每张卡各自一套渐变（与 28.4 卡片封面同配方） */
+.relatedPosts > .relatedPosts-list > div {
+  background-color: transparent;
+  background-image:
+    repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.055) 0 1px, transparent 1px 26px),
+    repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.045) 0 1px, transparent 1px 26px),
+    linear-gradient(135deg, #0b2130 0%, #1f6288 100%);
+  background-repeat: repeat, repeat, no-repeat;
+  background-size: 26px 26px, 26px 26px, cover;
+  background-position: left top, left top, center left;
+}
+
+/* 卡内文字不需要覆盖：主题的 .content .date = var(--light-grey) #eee、
+   .content .title = var(--white) #fff，实测落在渐变中段（≈#15415c）上分别是
+   9.3:1 与 10.7:1，均富余；沿用主题取值即可，勿再叠加规则。 */
+
+/* ============================================================
+   34. 正文加粗文字对比度 —— 2026-10-07（第 1 批第 4 轮）
+   实测（无头 Chrome + CDP 探针，light 模式，禁过渡后取终值）：
+   主题 `b, strong { color: var(--anzhiyu-lighttext) }`，而
+   `--anzhiyu-lighttext: var(--anzhiyu-main)` = #3a7aa0。压在正文底
+   #f7f9fe 上 = 4.46:1，差 0.04 未达 AA（4.5）。
+   注意：--anzhiyu-lighttext 全站 19 处在用（链接 a、目录 card-toc 高亮、
+   article-sort hover、banner-button.secondary…），**不能改这个变量**，
+   否则全站主色一起偏移，且目录/链接会连带变成新色。
+   处理：只对正文容器内的 b/strong 加深到 #38769b（实测 4.71:1）。
+   限定亮色模式 —— 暗色分支原本已达标（全站暗色走查违规为 0）。
+   实际命中范围：8 篇文章中只有「考研记录（二）」正文里的
+   `**[日期]**` 粗体伪标题（8 处，17px/700，背景 #f7f9fe）。
+   ============================================================ */
+:root:not([data-theme='dark']) #article-container b,
+:root:not([data-theme='dark']) #article-container strong {
+  color: #38769b;
+}
+
+/* ============================================================
+   35. 代码块语法着色：亮色分支（第 11 节遗留缺口的补全）—— 2026-10-07（第 1 批第 4 轮）
+   问题：highlight_theme 是 mac light（白底），但主题下发的 token 色是**深色方案**的取值。
+   实测（无头 Chrome 探针，代码块底 rgb(255,255,255)，12 种 token 全量）：
+     .built_in               #ffb62c → 1.75  ❌
+     .string / .number       #91b859 → 2.28  ❌
+     .keyword / .title / .class_  #39adb5 → 2.69  ❌
+     .comment                #969896 → 2.91  ❌
+     .literal / .params      #f76d47 → 2.90  ❌
+     .type / .function       #6182b8 → 3.89  ❌
+     .meta                   #7c4dff → 4.81  ✅（唯一达标项）
+     .gutter .line（行号）    #a3aeb4 → 2.12  ❌
+   影响面：全站 4 个页面 51 个代码块共 **484 处**违规
+     （Snake-Game 436 / hexo-bangumi 35 / 已复活 8 / 常见Git命令 5）。
+   第 11 节的注释已自认这个缺口：「语法着色 token（string 等）由主题另行下发，
+   不受本规则影响」；暗色分支已在第 23.2 节补过一整套，**亮色分支一直缺失**。
+   方案：**保持色相语义、只压明度**（不照搬 23.2 的分组，因为主题给 built_in /
+   keyword / type 三种不同色相，合并会丢失代码块的可读层次）。
+   取值全部 ≥4.9:1，留出余量。勿删——删掉即回到 1.75。
+   ============================================================ */
+:root:not([data-theme='dark']) #article-container figure.highlight :is(.comment, .quote) {
+  color: #61696f; /* 5.59 —— 灰 */
+}
+
+:root:not([data-theme='dark']) #article-container figure.highlight :is(.keyword, .selector-tag, .title, .class_) {
+  color: #0f6b72; /* 6.24 —— 青 */
+}
+
+:root:not([data-theme='dark']) #article-container figure.highlight :is(.built_in) {
+  color: #96601a; /* 5.27 —— 橙 */
+}
+
+:root:not([data-theme='dark']) #article-container figure.highlight :is(.type, .function, .name, .section) {
+  color: #2b4f8a; /* 8.11 —— 蓝 */
+}
+
+:root:not([data-theme='dark']) #article-container figure.highlight :is(.string, .number, .attr, .addition, .regexp) {
+  color: #4a6b1e; /* 6.15 —— 绿 */
+}
+
+:root:not([data-theme='dark']) #article-container figure.highlight :is(.literal, .params, .symbol, .bullet) {
+  color: #a03a14; /* 6.75 —— 橙红 */
+}
+
+:root:not([data-theme='dark']) #article-container figure.highlight :is(.variable, .template-variable, .selector-id, .selector-class) {
+  color: #8a6d00; /* 4.92 —— 黄（与第 23.2 节暗色分支同语义） */
+}
+
+:root:not([data-theme='dark']) #article-container figure.highlight :is(.meta, .deletion, .tag) {
+  color: #6a3fd0; /* 6.49 —— 紫 */
+}
+
+/* 行号：第 11 节给的 #a3aeb4 在白底上只有 2.12:1，一并提高。
+   注意代码块实际底色是 #f7f7f9 而非纯白，取值要按更暗的底算。 */
+:root:not([data-theme='dark']) #article-container figure.highlight :is(.gutter, .gutter .line, .line-numbers) {
+  color: #656d76; /* 4.90（按 #f7f7f9 底计） */
+}
+

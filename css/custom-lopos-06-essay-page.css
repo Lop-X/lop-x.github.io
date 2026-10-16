@@ -1,0 +1,259 @@
+/* ============================================================
+   13. 动态页（/essay/）—— 2026-09-30 建立 / 10-01 回归原版 / 10-03 对齐+放大 / 10-05 铺满
+   历史：容器收窄 900 + 卡片两列 48% → 10-01 回归主题原版三列
+        → 10-02 桌面单列 760 居中 → 10-03 单列限宽 900 靠左
+        → 10-05 横幅与列表一起放宽到满容器 1160。
+   现状（10-05，实测 1440）：
+   - 全页一条 1160 的内容柱（横幅 140–1300、列表 140–1300、正文左缘 173），
+     右侧空白 260px → 0；
+   - 10-03 曾把横幅从 1160 收到 900 去对齐同样 900 的列表，两者是对齐了，
+     但整页只用掉容器的 78%，从第 80px 空到第 1875px。10-05 复审确认：
+     首页/About 的内容都铺到 1273/1275（右侧仅 25–27px 的卡片内衬），
+     只有动态页是三位数空白 —— 故结论是「列表 900 才是离群值」，改宽而不是改窄；
+   - 正文 12.8px/700/justify → 15px/400/左对齐；元信息 11.2 → 12.5px；
+   - 图片由主题写死的「4 列 × height:100px」改为按张数自适应
+     （1 张 16:9 铺满 / 2 张两列 4:3 / 3 张起三列 1:1）。
+   主题原样式在 themes/anzhiyu/.../_extra/essay_page/essay_page.css，
+   本节全部为覆盖，不改主题文件；≤1200px 的多列响应式仍交回主题。
+   ============================================================ */
+#essay_page {
+  max-width: 1000px;
+  margin-left: auto;
+  margin-right: auto;
+  /* 主题原版对 essay 页设了 #page{padding:0}，此处对齐 → 横幅满宽 1000 */
+  padding: 0;
+}
+
+@media screen and (min-width: 1200px) {
+
+  /* 横幅宽度：2026-10-09 复核，已与全站同轴，无需额外约束
+     10-05 设为 max-width:none（撑满父容器）。本轮 1440 视口实测：父容器
+     #essay_page 自身就是 max-width:1000 居中，故 .essayPage 实测
+     1000 @215..1215，与首页 section、About、列表完全同轴，
+     不存在「动态页比其它页宽」的问题（此前记的 1270 是 10-05 前的旧值）。
+     继续交给父容器控制。 */
+  #essay_page .essayPage {
+    max-width: none;
+  }
+
+  /* 列表：实测同为 1000 @215..1215，与横幅同轴 */
+  #essay_page #bber .timeline ul#waterfall.list {
+    max-width: none;
+    margin-left: 0;
+    margin-right: 0;
+    padding-left: 0;
+  }
+
+  /* 单列：覆盖主题的 32% 三列与 2% 右间距 */
+  #essay_page #bber .timeline ul li.bber-item {
+    width: 100%;
+    margin-right: 0;
+  }
+}
+
+/* 底部「只展示最近 N 条」与列表同轴（原为整行居中） */
+#essay_page #bber-tips {
+  justify-content: flex-start;
+}
+
+@media screen and (min-width: 1200px) {
+  #essay_page #bber-tips {
+    max-width: none;
+  }
+}
+
+/* ---- 13.1 条目内容放大（不限宽度，移动端同样受益） ---- */
+
+/* 卡片内边距：左右 32 让正文/图片/元信息站上全站内容轴 x=173
+   （横幅标题、space h1、文章正文都在这条线上，10-05 实测）。
+   10-03 时左侧曾单独写 32、右侧 24（主题原为时间线头像留位），
+   左侧现在不放任何标记，改为左右对称。 */
+#essay_page #bber .timeline ul li.bber-item {
+  padding: 20px 32px 14px;
+}
+
+/* 正文：12.8px/700/justify → 15px/400/左对齐（中文短句两端对齐会拉出大空隙） */
+#essay_page #bber .bber-content .datacont {
+  font-size: 0.95rem;
+  font-weight: 400;
+  line-height: 1.75;
+  text-align: left;
+  word-break: normal;
+  overflow-wrap: break-word;
+  margin-bottom: 0.75rem;
+}
+
+/* 元信息胶囊与「链接」：11.2px → 12.5px */
+#essay_page #bber .bber-info-time,
+#essay_page #bber .bber-info-from,
+#essay_page #bber .bber-content-link {
+  font-size: 0.78rem;
+  padding: 2px 10px;
+}
+
+#essay_page #bber .bber-info .anzhiyufont {
+  font-size: 0.78rem;
+}
+
+/* ---- 13.2 图片：写死「4 列 × 100px」→ 按张数自适应 ----
+   主题在图片后追加 3 个 .bber-content-noimg 占位以凑满 4 列，先整体隐藏；
+   再用 grid + :has() 以「第 2 / 3 个孩子是否为图片」判断张数：
+   1 张满宽 16:9 限高 480、2 张两列 4:3、3 张起三列 1:1。
+   10-05 修正：单图原为「4:3 限宽 424」（10-03 为压高度所设），而卡片内容宽
+   842 → 右侧空出 418px（50%），观感像「图片没加载完」；双图/三图/移动端本身正常。
+   改为满宽 + max-height 兜底：既填满整行，又不会比原 424×318 更高。
+   不支持 :has() 的旧浏览器回落为单列小图，仍可读。 */
+
+#essay_page #bber .bber-content-noimg {
+  display: none;
+}
+
+#essay_page #bber .bber-container-img {
+  display: grid;
+  /* 单图满宽（2026-10-05）：原 minmax(0, 424px) 见上方注释
+     —— 已由下方 13.2' 的 620 上限取代 */
+  grid-template-columns: minmax(0, 1fr);
+  gap: 8px;
+  /* 主题原版有 justify-content: center —— 单图会居中悬空，
+     与「正文/双图左对齐」的轴线不一致，显式改回 start */
+  justify-content: start;
+  align-items: start;
+}
+
+#essay_page #bber .bber-content-img,
+#essay_page #bber .bber-content-video {
+  width: 100%;
+  height: auto;
+  margin-bottom: 0;
+}
+
+#essay_page #bber .bber-content-img img,
+#essay_page #bber .bber-content-video video {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: none;
+}
+
+/* 图片一律按原始比例显示（2026-10-09）
+   原先按张数写死裁切比：单图 16:9 + 限高 480、双图 4:3、三图 1:1，
+   配合 object-fit: cover，竖图与方图会被强行裁成横带或压成方块。
+   现改为「宽度撑满该列、高度随原始比例」，不再裁切也不再拉伸。
+   多图仍保留网格分列，只是同行高度不再强行对齐。 */
+
+/* ---- 13.2' 单图尺寸上限 620×480 —— 2026-10-09（用户选定 A 方案）----
+   实测（1440/1200 视口）：#bber li 宽 1000，但内文 .bber-content 宽 934
+   （左缘 248），单图原为满宽 → 934×525，占掉整行；竖图更会到 934×1245，
+   直接冲出卡片。故给单一图片的容器设上限：
+     · 网格列限到 ≤620 → 横图 16:9 变成 620×363
+     · 图片加 max-height:480 → 竖图 3:4 收窄成 360×480
+   又因为 minmax(0, 620px) 的下限是 0，窄视口下这一列自然收到容器宽度
+   （实测 390 视口 → 294 宽），移动端无需额外断点。
+   `:not(:has(...nth-child(2)))` = 容器里只有一张图；两张及以上的分列规则
+   在下方，多图【不】加限高（用户选定：只受列宽约束，保留自由度），
+   所以双图位的竖图仍会是 463×617 这种自然比例。
+   不支持 :has() 的旧浏览器不受此规则影响 → 退回满宽，仍可读。
+
+   ⚠️ 坑：**只写 max-height 不够，必须同时把 width 由 100% 改成 auto。**
+   首版只加了 max-height:480，实测竖图/方图得到的是 620×480 —— 即宽度先被
+   `width:100%`（见 13.2 的 .bber-content-img img 规则）钉死，max-height 只把
+   高度压下来，**不**按固有比例回算宽度；再叠加主题 essay_page.css 的
+   `object-fit: cover`，竖图就被裁成一条 620×480 的横带（肉眼只见中部）。
+   原位实验（同一节点，只改这两个属性）：
+     · width:100% + max-height:480            → 620×480（裁切）
+     · width:auto + max-width:100% + max-height:480 → 360×480（等比收窄）
+   原因是替换元素的约束冲突回算只在**两个尺寸都是 auto** 时生效：
+   width 已是确定值时，max-height 只作用于高度。所以此处用
+   `width:auto; max-width:100%`，让宽度回到「由内容定」，再由 max-height 反算。
+   注：width:auto 后小于 620 的窄图不再被放大，按原始像素显示 —— 符合
+   「给图片留自由度」的诉求。
+   实测（重建后）：横 620×363 / 竖 360×480 / 方 480×480 / 390 视口竖 294×392。
+   还因为图片比容器窄，图片左对齐靠 justify-content:flex-start，
+   圆角改由图片自己承担（容器不再贴合图片，13.3 的 overflow:hidden 贴不到）。 */
+#essay_page #bber .bber-container-img:not(:has(> .bber-content-img:nth-child(2))) {
+  grid-template-columns: minmax(0, 620px);
+}
+
+#essay_page #bber .bber-container-img:not(:has(> .bber-content-img:nth-child(2))) .bber-content-img,
+#essay_page #bber .bber-container-img:not(:has(> .bber-content-img:nth-child(2))) .bber-content-video {
+  justify-content: flex-start;
+}
+
+#essay_page #bber .bber-container-img:not(:has(> .bber-content-img:nth-child(2))) .bber-content-img img,
+#essay_page #bber .bber-container-img:not(:has(> .bber-content-img:nth-child(2))) .bber-content-video video {
+  width: auto;
+  max-width: 100%;
+  max-height: 480px;
+  border-radius: 8px;
+}
+
+/* 两张图：两列 */
+#essay_page #bber .bber-container-img:has(> .bber-content-img:nth-child(2)) {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+/* 三张及以上：三列 */
+#essay_page #bber .bber-container-img:has(> .bber-content-img:nth-child(3)) {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+/* ≤1200px 主题把卡片排两列（每张约 560px），三列过挤：统一两列 */
+@media screen and (max-width: 1200px) {
+
+  #essay_page #bber .bber-container-img:has(> .bber-content-img:nth-child(3)) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* ---- 13.3 横幅取景与移动端文字 —— 2026-10-05 ----
+   背景来自模板内联的 `background: url(...) left 28% / cover no-repeat`
+   （themes/anzhiyu/layout/includes/page/essay.pug:4）。内联声明优先级高于普通
+   作者样式 —— 覆盖 background-position 必须带 !important（同目录 fcirclePage
+   模板的内联写法本身即带 !important，可作参照）。
+   实测（1440 / 375）：
+   · 桌面 900×304（2.96:1）：cover 后只剩原图中部一条横带，垂直 28% 时头顶贴住
+     上边缘 → 下移到 12% 留出额头空间（与文章页封面同一思路，见第 23 节）。
+   · 移动 345×304（近 1:1）：36px 标题折行后「片」单字成孤行；副标题与人物手臂
+     重叠；「回到首页」圆钮压在杯子上。
+     → 高度压到 14rem、标题 clamp 到 ≤24px（10 字一行放得下），
+       并加左侧渐变 scrim，保证任何取景下白字都有暗底。 */
+
+/* 桌面取景：头顶不再贴边 */
+@media screen and (min-width: 1200px) {
+  #essay_page .essayPage {
+    background-position: center 12% !important;
+  }
+}
+
+@media screen and (max-width: 768px) {
+
+  #essay_page .essayPage {
+    height: 14rem;
+    background-position: center 20% !important;
+  }
+
+  /* 标题 36px → ≤24px：10 字（随手记的一些碎片）一行放得下，消除孤字「片」 */
+  #essay_page .essayPage .card-content .author-content-item-title {
+    font-size: clamp(1.5rem, 6.4vw, 2.25rem);
+    line-height: 1.15;
+    margin-bottom: 0.35rem;
+  }
+
+  /* 左侧渐变 scrim：标题与副标题在插画上也有稳定暗底。
+     .card-content 已是 position:absolute + z-index:2，文字保持在 scrim 之上。 */
+  #essay_page .essayPage::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    background: linear-gradient(90deg, rgba(6, 30, 60, 0.5) 0%, rgba(6, 30, 60, 0) 62%);
+  }
+
+  /* 「回到首页」圆钮：贴右下并收进 14px，避开插画主体（杯口） */
+  #essay_page .essayPage .card-content .banner-button-group {
+    right: 14px;
+    bottom: 14px;
+  }
+}
+

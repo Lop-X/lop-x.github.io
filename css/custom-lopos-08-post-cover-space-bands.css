@@ -1,0 +1,269 @@
+/* ============================================================
+   19. 文章页通栏封面 —— 2026-09-30（任务8）
+   原状：主题靠「图片主色」压底、右侧放一团旋转 10° 的模糊大图来撑起头部。
+        本站 mainTone 关闭 → 头部退化成「透明底 + 白色标题/白导航」，
+        压在浅色页面上几乎看不见；右侧还留出约 500px 空白。
+   处理：整幅封面图铺满头部 + 暗色渐变压底（与首页横幅同一套观感），
+        白字恢复可读，空白被填满，首屏不再「半张白纸」。
+   资源：source/img/1.jpg(1920x1080, 3.0MB) → post-cover.webp(1600x900, 144KB)
+   2026-10-09：底图改为「每篇独立」。
+        主题的 header/index.pug 会把文章 cover 写成内联变量
+        --lopx-post-cover:url('...') 挂在 #page-header 上，这里消费它；
+        未设 cover 的文章自动回落到 post-cover.webp。
+        注意 var() 的兜底必须是【合法图像】—— 写成裸字符串
+        var(--lopx-post-cover, '/img/post-cover.webp') 会被判为无效值，
+        整条 background-image 声明作废（三层全丢）。故兜底写作 url(...)。
+        横向仍是 center；纵向 center 34% 是把 16:9 源图裁成 26rem 通栏时的
+        取景基准（1440x416 的框 → 只可见源图纵向 16.5%~67.9%）。
+   ============================================================ */
+:root:not([data-theme='dark']) #page-header.post-bg {
+  height: 26rem;
+  background-color: #101c24;
+  /* 三层叠加：①左侧斜向压暗 → 标题所在区域；②上下压暗 → 导航与波浪过渡；③封面图 */
+  background-image: linear-gradient(
+      100deg,
+      rgba(8, 18, 26, 0.72) 0%,
+      rgba(8, 18, 26, 0.4) 38%,
+      rgba(8, 18, 26, 0.1) 66%,
+      rgba(8, 18, 26, 0.18) 100%
+    ),
+    linear-gradient(180deg, rgba(8, 18, 26, 0.5) 0%, rgba(8, 18, 26, 0.14) 42%, rgba(8, 18, 26, 0.66) 100%),
+    var(--lopx-post-cover, url('/img/post-cover.webp'));
+  background-repeat: no-repeat, no-repeat, no-repeat;
+  background-size: cover, cover, cover;
+  background-position: center center, center center, center 34%;
+}
+
+/* 19.1 主题那团「右侧旋转模糊大图」会和通栏封面叠影，且本站并不需要它 */
+:root:not([data-theme='dark']) #page-header.post-bg #post-top-cover {
+  display: none;
+}
+
+/* 19.2 顶图区恢复白字（含「原创 / 分类 / 标签」与日期行） */
+:root:not([data-theme='dark']) #page-header.post-bg #post-info .post-title {
+  color: #ffffff;
+  text-shadow: 0 2px 14px rgba(6, 14, 20, 0.45);
+}
+
+:root:not([data-theme='dark']) #page-header.post-bg #post-info :is(time, i, .post-meta-label, .post-meta-separator, .meta-firstline, .meta-secondline, .post-meta-wordcount, .word-count, .post-meta-date) {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+:root:not([data-theme='dark']) #page-header.post-bg #post-info :is(#post-meta, #post-firstinfo) a,
+:root:not([data-theme='dark']) #page-header.post-bg #post-info a span {
+  color: rgba(255, 255, 255, 0.92);
+}
+
+/* 19.3 分类 / 标签 / 「原创」改成半透明玻璃胶囊，压在照片上更干净 */
+:root:not([data-theme='dark']) #page-header.post-bg #post-info :is(.post-meta-original, .post-meta-categories, .article-meta__tags) {
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.16);
+  text-shadow: none;
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+}
+
+/* 19.4 窄屏：横幅矮一点，别把首屏吃满 */
+@media screen and (max-width: 768px) {
+  :root:not([data-theme='dark']) #page-header.post-bg {
+    height: 22rem;
+    min-height: 0;
+    background-position: center center, center center, center 28%;
+  }
+}
+
+/* ============================================================
+   20. 分页面（space）头部色带 —— 2026-09-30（任务8）
+   原状：/tech/、/indie/、/garden/ 及其列表页都是「白卡片 + 一行 h1」，很素。
+   处理：容器顶部压一条贴边的插画色带，标题落在色带上转白；
+        同一张封面图按 space 换裁切位置与色调，三个空间各有脸色，
+        再统一到与文章页通栏封面同一套美术语言。
+   实现：纯 CSS 伪元素，不改模板与页面生成器。
+   ============================================================ */
+
+/* 20.1 色带高度（2026-10-05 按实测重写说明）
+   实际分工（1440 实测）：
+   · tech / indie：色带 232 盖住 h1 + 副标题 + 43px 胶囊导航行（胶囊 245–289，带底 312）→ 余量 23px；
+   · garden：色带 232 只盖住 h1 + 描述行（描述行底 295），下方 104px 的分类大卡落在带外
+     （卡 323–427）。这是 17.1 把胶囊换成大卡后的结果，卡片自带渐变底，所以白字仍可读，
+     属「有意为之」而非事故 —— 旧注释写的「要盖住…胶囊导航行」已过期。
+   2026-10-03：tech/indie 分类化后分类子页与主页同构，导航行一直在；
+       主页在该空间只有一个分类时隐藏胶囊（模板加 .is-solo），色带相应降低。 */
+/* 2026-10-11：Garden 空间主页移出色带体系（改 Bento 卡片，见第 44 节），
+   色带只服务 tech / indie 的空间主页与三个分类列表页。 */
+:is(#space-tech, #space-indie) {
+  --lopx-band-h: 232px;
+}
+
+:is(#space-tech-cat, #space-indie-cat) {
+  --lopx-band-h: 168px;
+}
+
+:is(#space-tech, #space-indie).is-solo {
+  --lopx-band-h: 176px;
+}
+
+#garden-category {
+  --lopx-band-h: 104px;
+}
+
+/* 20.2 容器作为色带的定位基准 */
+:is(#space-tech, #space-tech-cat, #space-indie, #space-indie-cat, #garden-space, #garden-category) {
+  position: relative;
+}
+
+/* 20.3 色带本体：贴容器上沿，圆角沿用容器自身（只取上半），不裁切任何内容
+   2026-10-02：去掉照片。原方案三个空间共用同一张 post-cover.webp，
+   只靠遮罩色调与裁切位置区分，等于「换个角度拍同一张图」，仍属撞图。
+   现在改为纯 CSS：空间识别色深色渐变 + 细网格纹理，各空间独立成色，
+   以后想换回照片，只需把 url() 追加到 background-image 末尾。
+   2026-10-11：Garden 空间主页移出（页头已删，色带会变成一整块无内容绿底）。 */
+:is(#space-tech, #space-tech-cat, #space-indie, #space-indie-cat, #garden-category)::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  height: var(--lopx-band-h, 120px);
+  pointer-events: none;
+  border-radius: inherit;
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 0;
+  background-image: repeating-linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.055) 0 1px,
+      transparent 1px 32px
+    ),
+    repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.045) 0 1px, transparent 1px 32px),
+    var(--lopx-band-glow, none),
+    var(--lopx-band-base, linear-gradient(115deg, #0b2130 0%, #1f6288 100%));
+  background-repeat: repeat, repeat, no-repeat, no-repeat;
+  background-size: 32px 32px, 32px 32px, cover, cover;
+  background-position: left top, left top, center center, center center;
+}
+
+/* 20.4 三个空间各一套渐变色（深底 → 识别色），色相与 26 节首页空间卡同源 */
+:is(#space-tech, #space-tech-cat) {
+  --lopx-band-base: linear-gradient(115deg, #0b2130 0%, #163f57 58%, #1f6288 100%);
+  --lopx-band-glow: radial-gradient(
+    120% 130% at 88% 6%,
+    rgba(24, 95, 165, 0.5) 0%,
+    rgba(24, 95, 165, 0) 62%
+  );
+}
+
+:is(#space-indie, #space-indie-cat) {
+  --lopx-band-base: linear-gradient(115deg, #171432 0%, #2d2760 58%, #4a3f9b 100%);
+  --lopx-band-glow: radial-gradient(
+    120% 130% at 88% 6%,
+    rgba(83, 74, 183, 0.5) 0%,
+    rgba(83, 74, 183, 0) 62%
+  );
+}
+
+:is(#garden-category) {
+  --lopx-band-base: linear-gradient(115deg, #0b2a23 0%, #14503f 58%, #1f6d55 100%);
+  --lopx-band-glow: radial-gradient(
+    120% 130% at 88% 6%,
+    rgba(15, 110, 86, 0.5) 0%,
+    rgba(15, 110, 86, 0) 62%
+  );
+}
+
+/* 暗色下页面底色本身就是深色，给色带补一条下沿发丝线保证边界可见 */
+[data-theme='dark'] :is(#space-tech, #space-tech-cat, #space-indie, #space-indie-cat, #garden-space, #garden-category)::before {
+  box-shadow: inset 0 -1px 0 rgba(255, 255, 255, 0.08);
+}
+
+/* 20.5 色带是绝对定位元素，会把非定位兄弟盖住；所有直接子元素提到它之上 */
+:is(#space-tech, #space-tech-cat, #space-indie, #space-indie-cat, #garden-space, #garden-category) > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* 20.6 色带上的标题转白
+   2026-10-02：色带恒为深底（不再是「亮色主题下的照片 + 遮罩」），
+   因此 20.6 / 20.7 / 20.8 一并去掉 :not([data-theme='dark']) 限制，
+   两个主题共用同一套白字。 */
+:root:root :is(#space-tech, #space-tech-cat, #space-indie, #space-indie-cat, #garden-category) > h1 {
+  color: #ffffff;
+  text-shadow: 0 2px 12px rgba(6, 14, 20, 0.42);
+}
+
+/* 20.7 副标题（tech / indie 的空间说明、garden 的分类串）转浅白 */
+:root:root :is(#space-tech, #space-indie) > p {
+  color: rgba(255, 255, 255, 0.78);
+}
+
+/* 20.7b Garden 的分类串在 941 行带一对浅灰发丝线（原本用于白底分隔），
+   移到深色色带上会变成两条突兀的杂线，这里统一透明，只留文字；
+   分隔交给色带自身的下沿。 */
+:root:root :is(#garden-category) > p {
+  border-color: transparent;
+}
+
+/* 20.8 色带上的空间导航胶囊（玻璃质感，压在渐变上）
+   与 28 节的卡片网格配套：主页给 Projects / Notes，列表页给空间主页 + 同级列表。 */
+:root:root :is(#space-tech, #space-indie, #garden-space, #space-tech-cat, #space-indie-cat, #garden-category) > nav.lopx-space-nav > a,
+:root:root :is(#space-tech, #space-indie, #garden-space, #space-tech-cat, #space-indie-cat, #garden-category) > nav.lopx-space-nav > span {
+  display: inline-flex;
+  align-items: center;
+  padding: 7px 16px;
+  border: 1px solid rgba(255, 255, 255, 0.26);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.13);
+  color: #ffffff;
+  font-size: 0.82rem;
+  font-weight: 650;
+  text-decoration: none;
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  transition: background-color var(--lopx-dur-mid) ease, border-color var(--lopx-dur-mid) ease;
+}
+
+:root:root :is(#space-tech, #space-indie, #garden-space, #space-tech-cat, #space-indie-cat, #garden-category) > nav.lopx-space-nav > a:hover {
+  border-color: rgba(255, 255, 255, 0.5);
+  background: rgba(255, 255, 255, 0.26);
+  color: #ffffff;
+}
+
+/* 当前页胶囊：不可点，靠底色与描边区分 */
+:root:root :is(#space-tech, #space-indie, #garden-space, #space-tech-cat, #space-indie-cat, #garden-category) > nav.lopx-space-nav > span.is-active {
+  border-color: rgba(255, 255, 255, 0.62);
+  background: rgba(255, 255, 255, 0.28);
+}
+
+/* 数量：胶囊内的次要信息，不抢标题 */
+:root:root :is(#space-tech, #space-indie, #garden-space, #space-tech-cat, #space-indie-cat, #garden-category) > nav.lopx-space-nav small {
+  margin-left: 6px;
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 0.78rem;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}
+
+/* 20.9 列表页：色带只有 104px 高，把第一条内容推离色带下沿，别贴在一起 */
+:is(#space-tech-cat, #space-indie-cat, #garden-category) > :is(article, .article-sort, p):first-of-type {
+  margin-top: 24px;
+}
+
+/* 20.10 窄屏
+   2026-10-02：列表页新增胶囊导航，窄屏下导航可能折到第二行，色带同步加高。
+   2026-10-05：实测 375 下 tech 的胶囊底 263 与带底 270 只差 7px，贴得太紧 →
+       tech / indie 单独提到 220（余量 27px）。garden 窄屏下是大卡（3 行，本身在带外），
+       维持 200，不必跟着加高。 */
+@media screen and (max-width: 768px) {
+  :is(#space-tech, #space-indie) {
+    --lopx-band-h: 220px;
+  }
+
+  :is(#space-tech-cat, #space-indie-cat) {
+    --lopx-band-h: 168px;
+  }
+
+  #garden-category {
+    --lopx-band-h: 92px;
+  }
+}
+

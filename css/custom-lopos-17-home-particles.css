@@ -1,0 +1,52 @@
+/* ============================================================
+   47. 首页背景 Particles —— 2026-10-12 晚 重构
+   旧版（同日早些时候）是把 Canvas 2D 粒子铺在 #home-about 卡内，
+   视觉上像「装在卡面里」；按用户要求改为官方 ReactBits Particles
+   （WebGL2 版）的 1:1 原生移植，运行在**页面背景**。
+   实现见 source/js/lopx-particles.js（自管挂载/卸载，pjax 安全）。
+
+   层叠位置（根层叠上下文，同第 41 节）：
+     body 背景 → #web_bg(z:-999) → body::before(z:-1) → 本容器(z:-1，
+     树序在 body::before 之后故在其上) → 正常流内容（卡片不透明，
+     粒子从卡片间隙、页边距与页头区域透出）。
+   挂载点由 JS 直挂 <body>：首页 section 的入场动画带 transform，
+   任何 transform 祖先都会把 fixed 容器变成相对定位（见 §41 同款坑）。
+
+   参数调法（JS 端 mount() 里）：particleCount 密度 / speed 漂移 /
+   particleBaseSize 颗粒大小 / glow 光晕 / twinkle 闪烁；
+   整体浓淡用下方 opacity（每 ±0.1 约一档），颜色用两个 CSS 变量。
+   ============================================================ */
+
+#lopx-bg-particles {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0.55;
+}
+
+#lopx-bg-particles canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* 粒子颜色由 JS 读取这两个变量（官方 lightMode 墨水转换未启用，直接给目标色） */
+#lopx-bg-particles {
+  --lopx-particle-1: rgba(47, 107, 143, 0.95);
+  --lopx-particle-2: rgba(103, 178, 208, 0.95);
+}
+
+[data-theme='dark'] #lopx-bg-particles {
+  --lopx-particle-1: rgba(255, 255, 255, 0.9);
+  --lopx-particle-2: rgba(143, 194, 224, 0.9);
+  opacity: 0.45;
+}
+
+/* 尊重用户动效偏好（JS 侧同样有 matchMedia 拦截，这里是兜底） */
+@media (prefers-reduced-motion: reduce) {
+  #lopx-bg-particles {
+    display: none;
+  }
+}
+

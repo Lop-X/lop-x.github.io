@@ -1,0 +1,183 @@
+/* ============================================================
+   45. 追番页（Garden → Anime）PC 与移动端统一 —— 2026-10-11
+
+   问题（探针实测，改前）：
+     · 图窗 PC 端——`auto-fill` 算出 4 轨却只有 3 张卡，保留空轨 ⇒ 右侧空 197px（1440 实测）
+     · 图窗移动端——§39.1 强制 2 列 ⇒ 3 张卡排成 2+1，第二行右侧空 185px（390 实测）
+     · 图窗标题——`position` 来自 §12.4（absolute + 黑渐变）而 `color` 来自 §17.2（深色）
+       ⇒ 级联合并成「深色字压封面」，深色封面直接糊掉
+     · 字段名金色 #f2b94b vs 卡片底 #f7f9fc = 1.68:1，全页 2047 个文本节点
+       （来源 themes/anzhiyu/source/css/_extra/fix/bilibili-bangumi.css——
+        那是给旧版插件的补丁，与新版插件自带的蓝色体系 --bangumi-accent 打架）
+     · 移动端 tabs 排成 168 / 168 + 344 两行
+
+   本节只做覆盖，不改主题文件、不动旧节，便于回滚。
+   ============================================================ */
+
+/* 45.1 桌面图窗：auto-fill → auto-fit
+   auto-fill 保留空轨（3 张撑不满 4 轨 ⇒ 右空一轨）；auto-fit 折叠空轨，
+   现有卡均分整行 ⇒ 1440 下 3 张各约 247px 铺满。 */
+#article-container .anime-gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  gap: 18px;
+  margin: 0 0 32px;
+  padding: 0;
+  overflow: visible;
+}
+
+/* 45.2 卡片高度改由「图 + 标题」内容决定：去掉 §12.4 的 3 / 4 定比
+   （那个定比是把标题盖在图上时代的做法，标题移出后会把标题挤出卡片）。 */
+#article-container .anime-gallery-card {
+  width: auto;
+  aspect-ratio: auto;
+  overflow: hidden;
+  border: 1px solid var(--lopx-line);
+  border-radius: 14px;
+  background: var(--lopx-surface);
+  box-shadow: 0 2px 10px rgba(15, 23, 42, 0.05);
+  transition: transform var(--lopx-dur-mid) var(--lopx-ease),
+    box-shadow var(--lopx-dur-mid) var(--lopx-ease),
+    border-color var(--lopx-dur-mid) ease;
+}
+
+#article-container .anime-gallery-card:hover {
+  border-color: rgba(58, 122, 160, 0.35);
+  box-shadow: 0 14px 30px rgba(15, 23, 42, 0.14);
+  transform: translateY(-5px);
+}
+
+#article-container .anime-gallery-img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 3 / 4;
+  margin: 0;
+  object-fit: cover;
+  background: #eef1f4;
+}
+
+/* 标题移到图片下方：position / background 覆盖 §12.4 的「绝对定位 + 黑渐变」。
+   卡片等高交给网格/弹性拉伸（实测 PC 三张均 362 高、移动端三张均 242 高），
+   标题一律顶对齐，单行卡下方留白即为自然节奏。 */
+#article-container .anime-gallery-title {
+  position: static;
+  display: -webkit-box;
+  overflow: hidden;
+  padding: 10px 12px 12px;
+  background: none;
+  color: var(--lopx-ink);
+  font-size: 0.85rem;
+  font-weight: 600;
+  line-height: 1.4;
+  text-align: left;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+/* 45.3 移动端图窗：恢复横向滑动（anime_gallery.yml 注释里的原设计）
+   一屏 2 张 + 露出第三张约 30%，既不出现 2+1 空行，卡片也不至于缩到 111px。
+   卡宽 min((100% - 36px)/2.2, 180px) 随视口自适应：
+   320 → 111px（露 31%），390 → 143px（露 29%），≥600 起封顶 180px。 */
+@media screen and (max-width: 768px) {
+  #article-container .anime-gallery {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 12px;
+    padding: 4px 4px 14px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-snap-type: x proximity;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(0, 0, 0, 0.18) transparent;
+  }
+
+  #article-container .anime-gallery::-webkit-scrollbar {
+    height: 6px;
+  }
+
+  #article-container .anime-gallery::-webkit-scrollbar-thumb {
+    border-radius: 999px;
+    background-color: rgba(0, 0, 0, 0.18);
+  }
+
+  #article-container .anime-gallery-card {
+    flex: 0 0 min(calc((100% - 36px) / 2.2), 180px);
+    width: auto;
+    scroll-snap-align: start;
+  }
+}
+
+/* 45.4 字段名染色：金色 #f2b94b（1.68:1）→ 站点蓝加深 #2f6b8f（5.45:1）
+   值 em 实测已是插件给的深色 #1d2733，无需处理；只改被主题补丁染金的 span。 */
+#article-container .bangumi-info-item span {
+  color: #2f6b8f;
+}
+
+[data-theme='dark'] #article-container .bangumi-info-item span {
+  color: #8fc2e0;
+}
+
+/* 45.5 追番 tabs：移动端三等分；active 字色提纯到 #fff（4.39 → 4.70:1） */
+#page #article-container .bangumi-tab.bangumi-active {
+  background: var(--lopx-accent);
+  color: #ffffff;
+}
+
+/* 暗色下 --lopx-accent 会翻成浅蓝 #67b2d0，白字只剩 2.37:1
+   ⇒ 改成与浅底配套的深字（实测 8.09:1）。 */
+[data-theme='dark'] #page #article-container .bangumi-tab.bangumi-active {
+  color: #0d0d0d;
+}
+
+@media screen and (max-width: 768px) {
+  #article-container .bangumi-tabs {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 6px;
+  }
+
+  #article-container .bangumi-tabs .bangumi-tab {
+    flex: 1 1 0;
+    min-width: 0;
+    text-align: center;
+  }
+}
+
+/* ============================================================
+   46. 追番页：去掉右侧栏后的容器对齐 —— 2026-10-11
+
+   需求：追番页不要右侧栏。
+   开关落在 _config.yml 的 bangumi.extra_options.aside:false ——
+   本页由 hexo-bilibili-bangumi 生成，没有 front matter 可写，
+   只能从这里下发；主题 layout.pug 判 page.aside === false 后
+   给 #content-inner 加 .hide-aside 且不挂 widget。
+   （不动模板代码，也不改主题 aside 配置。）
+
+   副作用（探针实测 1440）：
+     有侧栏 → #page 用 calc(100% - 300px)，#article-container 宽 778
+     无侧栏 → .hide-aside > div{width:100%} 解除了那 300px 限制，
+              #article-container 涨到 1078，图窗卡片 247 → 347。
+   而站内 #lopx-home / #space-tech / #space-indie / #garden-space /
+   #about-page / #essay_page 一律 max-width:1000px（内容区 936），
+   追番页作为 garden 的子页反而宽出 78px，横向也不与 garden 主页同轴。
+
+   本节把 #article-container 收进同一条 1000 轴线：
+     实测 #article-container 落在 x=215 / w=1000，
+     与 /tech/ 的 #space-tech 容器完全重合；内容左缘 247 一致。
+   仅 ≥1225px 需要——该断点以下主题 .layout.hide-aside 的
+   max-width:1000px 未被 §24 覆盖，本来就已经是 1000 轴线；
+   且不设媒体查询的话，移动端会被再加 32px 内衬（#page 已给 15px）。
+   ============================================================ */
+
+@media screen and (min-width: 1225px) {
+  #page:has(.bangumi-container) #article-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding-right: 32px;
+    padding-left: 32px;
+    box-sizing: border-box;
+  }
+}
+

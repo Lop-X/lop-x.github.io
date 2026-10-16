@@ -1,0 +1,114 @@
+/* ============================================================
+   12. 布局统一层 —— 2026-09-30
+   问题：三个 space 的容器宽度此前各写各的（tech-notes 964 / indie-devlog 900 /
+        其余 1160），1440 视口下内容左边缘在 x=173 与 x=271 之间跳动，
+        同一个「列表」在不同页面起跑线不同，是跨页观感不一致的直接来源。
+   方案：容器一律 1160px 居中；列表与正文一律 900px 且靠左，与 h1 左边缘对齐。
+        标题分级：space 主页 2.8rem，列表页 2rem。
+
+   —— 2026-10-06 变更：容器 1160 → 1000（收窄，用户反馈「所有页面都有点宽，
+      尤其是主页、动态页、About 这三个」）。列表页自 2026-10-05 起已是铺满容器，
+      不再是 900；本节上面那句「列表与正文一律 900」仅对 <p> 描述文字仍然成立。
+   新数值（1440 视口实测）：容器 1000 @ x=220，内容区 934，内容左缘 252。
+   落点共 7 处 max-width，全部同步为 1000：
+     :10 #lopx-home / :426 #space-tech(-cat) / :477 #space-indie(-cat)
+     / :525 #garden-space(-category) / :750 #about-page
+     / 本节 12.1 六选择器 / :1265 #essay_page
+   ⚠️ 本文件历史注释里的 140 / 172 / 173 / 1099 / 1268 / 1300 等坐标均为
+      1160 容器时代的实测值，收窄后整体右移 79px。为避免逐条改写引入笔误，
+      历史决策记录保留原样，读到时请按此换算，不要当成当前值。
+   ============================================================ */
+
+/* 12.1 容器：统一 1000px 居中（2026-10-06 由 1160 收窄，见本节头部变更记录） */
+#space-tech,
+#space-tech-cat,
+#space-indie,
+#space-indie-cat,
+#garden-space,
+#garden-category {
+  max-width: 1000px;
+  margin-right: auto;
+  margin-left: auto;
+  padding: 48px 32px 72px;
+}
+
+/* 12.2 内容：<p> 是空间描述文字，保持 900 的阅读行宽。
+   2026-10-05：原来这里的 garden 两处列表（#garden-space > section /
+   #garden-category > .article-sort）也限 900，与同页满宽的 nav 行叠出 170px 落差
+   （列表右缘 1099 vs 导航 1268），已改回铺满。tech/indie 的 .article-sort 本来就没限宽，
+   garden 跟齐。 */
+#space-tech-cat > p,
+#space-indie-cat > p {
+  max-width: 900px;
+}
+
+/* 12.3 标题分级：space 主页 2.8rem / 列表页 2rem（原 garden 分类页误用主页字号） */
+:root:root #space-tech > h1,
+:root:root #space-indie > h1,
+:root:root #garden-space > h1 {
+  font-size: 2.8rem;
+}
+
+:root:root #space-tech-cat > h1,
+:root:root #space-indie-cat > h1,
+:root:root #garden-category > h1 {
+  font-size: 2rem;
+}
+
+/* 12.4 garden 列表补回日期
+   原规则把 .article-meta-wrap 整块 display:none，而日期 .article-sort-item-time
+   是它的子元素，于是 garden 列表只剩标题、没有日期（tech/indie 列表都有）。
+   改为 display:contents 让 time 直接参与网格（.article-sort-item-time 已定位到第 1 列），
+   同时单独隐藏 tags，保持列表只有「日期 + 标题」两栏。 */
+#garden-space .article-sort .article-meta-wrap,
+#garden-category .article-sort .article-meta-wrap {
+  display: contents;
+}
+
+#garden-space .article-sort .article-sort-item-tags,
+#garden-category .article-sort .article-sort-item-tags {
+  display: none;
+}
+
+/* 12.5 空态占位：与内容同宽，观感与列表一致（10-05：列表已铺满，占位同步去掉 900 限宽） */
+.space-empty {
+  max-width: none;
+}
+
+/* 12.6 移动端：12.1 / 12.3 用的是 id 选择器且位置在文件末尾，
+   会压过主题原有的窄屏媒体查询，故在此显式补回窄屏取值。 */
+@media screen and (max-width: 768px) {
+  #space-tech,
+  #space-tech-cat,
+  #space-indie,
+  #space-indie-cat,
+  #garden-space,
+  #garden-category {
+    padding: 40px 20px 56px;
+  }
+
+  :root:root #space-tech > h1,
+  :root:root #space-indie > h1,
+  :root:root #garden-space > h1 {
+    font-size: 2.35rem;
+  }
+
+  :root:root #space-tech-cat > h1,
+  :root:root #space-indie-cat > h1,
+  :root:root #garden-category > h1 {
+    font-size: 1.8rem;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  #space-tech,
+  #space-tech-cat,
+  #space-indie,
+  #space-indie-cat,
+  #garden-space,
+  #garden-category {
+    padding-right: 20px;
+    padding-left: 20px;
+  }
+}
+

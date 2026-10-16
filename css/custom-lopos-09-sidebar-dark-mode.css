@@ -1,0 +1,293 @@
+/* ============================================================
+   21. 文章页「左文右纲」收口 —— 2026-09-30（任务9）
+   排查结果：侧栏与文章目录其实主题本来就有（aside.enable / toc.post 一直开着），
+   之所以看起来「没有右栏」，是两个原因：
+     a) toc.style_simple 为 false → 文章页侧栏会依次渲染作者卡、公告卡、
+        微信卡、置顶卡，目录被挤到首屏之外，第一屏只看得到「吃瘪了才有力气干活」；
+     b) 两篇文章在 front-matter 里写了 aside: false，直接变成全宽特例。
+   本次：style_simple 置 true（文章页侧栏只留目录，即 Butterfly 的「大纲」形态），
+        并删掉 Snake-Game 那篇的 aside: false，再把目录卡的观感并入全站卡片语言。
+   注：《网站装修记录》正文没有标题层级，toc() 输出为空 → 保留 aside: false。
+        否则侧栏会退回「作者卡 + 公告卡 + 标签 + 归档」的整摞卡片，比留白更吵。
+   ============================================================ */
+/* 21.1 目录卡并入全站卡片语言
+   注意主题用的是 #aside-content #card-toc ... 这一串（2 个 id），
+   只写 #card-toc 会被它压过去，必须同样带上 #aside-content 才生效。 */
+#aside-content #card-toc {
+  border: 1px solid var(--lopx-line);
+  box-shadow: 0 2px 10px rgba(30, 38, 44, 0.04);
+}
+
+#aside-content #card-toc .item-headline {
+  color: var(--lopx-ink);
+}
+
+/* 21.2 目录条目常态可读
+   主题原设计把「非当前条目」压到 opacity .6 再叠 1px 模糊，只有鼠标悬停整张
+   卡时才恢复清晰；#8a8f98 × 0.6 在白底上等效对比约 1.9:1，既读不了、也不像大纲。
+   这里取消模糊与降透明，仅靠颜色/字重区分当前条目。 */
+#aside-content #card-toc .toc-content .toc-link {
+  color: #4a5058;
+}
+
+#aside-content #card-toc .toc-content .toc-link:not(.active) span,
+#aside-content #card-toc:hover .toc-content .toc-link:not(.active) span {
+  opacity: 1;
+  filter: none;
+  -webkit-filter: none;
+}
+
+#aside-content #card-toc .toc-content .toc-link:not(.active) span:hover {
+  color: var(--anzhiyu-main);
+}
+
+/* 21.3 当前条目：主题给的是「卡片同色底 + 主色字」，底色看不出选中，补一层淡主色 */
+#aside-content #card-toc .toc-content .toc-link.active {
+  background-color: rgba(58, 122, 160, 0.1);
+  color: var(--anzhiyu-main);
+  font-weight: 600;
+}
+
+/* 21.4 窄屏：主题把目录改成右下角浮层（901–1200px 也是），补一点圆角描边 */
+@media screen and (max-width: 1200px) {
+  #aside-content #card-toc {
+    border-radius: 12px;
+    box-shadow: 0 8px 30px rgba(20, 26, 32, 0.16);
+  }
+}
+
+/* ============================================================
+   22. 浮游菜单下线 + 导航栏暗色切换 + 暗色模式收口 —— 2026-10-01
+   三件事：
+     ① 右下角 #rightside 浮游菜单隐藏（入口挪位）
+     ② 暗色切换按钮移到导航栏（样式）
+     ③ 暗色 token 收口 —— 第 16 节把底色/文字/描边写成了亮色常量，
+        暗色下首页与各 space 卡片仍是死白，本段整套换掉
+   ============================================================ */
+
+/* 22.1 隐藏右下角浮游菜单
+   原 #rightside 承载：设置齿轮、阅读模式、繁简、暗色、隐藏侧栏、目录、评论、回到顶部。
+   · 「回到顶部」导航栏本来就有（#nav-totop，带百分比），功能不丢；
+   · 「暗色切换」由 /js/nav-darkmode.js 挪到导航栏右侧。
+   注意：此处只隐藏、不删 DOM —— 主题对 #rightside 用的是事件委托
+   （main.js 在 #rightside 上监听 click，再按 e.target.id 派发到 rightSideFn），
+   #darkmode 必须留在容器内，转发点击才生效。 */
+#rightside {
+  display: none !important;
+}
+
+/* 22.2 导航栏暗色按钮：沿用 #nav-right .nav-button 的既有观感 */
+#page-header #nav #nav-right .lopx-darkmode-btn a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#page-header #nav #nav-right .lopx-darkmode-btn i {
+  font-size: 1.05rem;
+}
+
+#page-header #nav #nav-right .lopx-darkmode-btn a:hover {
+  color: var(--anzhiyu-main);
+}
+
+/* 22.3 暗色 token（全站）
+   两条线要一起修：
+   a) 本站 token。取值对齐主题自身的暗色体系（底 #18171d / 卡 #1d1e22 / 描边 #42444a），
+      避免「我的卡片」与「主题组件」两套暗度。强调色在暗底上必须提亮：
+      #3a7aa0 压 #1d1e22 只有约 3.5:1，换成 ragnote 暗色所用的 #67b2d0（约 7.1:1）。
+   b) 主题 token。⚠️ 关键坑：第 16 节的 `:root:root`（特异性 0,2,0）**高于**
+      主题的 `[data-theme="dark"]`（0,1,0），于是第 16 节写下的亮色值在暗色下依然生效，
+      主题自己的暗色定义被整体压掉 —— 最直观的症状是 #web_bg 一直是 #fafafa，
+      页面底色根本没变暗。必须用 (0,3,0) 的 `:root:root[data-theme='dark']` 才拿得回来。 */
+:root:root[data-theme='dark'] {
+  /* a) 本站 token */
+  --lopx-ink: #f7f7fa;
+  --lopx-body: #c9cad6;
+  --lopx-muted: #a1a2b8;
+  --lopx-line: #42444a;
+  --lopx-surface: #1d1e22;
+  --lopx-accent: #67b2d0;
+  --lopx-nav-active: #9cc3e8;
+  --style-border-hover: 1px solid rgba(103, 178, 208, 0.42);
+  --hr-border: rgba(103, 178, 208, 0.2);
+
+  /* b) 主题 token —— 把第 16 节锁死的亮色值在暗色下换回来（取值同主题 [data-theme="dark"]） */
+  --anzhiyu-background: #18171d;
+  --anzhiyu-card-bg: #1d1e22;
+  --anzhiyu-fontcolor: #f7f7fa;
+  --anzhiyu-secondtext: #a1a2b8;
+  --anzhiyu-shadow-border: 0 2px 10px rgba(0, 0, 0, 0.4);
+  /* 2026-10-11：第 16 节的 :root:root（0,2,0）高于主题的 [data-theme="dark"]（0,1,0），
+     新加的 --global-bg 会被它在暗色下也染成浅色，故这里必须显式换回。
+     取值沿用主题既有的 #0d0d0d（原样，不改动暗色观感）。 */
+  --global-bg: #0d0d0d;
+}
+
+/* 22.4 首页在第 1 节里另定义了一套同名 token，作用域是 #lopx-home（特异性 1,0,0
+   高于 :root），22.3 到不了它，需按同等选择器权重再写一遍。 */
+[data-theme='dark'] #lopx-home {
+  --lopx-ink: #f7f7fa;
+  --lopx-muted: #a1a2b8;
+  --lopx-line: #42444a;
+  --lopx-surface: #1d1e22;
+  --lopx-accent: #67b2d0;
+}
+
+/* 22.5 卡片阴影：亮色用弥散浅影，暗色要更深才看得出层次 */
+[data-theme='dark'] #lopx-home > section,
+[data-theme='dark'] #garden-space > section,
+[data-theme='dark'] #garden-category,
+[data-theme='dark'] #article-container .anime-gallery-card {
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+/* 22.6 hover 反馈：亮色的淡主色底在暗色下几乎看不见，提高不透明度 */
+[data-theme='dark'] #lopx-home #recent-writing li:hover,
+[data-theme='dark'] #garden-space .article-sort-item:hover,
+[data-theme='dark'] #garden-category .article-sort-item:hover {
+  background-color: rgba(103, 178, 208, 0.1);
+}
+
+/* 22.7 目录：第 21 节的 #4a5058 是亮色专用，暗底上读不出来 */
+[data-theme='dark'] #aside-content #card-toc .toc-content .toc-link {
+  color: #b8bcc8;
+}
+
+[data-theme='dark'] #aside-content #card-toc .toc-content .toc-link.active {
+  background-color: rgba(103, 178, 208, 0.14);
+}
+
+/* 22.8 Garden 分类彩卡：暗色下渐变底过亮，压暗一档 */
+[data-theme='dark'] #garden-space > nav a {
+  filter: brightness(0.78) saturate(0.9);
+}
+
+[data-theme='dark'] #garden-space > nav a:hover {
+  filter: brightness(0.95) saturate(1);
+}
+
+/* ============================================================
+   23. 暗色走查修正 —— 2026-10-01
+   方法：对首页 / 三个 space / 列表页 / 动态 / About / 追番 / 文章 / 404
+        共 13 个页面，在亮暗两态下跑「对比度探针」——遍历 main 内所有文本叶子，
+        沿父链找到最近的不透明底色，按 WCAG 公式算对比度，列出 < 4.5:1 的项。
+        下面是这份客观清单对应的修复。
+   注意：截图看「文字发灰/看不见」有一种假象——首页 section 带 lopx-rise 入场动画，
+        用整页截图（captureBeyondViewport）会在动画中途光栅化，把白字拍成灰字。
+        首页「你好，我是 Fanbo」实测计算色是 rgb(247,247,250)，属于该假象，非缺陷。
+   ============================================================ */
+
+/* 23.1 Garden 是全站唯一把 ink/muted/accent 写成字面量色值的 space
+   （tech 是 --hardware-ink: var(--lopx-ink)，indie 同理，所以它们暗色下自动跟随）。
+   探针实测：/garden/ 的 h1、h2、「Recent Garden」、列表文章标题在暗色下
+   color 仍是 #1e262c，压在 #1d1e22 卡片上只有 1.09:1 —— 等于完全不可见。 */
+[data-theme='dark'] #garden-space,
+[data-theme='dark'] #garden-category {
+  --garden-ink: var(--lopx-ink);
+  --garden-muted: var(--lopx-muted);
+  --garden-line: var(--lopx-line);
+  --garden-accent: var(--lopx-accent);
+}
+
+/* 23.2 代码块：mac light 的语法配色是为白底设计的，而主题在 mac light 下把
+   代码块底色取成 var(--anzhiyu-card-bg)（暗色下自动变暗卡色）——
+   于是「深色字 + 深色底」，探针实测每一行 .line 只有 1.83:1。
+   这里在暗色下换一套暗底可读的 token 配色，底色仍沿用主题的卡片色。 */
+[data-theme='dark'] #article-container figure.highlight .line {
+  color: #c9d1d9;
+}
+
+[data-theme='dark'] #article-container figure.highlight .gutter,
+[data-theme='dark'] #article-container figure.highlight .gutter .line,
+[data-theme='dark'] #article-container figure.highlight .line-numbers {
+  color: #6e7681;
+}
+
+[data-theme='dark'] #article-container figure.highlight :is(.comment, .quote) {
+  color: #8b949e;
+}
+
+[data-theme='dark'] #article-container figure.highlight :is(.keyword, .selector-tag, .built_in, .type) {
+  color: #79b8ff;
+}
+
+[data-theme='dark'] #article-container figure.highlight :is(.string, .attr, .addition, .regexp) {
+  color: #9ecb9b;
+}
+
+[data-theme='dark'] #article-container figure.highlight :is(.number, .literal, .symbol, .bullet, .meta .number) {
+  color: #e6a06a;
+}
+
+[data-theme='dark'] #article-container figure.highlight :is(.title, .function, .section, .name) {
+  color: #c9a7f5;
+}
+
+[data-theme='dark'] #article-container figure.highlight :is(.variable, .template-variable, .selector-id, .selector-class) {
+  color: #e3b341;
+}
+
+[data-theme='dark'] #article-container figure.highlight :is(.meta, .deletion, .tag) {
+  color: #ff8a80;
+}
+
+/* 23.3 About / 首页的能力标签与次要文字 —— 2026-10-03 已删：
+   原规则针对 .author-tag / .title1（首页 hero 旧结构），改版后 .lopx-hero-chips
+   已用 var(--lopx-muted) 与 var(--lopx-line)，暗色下随 token 自动适配。 */
+
+/* 23.4 文章页通栏封面：第 19 节整段是 :root:not([data-theme='dark'])，暗色下不生效，
+   文章头部会退回主题默认（纯黑底、无图）。这里给暗色补同一套三层背景，
+   只把压暗层加重一档 —— 暗色页面里封面要更沉，白字才压得住。
+   底图同样消费 --lopx-post-cover（见第 19 节说明），兜底 post-cover.webp。 */
+[data-theme='dark'] #page-header.post-bg {
+  height: 26rem;
+  background-color: #0f1419;
+  background-image: linear-gradient(
+      100deg,
+      rgba(6, 10, 14, 0.86) 0%,
+      rgba(6, 10, 14, 0.6) 38%,
+      rgba(6, 10, 14, 0.26) 66%,
+      rgba(6, 10, 14, 0.36) 100%
+    ),
+    linear-gradient(180deg, rgba(6, 10, 14, 0.62) 0%, rgba(6, 10, 14, 0.3) 42%, rgba(6, 10, 14, 0.78) 100%),
+    var(--lopx-post-cover, url('/img/post-cover.webp'));
+  background-repeat: no-repeat, no-repeat, no-repeat;
+  background-size: cover, cover, cover;
+  background-position: center center, center center, center 34%;
+}
+
+[data-theme='dark'] #page-header.post-bg #post-top-cover {
+  display: none;
+}
+
+@media screen and (max-width: 768px) {
+  [data-theme='dark'] #page-header.post-bg {
+    height: 22rem;
+    min-height: 0;
+    background-position: center center, center center, center 28%;
+  }
+}
+
+/* 23.5 动态页横幅：essay-cover 是高饱和青蓝插画，暗色下是一整块发光的亮色矩形。
+   用 filter 整流压暗 —— 文字与底图等比缩放，对比度基本不变。
+   ⚠️ 容器 id 是下划线写法 `#essay_page`，写成 `#essay-page` 不匹配（第 13 节沿用）。 */
+[data-theme='dark'] #essay_page .essayPage {
+  filter: brightness(0.72) saturate(0.85);
+}
+
+[data-theme='dark'] #essay_page .essayPage:hover {
+  filter: brightness(0.82) saturate(0.92);
+}
+
+/* 23.6 404：左侧是「红黑线稿 + 浅灰底」的 gif，暗色下是一块刺眼的白方块。
+   反相（invert）会把线稿反成粉红，配色与站点冲突，因此改为压暗 + 降饱和，
+   保留原插画色相，只让它沉进暗底。 */
+[data-theme='dark'] .error-img {
+  filter: brightness(0.45) saturate(0.5) contrast(1.08);
+}
+
+/* 23.7 小标签与「原创」胶囊的残留项 —— 2026-10-02：原选择器
+   :is(#about-page, #lopx-home) .author-content-item-tips 已无命中（About 改版后
+   该元素只存在于侧栏 console 卡内，不在两个根节点之下），故删除。 */
+

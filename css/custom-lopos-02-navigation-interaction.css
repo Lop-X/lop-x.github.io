@@ -1,0 +1,209 @@
+
+/* ============================================================
+   Stage 5-8: Micro Animations & Interaction Polish
+   仅 hover / transition 微交互，无 animation、无 JS、无布局重设计
+   ============================================================ */
+
+/* Home */
+#recent-writing li a,
+#recent-writing time {
+  transition: color var(--lopx-dur-fast) ease;
+}
+
+#recent-writing li:hover time {
+  color: #4b5560;
+}
+
+/* 2026-10-02：tech / indie 列表的旧 hover 过渡已随旧结构删除，
+   卡片过渡见第 28 节 .lopx-card。 */
+
+/* Garden（空间主页的 hover 过渡已随卡片改版移到第 44 节） */
+#garden-category .article-sort .article-sort-item-title {
+  transition: color var(--lopx-dur-fast) ease;
+}
+
+/* Navigation（沿用主题既有 hover 配色，仅统一过渡时长） */
+#page-header #nav #menus .menus_item > a.site-page,
+#page-header #nav #menus .menus_item > a.site-page:hover {
+  /* 主题对此处强制 transition: color 0s !important，需要同等重要性才能覆盖 */
+  transition: color var(--lopx-dur-fast) ease, background-color var(--lopx-dur-fast) ease, box-shadow var(--lopx-dur-fast) ease !important;
+}
+
+#page-header #nav #nav-right .nav-button a,
+#page-header #nav #nav-right .nav-button a:hover,
+#page-header #nav #nav-right #toggle-menu > a,
+#page-header #nav #nav-right #toggle-menu > a:hover {
+  transition: color var(--lopx-dur-fast) ease, background-color var(--lopx-dur-fast) ease, box-shadow var(--lopx-dur-fast) ease, opacity var(--lopx-dur-fast) ease;
+}
+
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  #recent-writing li a,
+  #recent-writing time,
+  .lopx-card,
+  .lopx-card .lopx-card-title,
+  #garden-space > nav a,
+  #garden-space .article-sort .article-sort-item-title,
+  #garden-category .article-sort .article-sort-item-title,
+  #page-header #nav #nav-right .nav-button a,
+  #page-header #nav #nav-right .nav-button a:hover,
+  #page-header #nav #nav-right #toggle-menu > a,
+  #page-header #nav #nav-right #toggle-menu > a:hover {
+    transition: none;
+  }
+
+  #page-header #nav #menus .menus_item > a.site-page,
+  #page-header #nav #menus .menus_item > a.site-page:hover {
+    transition: none !important;
+  }
+
+  .lopx-card:hover,
+  #garden-space > nav a:hover {
+    transform: none;
+  }
+}
+
+/* 导航精简：PC 端隐藏随机文章与中控台入口（移动端保留，侧边栏仍需要） */
+@media screen and (min-width: 769px) {
+  #page-header #nav #nav-right .nav-button#randomPost_button,
+  #page-header #nav #nav-right #center-console,
+  #page-header #nav #nav-right #center-console + label.widget {
+    display: none;
+  }
+}
+
+/* ============================================================
+   Navigation 15（ReactBits Pro「Quiet nav with a traveling underline」原生复刻）
+   2026-10-12
+   - 桌面 #menus：去掉主题 hover 实心胶囊，改由一条 2px 下划线同时承担
+     「当前项（静止停靠）」与「hover 项（迁移跟随）」两个信号，移出回落。
+   - 移动端 #sidebar-menus：同一逻辑纵向化——左侧 3px 指示条垂直滑动到当前项。
+   - 文字层级：仅「非图片头」态（not-top-img，主题给深色文字）下把当前/hover
+     项染成 --lopx-nav-active；文章页封面白字态不动文字，下划线换成浅色。
+   - 定位用 transform + width（或 height），不触发父级布局。
+   ============================================================ */
+#nav #menus .menus_items {
+  position: relative;
+}
+
+#nav #menus .lopx-nav-indicator {
+  position: absolute;
+  bottom: 10px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--lopx-accent);
+  opacity: 0;
+  pointer-events: none;
+  will-change: transform, width;
+  transition:
+    transform 0.32s var(--lopx-ease),
+    width 0.32s var(--lopx-ease),
+    height 0.32s var(--lopx-ease),
+    opacity 0.2s ease;
+}
+
+/* 图片头（文章页封面等）导航是白字，下划线换浅色才可见 */
+#page-header:not(.not-top-img) #nav #menus .lopx-nav-indicator {
+  background: rgba(238, 238, 238, 0.92);
+}
+
+/* Quiet：hover 不再铺实心胶囊，只留下划线（主题在 not-top-img 态给胶囊） */
+#page-header #nav #menus .menus_item:hover > a.site-page {
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+/* 当前项 / hover 项文字染色 —— 仅深色文字态，避免深蓝压在封面图上 */
+#page-header.not-top-img #nav #menus .menus_items .menus_item.is-active > a.site-page,
+#page-header.not-top-img #nav #menus .menus_items .menus_item:hover > a.site-page {
+  color: var(--lopx-nav-active) !important;
+}
+
+/* ---- 移动端抽屉：纵向滑动指示条 ---- */
+#sidebar #sidebar-menus .menus_items {
+  position: relative;
+}
+
+#sidebar #sidebar-menus .lopx-nav-indicator {
+  position: absolute;
+  top: 0;
+  left: 1px;
+  width: 3px;
+  height: 22px;
+  border-radius: 3px;
+  background: var(--lopx-accent);
+  opacity: 0;
+  pointer-events: none;
+  will-change: transform, height;
+  transition:
+    transform 0.32s var(--lopx-ease),
+    width 0.32s var(--lopx-ease),
+    height 0.32s var(--lopx-ease),
+    opacity 0.2s ease;
+}
+
+#sidebar #sidebar-menus .menus_items .menus_item.is-active > a.site-page {
+  color: var(--lopx-nav-active);
+}
+
+/* ---- Navigation 15 · Quiet 化二轮（2026-10-12）：两端菜单去图标 ----
+   Navigation 15 是纯文字静默导航，主题给每个菜单项配的 anzhiyu 图标
+   在 PC 顶栏与移动抽屉里都与模板不像、且把行撑得局促。
+   只隐藏 .menus_items 一级菜单项里的图标；顶栏右侧（搜索/深色/汉堡）
+   与抽屉「功能」区（显示模式）的图标不受影响。 */
+#page-header #nav #menus .menus_items .menus_item > a.site-page > i,
+#page-header #nav #menus .menus_items .menus_item > a.site-page > svg.icon,
+#sidebar #sidebar-menus .menus_items .menus_item > a.site-page > i,
+#sidebar #sidebar-menus .menus_items .menus_item > a.site-page > svg.icon {
+  display: none !important;
+}
+
+/* 图标删除后，原为图标预留的不对称左内边距恢复对称 */
+#page-header #nav #menus .menus_items .menus_item > a.site-page {
+  padding: 0 0.8em;
+}
+
+/* ---- 移动端抽屉放大：主题写死 12px 字号 / 24px 行高，太小 ----
+   按移动端触控目标 ≥44px 重排：主标签 15px、英文副标签 11px，
+   行内边距 12px，纵向指示条随行加高（高度由 JS 按行高计算）。 */
+#sidebar #sidebar-menus .menus_items .menus_item {
+  margin: 2px 0;
+}
+
+#sidebar #sidebar-menus .menus_items .menus_item > a.site-page {
+  display: flex;
+  align-items: center;
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.4;
+  letter-spacing: 0.02em;
+  padding: 12px;
+  border-radius: 10px;
+}
+
+#sidebar #sidebar-menus .menus_items .nav-label .nav-sub-label {
+  margin-left: 8px;
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  opacity: 0.6;
+}
+
+@media screen and (max-width: 768px) {
+  #nav #menus .lopx-nav-indicator {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #nav #menus .lopx-nav-indicator,
+  #sidebar #sidebar-menus .lopx-nav-indicator {
+    transition: none;
+  }
+}
+
+/* 文章页顶部原本的「无封面兜底」已由第 19 节取代：
+   现在统一给头部铺通栏封面图 + 暗色压底，因此标题/导航恢复白字，
+   不再需要按“有无封面”把文字切成深色。 */
+

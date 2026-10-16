@@ -1,0 +1,855 @@
+/* ============================================================
+   26. 首页三空间入口带 —— 2026-10-01
+   背景：首页此前只有 About / Projects / Recent Writing 三段，
+        三个 space 的存在感全靠导航，进首页扫不到「这站有什么」。
+   处理：About 与 Projects 之间加三条色卡（Tech/Indie/Garden），
+        各带身份色小方块 + 一句话 + 最新一篇。
+   配色与第 20 节 space 色带同源（tech 深蓝 / indie 深紫 / garden 深绿），
+        亮色取 600 阶（描边/小方块），暗色取 200 阶。
+   2026-10-09：#home-projects 段落已整体移除，首页 section 由 4 段减为 3 段
+        （home-about / home-spaces / recent-writing），原先专为 Projects 位置补的
+        nth-of-type(4) 入场延迟规则一并删除。
+   ============================================================ */
+
+#lopx-home .space-list {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+/* ⚠️ pangu（_config.anzhiyu.yml 中已启用）会在中英文之间注入 <pangu> </pangu>，
+   它落在 flex/grid 容器里会被当成一个布局项：
+     · 首页 .space-list（grid）→ 实测把三张卡挤成「两行 3+2」
+     · 文章页侧栏 .card-tag-cloud（flex-wrap）→ 每个标签链接之间多出 4 个占位项
+   注入元素本身只承载一个空格，在这些容器里纯粹是噪声，直接隐藏。
+   跨页扫描脚本见下方注释；新增 flex/grid 组件后应重跑一次污染扫描。 */
+#lopx-home .space-list > pangu,
+#article-container .anime-gallery > pangu,
+.card-tag-cloud > pangu {
+  display: none;
+}
+
+#lopx-home .space-card {
+  --lopx-space-accent: #3a7aa0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 18px 20px 16px;
+  border: 1px solid var(--lopx-line);
+  border-radius: 12px;
+  background: var(--lopx-surface);
+  text-decoration: none;
+  color: inherit;
+  transition:
+    transform var(--lopx-dur-mid, 0.28s) var(--lopx-ease, ease),
+    border-color var(--lopx-dur-mid, 0.28s) ease,
+    box-shadow var(--lopx-dur-mid, 0.28s) ease;
+}
+
+#lopx-home .space-card-tech {
+  --lopx-space-accent: #185FA5;
+}
+
+#lopx-home .space-card-indie {
+  --lopx-space-accent: #534AB7;
+}
+
+#lopx-home .space-card-garden {
+  --lopx-space-accent: #0F6E56;
+}
+
+#lopx-home .space-card-top {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+}
+
+#lopx-home .space-name {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--lopx-ink);
+}
+
+/* 身份色小方块：与 space 色带同源的识别符，不占额外 DOM */
+#lopx-home .space-name::before {
+  content: '';
+  display: inline-block;
+  width: 9px;
+  height: 9px;
+  margin-right: 9px;
+  border-radius: 2px;
+  background: var(--lopx-space-accent);
+}
+
+#lopx-home .space-label {
+  font-size: 0.78rem;
+  color: var(--lopx-muted);
+}
+
+#lopx-home .space-description {
+  margin: 0;
+  font-size: 0.82rem;
+  line-height: 1.6;
+  color: var(--lopx-muted);
+}
+
+#lopx-home .space-latest {
+  display: flex;
+  gap: 8px;
+  align-items: baseline;
+  margin-top: 2px;
+  padding-top: 12px;
+  border-top: 1px dashed var(--lopx-line);
+}
+
+#lopx-home .space-latest-caption {
+  flex-shrink: 0;
+  padding: 1px 8px;
+  border: 1px solid var(--lopx-space-accent);
+  border-radius: 999px;
+  font-size: 0.7rem;
+  color: var(--lopx-space-accent);
+}
+
+#lopx-home .space-latest-title {
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  font-size: 0.82rem;
+  color: var(--lopx-ink);
+}
+
+/* hover：与第 15 节卡片同一套语言（上浮 + 描边靠近身份色） */
+#lopx-home .space-card:hover {
+  transform: translateY(-3px);
+  border-color: var(--lopx-space-accent);
+  box-shadow: 0 10px 24px -10px rgba(30, 38, 44, 0.25);
+}
+
+/* 入场逐卡错开（section 延迟 0.15s 之后起排） */
+#lopx-home .space-list > .space-card {
+  animation: lopx-fade-up var(--lopx-dur-slow, 0.5s) var(--lopx-ease, cubic-bezier(0.22, 1, 0.36, 1)) backwards;
+}
+
+#lopx-home .space-list > .space-card:nth-child(1) {
+  animation-delay: 0.23s;
+}
+
+#lopx-home .space-list > .space-card:nth-child(2) {
+  animation-delay: 0.29s;
+}
+
+#lopx-home .space-list > .space-card:nth-child(3) {
+  animation-delay: 0.35s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #lopx-home .space-list > .space-card {
+    animation: none;
+  }
+
+  #lopx-home .space-card:hover {
+    transform: none;
+  }
+}
+
+/* 暗色：卡面沿用 token，身份色换 200 阶，hover 阴影加深 */
+[data-theme='dark'] #lopx-home .space-card-tech {
+  --lopx-space-accent: #85B7EB;
+}
+
+[data-theme='dark'] #lopx-home .space-card-indie {
+  --lopx-space-accent: #AFA9EC;
+}
+
+[data-theme='dark'] #lopx-home .space-card-garden {
+  --lopx-space-accent: #5DCAA5;
+}
+
+[data-theme='dark'] #lopx-home .space-card:hover {
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.5);
+}
+
+/* Spotlight hover：ReactBits SpotlightCard 的纯 CSS 复刻。
+   光斑层在鼠标进入卡片时显示，位置由 JS 写入 --mouse-x/--mouse-y。 */
+#lopx-home .space-card {
+  position: relative;
+  overflow: hidden;
+}
+
+#lopx-home .space-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0;
+  background: radial-gradient(
+    550px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+    rgba(255, 255, 255, 0.16),
+    transparent 45%
+  );
+  transition: opacity 0.25s ease;
+}
+
+#lopx-home .space-card:hover::before {
+  opacity: 1;
+}
+
+#lopx-home .space-card > * {
+  position: relative;
+  z-index: 1;
+}
+
+[data-theme='dark'] #lopx-home .space-card::before {
+  background: radial-gradient(
+    550px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+    rgba(255, 255, 255, 0.10),
+    transparent 45%
+  );
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #lopx-home .space-card::before {
+    display: none;
+  }
+}
+
+/* 窄屏：三卡纵排，最新一行给足换行空间 */
+@media (max-width: 768px) {
+  #lopx-home .space-list {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ============================================================
+   27.（已废弃，保留编号占位）首页「当前状态」条 —— 2026-10-03 删除
+   历史：2026-10-02 曾把状态做成 hero 卡下方的 1160×42 通栏细条（方案 C）。
+   2026-10-03：反馈「位置不协调」+ hero 右侧空 700px，两条问题一起解决 ——
+   状态改为 hero 右下角的渐变小卡（.lopx-hero-status，样式见第 1 节），
+   通栏条及其暗色分支全部删除。about.yml 的 status.text 仍在使用（首页 + About 页 Now）。
+   ============================================================ */
+
+/* ============================================================
+   28. 空间页卡片网格（2026-10-02 建立 / 10-03 随分类化调整）
+   背景：/tech/、/indie/ 原本是「白卡片 + 行行文字链接」，内容少时版面失衡；
+        主页的 Latest Projects 段又因站内暂无 project 文章而恒为空。
+   形态：空间主页与分类子页统一为 3 列卡片网格 ——
+        渐变文字封面（空间识别色深底，不依赖封面图）+ 标题 + 元信息行（日期 · 标签 ≤2）；
+        文章补了 cover 字段则优先显示图片（分类名降为左下角角标）。
+   2026-10-03：封面由固定 104px 高改为 16:10；去掉「项目 / 笔记」类型徽章
+        （该维度已取消，分类由导航胶囊与封面表达）；
+        页面 id 统一为 #space-tech(-cat) / #space-indie(-cat)。
+        顶部胶囊导航样式见 20.8，分类与数量由 scripts/generators/space-pages.js 算出。
+   色板：与 26 节首页空间卡同源（Tech #185FA5 / Indie #534AB7）。
+   ============================================================ */
+
+/* 28.1 每个空间一套卡片配色：渐变两端 + 强调色（暗色另给强调色，见 28.7） */
+:is(#space-tech, #space-tech-cat) {
+  --lopx-card-from: #0b2130;
+  --lopx-card-to: #1f6288;
+  --lopx-card-accent: #185FA5;
+}
+
+:is(#space-indie, #space-indie-cat) {
+  --lopx-card-from: #171432;
+  --lopx-card-to: #4a3f9b;
+  --lopx-card-accent: #534AB7;
+}
+
+/* Garden 本轮仍是列表形态，取值先备好，日后统一时不必重新定色 */
+:is(#garden-space, #garden-category) {
+  --lopx-card-from: #0b2a23;
+  --lopx-card-to: #1f6d55;
+  --lopx-card-accent: #0F6E56;
+}
+
+/* 28.2 网格：固定三列（2026-10-06 由 auto-fit 改回）
+   2026-10-05 曾为了让 /indie/ 的唯一一张卡不孤零零贴左，改成 auto-fit 自适应：
+   卡数 ≤3 时铺满整行。但那样在 1440 下会导致「一篇文的分类页」把卡片拉成
+   1094px 宽的巨幅卡，而同页的 tech 五卡仍是 350px —— 同一套组件出现两种尺度，
+   且与「容器 1000」的收窄方向相反。
+   用户 2026-10-06 明确要求：技术与独立游戏这一块就正常三栏，不要自动拉宽。
+   故改回固定三列。代价是 /indie/ 单卡只占第一列、右侧留两列空白 —— 这是
+   用户已知并接受的取舍，不是缺陷，勿再以「留白难看」为由改回 auto-fit。
+   卡片实测宽：1440 下 297px（1000 容器内容区 934，减 2×22 gap 后三等分）。
+   ≤960 / ≤600 的收口见 28.6。 */
+.lopx-cards {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 22px;
+  margin-top: 40px;
+}
+
+/* 28.3 卡片外壳 */
+.lopx-card {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid var(--lopx-line);
+  border-radius: 12px;
+  background: var(--lopx-surface);
+  box-shadow: 0 4px 16px rgba(32, 42, 49, 0.045);
+  transition:
+    transform var(--lopx-dur-mid) ease,
+    border-color var(--lopx-dur-mid) ease,
+    box-shadow var(--lopx-dur-mid) ease;
+}
+
+.lopx-card:hover {
+  transform: translateY(-3px);
+  border-color: var(--lopx-card-accent);
+  box-shadow: 0 10px 24px rgba(32, 42, 49, 0.09);
+}
+
+/* 28.4 渐变文字封面：空间识别色 + 与色带同源的细网格纹理
+   2026-10-03：由固定 height:104px（348×104 ≈ 3.4:1，太扁）改为 16:10，
+   3 列时约 348×218；将来文章补了 cover 字段，图片在这个比例下才像封面。
+   2026-10-05：配合 28.2 的自适应列数补 max-height:300px —— 单卡铺满整行时
+   16:10 会算到 685px 高（控制整张卡），封顶后为 1096×300（约 3.7:1）的特征卡，
+   多列时（218px）够不到上限，取值不变。
+   2026-10-06：28.2 已改回固定三栏，单卡铺满整行的情况不再发生，本上限当前
+   无命中（三栏卡片 297px → 16:10 算出 186px）。保留作兜底：将来若再引入
+   自适应列数，没有它会算出 685px 的巨幅封面。 */
+.lopx-card-cover {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 16 / 10;
+  max-height: 300px;
+  background-image: repeating-linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.055) 0 1px,
+      transparent 1px 26px
+    ),
+    repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.045) 0 1px, transparent 1px 26px),
+    linear-gradient(135deg, var(--lopx-card-from, #0b2130) 0%, var(--lopx-card-to, #1f6288) 100%);
+  background-repeat: repeat, repeat, no-repeat;
+  background-size: 26px 26px, 26px 26px, cover;
+  background-position: left top, left top, center center;
+  text-decoration: none;
+}
+
+.lopx-card-cover-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.lopx-card-cat {
+  color: #ffffff;
+  font-size: 0.9rem;
+  font-weight: 650;
+  letter-spacing: 0.14em;
+  text-shadow: 0 2px 10px rgba(6, 14, 20, 0.35);
+}
+
+/* 有封面图时，分类名降为左下角角标 */
+.lopx-card-cover.has-img .lopx-card-cat {
+  position: absolute;
+  left: 10px;
+  bottom: 10px;
+  padding: 3px 9px;
+  border-radius: 999px;
+  background: rgba(6, 14, 20, 0.55);
+  font-size: 0.7rem;
+  letter-spacing: 0.06em;
+  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px);
+}
+
+/* 28.5 卡片正文：标题两行封顶，元信息贴底（同一行卡片对齐底部） */
+.lopx-card-body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 12px;
+  padding: 14px 16px 16px;
+}
+
+.lopx-card-title {
+  display: -webkit-box;
+  overflow: hidden;
+  color: var(--lopx-ink);
+  font-size: 0.95rem;
+  font-weight: 650;
+  line-height: 1.45;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  transition: color var(--lopx-dur-mid) ease;
+}
+
+.lopx-card:hover .lopx-card-title {
+  color: var(--lopx-card-accent);
+}
+
+.lopx-card-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 8px;
+  margin-top: auto;
+  color: var(--lopx-muted);
+  font-size: 0.78rem;
+  line-height: 1.4;
+}
+
+/* 2026-10-03：分类徽章（.lopx-card-kind）已删 —— 分类名在封面正中/角标上已有，
+   元信息行只留「日期 + 标签」，不再重复标注「项目 / 笔记」这个已取消的维度。 */
+
+.lopx-card-date {
+  font-variant-numeric: tabular-nums;
+}
+
+.lopx-card-tag {
+  padding: 1px 8px;
+  border-radius: 999px;
+  background: rgba(58, 122, 160, 0.09);
+  color: var(--lopx-muted);
+  font-size: 0.7rem;
+}
+
+/* 28.6 响应式：≤960 两列，≤600 单列 */
+@media screen and (max-width: 960px) {
+  .lopx-cards {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .lopx-cards {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 16px;
+    margin-top: 32px;
+  }
+}
+
+/* 28.7 暗色：强调色换亮阶（与 26 节空间卡同源），阴影收敛 */
+[data-theme='dark'] :is(#space-tech, #space-tech-cat) {
+  --lopx-card-accent: #85B7EB;
+}
+
+[data-theme='dark'] :is(#space-indie, #space-indie-cat) {
+  --lopx-card-accent: #AFA9EC;
+}
+
+[data-theme='dark'] :is(#garden-space, #garden-category) {
+  --lopx-card-accent: #5DCAA5;
+}
+
+[data-theme='dark'] .lopx-card {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.32);
+}
+
+[data-theme='dark'] .lopx-card:hover {
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.44);
+}
+
+[data-theme='dark'] .lopx-card-tag {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+/* 28.8 色带上的胶囊导航：主页沿 537 / 278 行的既有 flex 规则，
+   子列表页原本没有 nav，这里补上一样的排布；视觉由 20.8 提供 */
+.lopx-space-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 26px;
+}
+
+/* 28.9 空态：与卡片网格同一上沿间距 */
+:is(#space-tech, #space-tech-cat, #space-indie, #space-indie-cat) > p.space-empty {
+  margin-top: 40px;
+}
+
+/* ============================================================
+   29. About 信息页（/about/）—— 2026-10-02
+   背景：原版与首页 hero 完全重复（同一张头像、同样四个能力标签、
+   同一句 Hello），同一信息一屏出现三次，1087px 页面里卡片只占 480px。
+   现在换成「紧凑页头 + Now + 时间线 + 联系方式」，模板见
+   themes/anzhiyu/layout/includes/page/about.pug，数据在 source/_data/about.yml。
+   作用域全部限定在 .lopx-about（只存在于 /about/），
+   首页内联的 #about-page 副本与既有 #about-page 规则不受影响。
+   颜色全部走 --lopx-* token（亮暗在全局分别定义），无需额外暗色覆盖。
+   ============================================================ */
+
+/* 29.0 内容宽度：铺满容器（1000 - 32×2 = 936；2026-10-06 由 1160 / 1096 收窄）。
+   2026-10-02 建版时为「内容限宽 900 靠左」，以对齐其它页「容器 1160 / 内容 900」的轴线；
+   但 About 只有四块卡片、没有长文本，靠左后实测左 172 / 右 368，重心左偏约 98px，
+   观感「歪」。2026-10-03 改为铺满容器 + 内部两栏（见 29.2），左右对称且页面更饱满。
+   注意：容器属性不能写 .lopx-about { max-width } —— #about-page 是 id 选择器，权重更高。 */
+
+/* 链接用的可读强调色：--lopx-accent(#3a7aa0) 在白底上对比约 4.3:1，
+   作正文链接偏低；沿用第 27 节状态条已校验过的同一组取值。 */
+.lopx-about {
+  --lopx-about-link: #2c6688;
+}
+
+[data-theme='dark'] .lopx-about {
+  --lopx-about-link: #9cc3e8;
+}
+
+/* 29.1 紧凑页头：头像退回 64px 缩略尺寸，只在这里出现一次 */
+.lopx-about-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 18px;
+  padding: 20px 24px;
+  border: 1px solid var(--lopx-line);
+  border-radius: 16px;
+  background: var(--lopx-surface);
+  box-shadow: 0 2px 10px rgba(30, 38, 44, 0.04);
+}
+
+.lopx-about-avatar {
+  flex: none;
+  width: 64px;
+  height: 64px;
+  overflow: hidden;
+  border: 1px solid var(--lopx-line);
+  border-radius: 16px;
+}
+
+.lopx-about-avatar img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.lopx-about-headline {
+  flex: 1 1 150px;
+  min-width: 0;
+}
+
+.lopx-about-name {
+  margin: 0;
+  color: var(--lopx-ink);
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.lopx-about-intro {
+  margin: 8px 0 0;
+  color: var(--lopx-muted);
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+/* 方向标签：小号 chips，替代原来被放大成 8 个胶囊的能力标签 */
+.lopx-about-dirs {
+  flex: 1 1 100%;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 6px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.lopx-about-dirs li {
+  padding: 4px 11px;
+  border: 1px solid var(--lopx-line);
+  border-radius: 999px;
+  color: var(--lopx-muted);
+  font-size: 0.78rem;
+  font-weight: 550;
+  line-height: 1.5;
+}
+
+/* 29.2 区块外壳：三块内容共用（横向内衬 24 → 32，文字左缘 165 → 173，
+   与首页 / space 页 / 文章正文同轴，2026-10-05 实测） */
+.lopx-about-block {
+  padding: 22px 32px;
+  border: 1px solid var(--lopx-line);
+  border-radius: 16px;
+  background: var(--lopx-surface);
+  box-shadow: 0 2px 10px rgba(30, 38, 44, 0.04);
+}
+
+/* 29.2b 两栏内容区（2026-10-03）
+   左窄列 = 目前/Now（上）+ 联系方式（下），右宽列 = 时间线（跨两行）。
+   DOM 顺序是 now → timeline → contact（移动端单列的阅读顺序即此）。
+   2026-10-03（第三轮）：用户更喜欢上下结构 → 桌面端改为
+   「目前 + 联系方式」并排一行（各半宽），时间线通栏在下。 */
+.lopx-about-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-areas:
+    'now contact'
+    'timeline timeline';
+  gap: 20px;
+  align-items: stretch;
+  margin-top: 20px;
+}
+
+.lopx-about-grid > .lopx-about-block {
+  margin-top: 0;
+}
+
+.lopx-about-grid > .is-now {
+  grid-area: now;
+}
+
+.lopx-about-grid > .is-timeline {
+  grid-area: timeline;
+}
+
+.lopx-about-grid > .is-contact {
+  grid-area: contact;
+}
+
+.lopx-about-block-title {
+  display: flex;
+  align-items: baseline;
+  gap: 9px;
+  margin: 0 0 18px;
+  color: var(--lopx-ink);
+  font-size: 1.05rem;
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.lopx-about-block-title small {
+  color: var(--lopx-muted);
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* 29.3 Now 列表 */
+.lopx-about-now-list {
+  display: grid;
+  gap: 13px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.lopx-about-now-list li {
+  display: flex;
+  gap: 11px;
+  align-items: baseline;
+}
+
+.lopx-about-now-label {
+  flex: none;
+  padding: 2px 9px;
+  border-radius: 6px;
+  background: rgba(58, 122, 160, 0.08);
+  color: var(--lopx-about-link);
+  font-size: 0.78rem;
+  font-weight: 650;
+  line-height: 1.6;
+}
+
+[data-theme='dark'] .lopx-about-now-label {
+  background: rgba(103, 178, 208, 0.14);
+}
+
+.lopx-about-now-text {
+  color: var(--lopx-muted);
+  font-size: 0.9rem;
+  line-height: 1.7;
+}
+
+/* 29.4 当前状态：2026-10-05 从「目前」卡底部上移到页头右侧。
+   原来是一条整行宽的状态条（强调色浅底 + 左竖线），页头右侧因此空掉约 43%；
+   现在改为页头右端的胶囊，与首页 hero 左下角的状态小卡同一套语言
+   （渐变底 + 白字 + 呼吸点），同时「目前」卡高度减少约 50px。 */
+.lopx-about-head-status {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  flex: 0 0 auto;
+  margin: 0 0 0 auto;
+  padding: 9px 14px;
+  border-radius: 999px;
+  background-image: linear-gradient(135deg, #2f6f92 0%, #3a7aa0 100%);
+  color: #ffffff;
+  font-size: 0.78rem;
+  font-weight: 550;
+  line-height: 1.4;
+  white-space: nowrap;
+}
+
+.lopx-about-head-status-dot {
+  flex: none;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #cfe8f6;
+  box-shadow: 0 0 0 3px rgba(207, 232, 246, 0.28);
+}
+
+/* 窄屏：胶囊换到独立一行时不再靠右，避免右缘出现突兀缺口 */
+@media screen and (max-width: 600px) {
+  .lopx-about-head-status {
+    margin-left: 0;
+  }
+}
+
+/* 29.5 时间线：年份分组 + 左侧细轴 + 圆点 */
+.lopx-tl-group + .lopx-tl-group {
+  margin-top: 22px;
+}
+
+.lopx-tl-year {
+  margin: 0 0 12px;
+  color: var(--lopx-muted);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  font-variant-numeric: tabular-nums;
+}
+
+.lopx-tl-list {
+  display: grid;
+  gap: 18px;
+  margin: 0;
+  padding: 0 0 2px 18px;
+  border-left: 1px solid var(--lopx-line);
+  list-style: none;
+}
+
+.lopx-tl-item {
+  position: relative;
+  display: grid;
+  grid-template-columns: 84px minmax(0, 1fr);
+  gap: 14px;
+  align-items: start;
+}
+
+.lopx-tl-item::before {
+  content: '';
+  position: absolute;
+  top: 6px;
+  left: -23px;
+  width: 9px;
+  height: 9px;
+  border: 2px solid var(--lopx-accent);
+  border-radius: 50%;
+  background: var(--lopx-surface);
+}
+
+.lopx-tl-date {
+  padding-top: 2px;
+  color: var(--lopx-muted);
+  font-size: 0.78rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.lopx-tl-title {
+  margin: 0;
+  color: var(--lopx-ink);
+  font-size: 0.95rem;
+  font-weight: 600;
+  line-height: 1.5;
+}
+
+.lopx-tl-text {
+  margin: 5px 0 0;
+  color: var(--lopx-muted);
+  font-size: 0.9rem;
+  line-height: 1.7;
+}
+
+/* 29.6 联系方式 */
+.lopx-contact-list {
+  display: grid;
+  gap: 11px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.lopx-contact-list li {
+  display: flex;
+  gap: 12px;
+  align-items: baseline;
+}
+
+.lopx-contact-label {
+  flex: none;
+  min-width: 62px;
+  color: var(--lopx-muted);
+  font-size: 0.82rem;
+}
+
+.lopx-contact-list a {
+  color: var(--lopx-about-link);
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-decoration: none;
+  word-break: break-all;
+}
+
+.lopx-contact-list a:hover {
+  text-decoration: underline;
+}
+
+.lopx-contact-value {
+  color: var(--lopx-muted);
+  font-size: 0.9rem;
+}
+
+/* 29.6b 窄屏回落：≤900px「目前+联系方式」并排过窄，
+   改为单列，顺序 = 目前 / 时间线 / 联系方式（与 DOM 顺序一致）。 */
+@media screen and (max-width: 900px) {
+  .lopx-about-grid {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      'now'
+      'timeline'
+      'contact';
+  }
+}
+
+/* 29.7 窄屏：时间线日期换行到标题上方（与 12.6 的窄屏策略一致） */
+@media screen and (max-width: 600px) {
+  .lopx-about-head,
+  .lopx-about-block {
+    padding-right: 18px;
+    padding-left: 18px;
+  }
+
+  .lopx-tl-item {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 4px;
+  }
+}
+
+/* ============================================================
+   30. 段标题中英统一 —— 2026-10-02
+   现状：导航是「技术 Tech」的中英并列，首页与 Garden 的段标题却只有英文
+   （Projects / Recent Writing / Recent Garden），中英混排风格不统一。
+   这里统一为「中文 + 英文小字」：英文用小号、字距加宽、次要色，不抢中文主标题。
+   作用域限定首页与 Garden 页，避免波及文章正文里的 h2 > small。
+   ============================================================ */
+
+:is(#lopx-home, #garden-space) :is(h2, h3) > small {
+  margin-left: 8px;
+  color: var(--lopx-muted);
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* 30.2 空间分类子页标题：分类名 + 空间名小字 —— 2026-10-03
+   分类页 h1 是分类名（如「建站」），补一个空间名小字说明归属。
+   色带上标题是白字，小字降一档透明度；只在 /tech/<分类>/、/indie/<分类>/ 出现。 */
+:is(#space-tech-cat, #space-indie-cat) > h1 > small {
+  margin-left: 10px;
+  color: rgba(255, 255, 255, 0.68);
+  font-size: 0.82rem;
+  font-weight: 550;
+  letter-spacing: 0.12em;
+  vertical-align: 0.12em;
+}

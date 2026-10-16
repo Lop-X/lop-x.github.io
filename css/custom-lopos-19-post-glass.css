@@ -1,0 +1,345 @@
+/* ============================================================
+   49. 文章页高级化 —— 2026-10-13
+   目标：把文章页从「白底实卡 + 主题默认排版」升级为与首页同一套
+        玻璃语言，并把正文的标题层级 / 段落 / 列表 / 引用 / 表格 /
+        代码块 / 行内代码逐项重排，解决实测出的六个问题：
+          ① #post 是实色卡（亮 rgba(255,255,255,.9) / 暗 rgb(29,30,34)），
+             与首页 iOS 毛玻璃质感断层；
+          ② 暗色下代码块底色 rgb(29,30,34) 与卡片同色 → 边界消失；
+          ③ 段落 17px/1.85、段后仅 19.55px → 长文段落糊在一起；
+          ④ 教程型文章 30 个小代码块，白底无内衬、复制按钮是小黑方块；
+          ⑤ 表格无圆角无斑马纹，与卡片氛围不搭；
+          ⑥ 行内代码是「白字 + 主色实底」，像按钮而非代码标记。
+   ------------------------------------------------------------
+   【可调接口】只需改 49.1 与 49.2 两组变量，别处不用碰：
+     --lopx-post-glass-alpha     卡片不透明度  越小越透（建议 .5–.8）
+     --lopx-post-glass-blur      背景模糊半径  （建议 12–30px）
+     --lopx-post-glass-saturate  背景饱和提升  （建议 1.2–1.8）
+     --lopx-post-radius          卡片圆角      （建议 14–24px）
+     --lopx-post-accent          强调色（标题竖条 / 表头 / 行内代码）
+     --lopx-post-measure         正文行高倍数  （建议 1.7–1.9）
+   作用范围：仅文章页 post.pug 的 #post（page.pug 用的是 #page，不受影响）。
+   兼容：不支持 backdrop-filter 时走 49.9 的实色兜底。
+   ============================================================ */
+
+/* ---- 49.1 亮色参数 ----
+   ⚠️ 必须用 `#content-inner #post`（2 个 id）而不是 `#post`：
+   主题 `_extra/anzhiyu/custom.css:41` 有 `div#post { background: rgba(255,255,255,.9) }`，
+   特异性 (1,0,1) 压过单 id。暗色同理（`[data-theme="dark"] div#post`）。 */
+#content-inner #post {
+  --lopx-post-glass-rgb: 255, 255, 255;
+  --lopx-post-glass-alpha: 0.62;
+  --lopx-post-glass-blur: 22px;
+  --lopx-post-glass-saturate: 1.45;
+  --lopx-post-glass-border: rgba(255, 255, 255, 0.62);
+  --lopx-post-glass-edge: rgba(255, 255, 255, 0.75);
+  --lopx-post-shadow:
+    0 26px 60px -32px rgba(15, 23, 42, 0.3),
+    0 2px 6px rgba(15, 23, 42, 0.04);
+  --lopx-post-radius: 18px;
+  --lopx-post-accent: #3a7aa0;
+  --lopx-post-accent-ink: #2b6079;
+  --lopx-post-accent-soft: rgba(58, 122, 160, 0.1);
+  --lopx-post-ink-1: #141b22;
+  --lopx-post-ink-2: #1d2731;
+  --lopx-post-measure: 1.78;
+  --lopx-post-code-bg: #f8f9fb;
+  --lopx-post-code-bar: linear-gradient(180deg, #fcfdfe, #f3f6f9);
+  --lopx-post-code-border: rgba(15, 23, 42, 0.08);
+}
+
+/* ---- 49.2 暗色参数 ---- */
+[data-theme='dark'] #content-inner #post {
+  --lopx-post-glass-rgb: 30, 33, 40;
+  --lopx-post-glass-alpha: 0.6;
+  --lopx-post-glass-border: rgba(255, 255, 255, 0.08);
+  --lopx-post-glass-edge: rgba(255, 255, 255, 0.055);
+  --lopx-post-shadow:
+    0 26px 60px -34px rgba(0, 0, 0, 0.75),
+    0 2px 6px rgba(0, 0, 0, 0.3);
+  --lopx-post-accent: #7fb3d5;
+  --lopx-post-accent-ink: #a9d1ea;
+  --lopx-post-accent-soft: rgba(127, 179, 213, 0.14);
+  --lopx-post-ink-1: #f2f4f8;
+  --lopx-post-ink-2: #e3e7ee;
+  --lopx-post-code-bg: #14171e;
+  --lopx-post-code-bar: linear-gradient(180deg, #1c202a, #171b23);
+  --lopx-post-code-border: rgba(255, 255, 255, 0.08);
+}
+
+/* ---- 49.3 卡片玻璃化 ---- */
+#content-inner #post {
+  border-radius: var(--lopx-post-radius);
+  background-color: rgba(var(--lopx-post-glass-rgb), var(--lopx-post-glass-alpha));
+  border: 1px solid var(--lopx-post-glass-border);
+  box-shadow: var(--lopx-post-shadow), inset 0 1px 0 var(--lopx-post-glass-edge);
+  -webkit-backdrop-filter: blur(var(--lopx-post-glass-blur)) saturate(var(--lopx-post-glass-saturate));
+  backdrop-filter: blur(var(--lopx-post-glass-blur)) saturate(var(--lopx-post-glass-saturate));
+}
+
+/* ---- 49.4 标题层级：H2 主色竖条 / H3 次级 / H4 主色小字 ---- */
+#post #article-container h2 {
+  margin: 2.05em 0 0.85em;
+  padding-left: 0.66em;
+  border-left: 4px solid var(--lopx-post-accent);
+  border-radius: 2px;
+  font-size: 1.62em;
+  line-height: 1.32;
+  font-weight: 700;
+  letter-spacing: -0.004em;
+  color: var(--lopx-post-ink-1);
+}
+
+#post #article-container h3 {
+  margin: 1.75em 0 0.7em;
+  padding-left: 0.6em;
+  border-left: 2px solid var(--lopx-post-accent-soft);
+  font-size: 1.28em;
+  line-height: 1.4;
+  font-weight: 650;
+  color: var(--lopx-post-ink-2);
+}
+
+#post #article-container h4 {
+  margin: 1.5em 0 0.6em;
+  font-size: 1.06em;
+  line-height: 1.5;
+  font-weight: 650;
+  color: var(--lopx-post-accent-ink);
+}
+
+/* ---- 49.5 段落与列表：放宽行高与呼吸感 ---- */
+#post #article-container p {
+  margin: 0 0 1.35em;
+  line-height: var(--lopx-post-measure);
+}
+
+#post #article-container ul,
+#post #article-container ol {
+  margin: 0 0 1.35em;
+}
+
+#post #article-container ul > li,
+#post #article-container ol > li {
+  margin: 0.42em 0;
+  line-height: var(--lopx-post-measure);
+}
+
+#post #article-container ul > li::marker,
+#post #article-container ol > li::marker {
+  color: var(--lopx-post-accent);
+}
+
+/* ---- 49.6 引用块：左侧主色粗条 + 淡主色底（替换主题的灰盒子） ---- */
+#post #article-container blockquote {
+  margin: 1.4em 0;
+  padding: 0.95em 1.25em;
+  border: none;
+  border-left: 3px solid var(--lopx-post-accent);
+  border-radius: 0 12px 12px 0;
+  background: var(--lopx-post-accent-soft);
+  color: inherit;
+  font-style: normal;
+}
+
+#post #article-container blockquote p:last-child {
+  margin-bottom: 0;
+}
+
+/* ---- 49.7 表格：圆角 + 渐变表头 + 斑马纹 + 行悬浮 ---- */
+#post #article-container table {
+  width: 100%;
+  margin: 1.4em 0;
+  border-collapse: separate;
+  border-spacing: 0;
+  border: 1px solid var(--lopx-post-code-border);
+  border-radius: 12px;
+  overflow: hidden;
+  font-size: 0.96em;
+  box-shadow: 0 10px 26px -20px rgba(15, 23, 42, 0.4);
+}
+
+#post #article-container table th {
+  padding: 0.72em 1em;
+  border: none;
+  background: linear-gradient(135deg, #0b2130 0%, #1f6288 100%);
+  color: #ffffff;
+  font-weight: 600;
+  text-align: left;
+  font-size: 0.95em;
+  letter-spacing: 0.01em;
+}
+
+#post #article-container table td {
+  padding: 0.62em 1em;
+  border: none;
+  border-top: 1px solid var(--lopx-post-code-border);
+  line-height: 1.6;
+}
+
+#post #article-container table tbody tr:nth-child(even) {
+  background: rgba(58, 122, 160, 0.035);
+}
+
+[data-theme='dark'] #post #article-container table tbody tr:nth-child(even) {
+  background: rgba(127, 179, 213, 0.05);
+}
+
+#post #article-container table tbody tr:hover {
+  background: rgba(58, 122, 160, 0.09);
+}
+
+[data-theme='dark'] #post #article-container table tbody tr:hover {
+  background: rgba(127, 179, 213, 0.1);
+}
+
+/* ---- 49.8 行内代码：淡主色胶囊，不再像按钮 ---- */
+#post #article-container :not(pre) > code {
+  margin: 0 0.14em;
+  padding: 0.15em 0.44em;
+  border-radius: 6px;
+  background: var(--lopx-post-accent-soft);
+  box-shadow: inset 0 0 0 1px rgba(58, 122, 160, 0.16);
+  color: var(--lopx-post-accent-ink);
+  font-size: 0.92em;
+  text-shadow: none;
+}
+
+[data-theme='dark'] #post #article-container :not(pre) > code {
+  box-shadow: inset 0 0 0 1px rgba(127, 179, 213, 0.18);
+}
+
+/* ---- 49.9 代码块：圆角外壳 + 标题栏 + 悬浮显形的复制按钮 ---- */
+#post #article-container figure.highlight {
+  margin: 0 0 1.7em;
+  border: 1px solid var(--lopx-post-code-border);
+  border-radius: 14px;
+  overflow: hidden;
+  background: var(--lopx-post-code-bg);
+  box-shadow: 0 14px 34px -24px rgba(15, 23, 42, 0.42), 0 1px 2px rgba(15, 23, 42, 0.03);
+}
+
+[data-theme='dark'] #post #article-container figure.highlight {
+  box-shadow: 0 14px 34px -22px rgba(0, 0, 0, 0.72), 0 1px 2px rgba(0, 0, 0, 0.4);
+}
+
+#post #article-container figure.highlight .highlight-tools {
+  height: auto;
+  min-height: 34px;
+  padding: 0 12px;
+  border-bottom: 1px solid var(--lopx-post-code-border);
+  background: var(--lopx-post-code-bar);
+  color: var(--lopx-post-accent-ink);
+}
+
+#post #article-container figure.highlight .highlight-tools .code-lang {
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  color: var(--lopx-post-accent-ink);
+  opacity: 0.85;
+}
+
+/* 复制按钮：桌面端默认隐形，悬浮代码块才出现（移动端无 hover，故不隐藏） */
+@media (hover: hover) {
+  #post #article-container figure.highlight .highlight-tools .copy-button {
+    opacity: 0;
+    transition: opacity 0.25s ease, color 0.2s ease;
+  }
+
+  #post #article-container figure.highlight:hover .highlight-tools .copy-button,
+  #post #article-container figure.highlight:focus-within .highlight-tools .copy-button {
+    opacity: 1;
+  }
+}
+
+/* 代码区底色与圆角收口（主题 mac light 自带白底，暗色要更深才与卡片分层） */
+#post #article-container figure.highlight pre,
+#post #article-container figure.highlight table,
+#post #article-container figure.highlight .code pre {
+  background: transparent;
+}
+
+/* 暗色下行号对比度偏低（主题 --hlnumber-color 0.4 只有 3.9:1），
+   直接用更高特异性的选择器覆盖 gutter 颜色（1 id > 主题的 0 id）。 */
+[data-theme='dark'] #post #article-container figure.highlight .gutter,
+[data-theme='dark'] #post #article-container figure.highlight .gutter pre {
+  color: rgba(255, 255, 255, 0.6) !important;
+}
+
+/* ---- 49.10 页头：压低高度，标题更紧凑 ---- */
+:root:not([data-theme='dark']) #page-header.post-bg {
+  height: 23rem;
+  background-position: center center, center center, center 30%;
+}
+
+#page-header.post-bg #post-info .post-title {
+  letter-spacing: -0.01em;
+}
+
+[data-theme='dark'] #page-header.post-bg {
+  height: 23rem;
+}
+
+/* ---- 49.11 底部：上/下一篇与相关文章收圆角 + 悬浮抬升（保留空间识别色渐变） ---- */
+#pagination.pagination-post {
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 18px 44px -30px rgba(11, 33, 48, 0.6);
+  transition: box-shadow 0.3s ease;
+}
+
+#pagination.pagination-post:hover {
+  box-shadow: 0 24px 54px -30px rgba(11, 33, 48, 0.72);
+}
+
+.relatedPosts > .relatedPosts-list > div {
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 14px 34px -26px rgba(11, 33, 48, 0.55);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.relatedPosts > .relatedPosts-list > div:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 22px 44px -24px rgba(11, 33, 48, 0.68);
+}
+
+/* ---- 49.12 窄屏：卡片沿用玻璃，但用 !important 压过主题的移动端实色覆盖 ---- */
+@media screen and (max-width: 768px) {
+  #content-inner #post {
+    background-color: rgba(var(--lopx-post-glass-rgb), 0.78) !important;
+    border: 1px solid var(--lopx-post-glass-border) !important;
+    border-radius: var(--lopx-post-radius) var(--lopx-post-radius) 0 0;
+  }
+
+  :root:not([data-theme='dark']) #page-header.post-bg {
+    height: 18rem;
+    background-position: center center, center center, center 26%;
+  }
+
+  [data-theme='dark'] #page-header.post-bg {
+    height: 18rem;
+  }
+
+  /* 移动端表格字号收一档，避免撑破卡片 */
+  #post #article-container table {
+    font-size: 0.9em;
+  }
+
+  #post #article-container table th,
+  #post #article-container table td {
+    padding: 0.55em 0.7em;
+  }
+}
+
+/* ---- 49.13 兜底：不支持 backdrop-filter 时回到高不透明实色 ---- */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  #content-inner #post {
+    background-color: rgba(255, 255, 255, 0.96);
+  }
+
+  [data-theme='dark'] #content-inner #post {
+    background-color: rgba(30, 33, 40, 0.96);
+  }
+}

@@ -1,0 +1,183 @@
+/* ============================================================
+   导航栏双语副标题（中文主文字 + 英文小字）
+   由 themes/anzhiyu/layout/includes/header/menu_item.pug 渲染：
+   menu 里写成「中文 || English」，English 会输出为 .nav-sub-label
+   说明：父级 a 带 letter-spacing: 0.3rem / font-weight: 700，
+        这里必须显式重置，否则英文小字会被拉得很散。
+        用 opacity 而非 color 调淡，才能跟随 hover 时的反白。
+   ============================================================ */
+.nav-label .nav-sub-label {
+  margin-left: 6px;
+  font-size: 0.72em;
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  opacity: 0.78;
+}
+
+/* ============================================================
+   视觉统一层 —— 2026-09-29
+   背景：站内并存三套配色（首页鼠尾草绿灰 / 空间页蓝灰 / 主题默认宝典蓝），
+        另有列表宽度、字重、留白三处不统一，以及 tech、indie 两页的布局硬伤。
+   本段全部为「覆盖式」声明，删除本段即可完整回退到改造前。
+   ============================================================ */
+
+/* ---- 1. 主色统一：AnZhiYu 默认宝典蓝 → 首页鼠尾草绿灰 ----
+   主题变量链路：--anzhiyu-theme 是源头，--anzhiyu-main / --anzhiyu-main-op /
+   --anzhiyu-shadow-* 全部由它派生。只改 --anzhiyu-main 不够（-op 系列仍是蓝色），
+   必须覆盖源头。用 :root:root 提高权重，稳定压过主题的 :root 与 [data-theme] 定义。 */
+:root:root {
+  --anzhiyu-theme: #3a7aa0;
+  --anzhiyu-theme-op: #3a7aa024;
+  --anzhiyu-theme-op-deep: #3a7aa0dd;
+  --anzhiyu-main: #3a7aa0;
+  --anzhiyu-main-op: #3a7aa024;
+  --anzhiyu-shadow-theme: 0 8px 12px -3px rgba(58, 122, 160, 0.16);
+  --anzhiyu-shadow-main: 0 8px 12px -3px rgba(58, 122, 160, 0.16);
+}
+
+/* ---- 2. 右边缘对齐：首页 Recent Writing 原被限宽 900px，比 Projects 区窄约 194px ---- */
+#recent-writing {
+  max-width: none;
+}
+
+/* ---- 3. 列表标题字重统一为 600（页面主标题才用 700+）---- */
+#recent-writing li a {
+  font-weight: 600;
+}
+
+/* ---- 4 / 5. tech、indie 空间首页的旧列表修复已随旧结构删除（2026-10-02）---- */
+
+/* ---- 6. 正文宽度：已在第 12 节统一处理（容器 1000 / 内容铺满 934），此处不再单独设值 ---- */
+
+/* ---- 7. 留白收紧 ---- */
+#garden-space > section {
+  margin-top: 40px; /* 原 58px；第 12 节统一为 40px */
+}
+
+/* ---- 8. 主题内置的蓝色残留（静态色，不随 --anzhiyu-theme 变化）----
+   ① Pace 页面加载进度条：原为蓝→品红渐变
+   ② --hr-border：主题编译期按旧主色混出的淡蓝，需单独覆盖 */
+.pace-progress {
+  background-image: none !important;
+  background-color: #3a7aa0 !important;
+}
+
+:root:root {
+  --hr-border: rgba(58, 122, 160, 0.16);
+
+  /* 全局设计 token —— 三个 space 与 About 统一引用这一套。
+     历史：首页曾用灰绿、tech 蓝、indie 紫、About 蓝黑，同一站点并存三套色相。
+     2026-09-30：全站收敛为「青蓝 + 中性灰」单一色系（参考 ragnote.top 的 #67b2d0）。 */
+  --lopx-accent: #3a7aa0;
+  --lopx-ink: #1e262c;
+  --lopx-body: #3d464e;
+  --lopx-muted: #646e76;
+  --lopx-line: #e2e8ec;
+  /* 导航当前项文字色（Navigation 15）：亮色取第 29 节已校验的 #2c6688
+     （在 #eef2f7 页底上 5.5:1），暗色取 #9cc3e8（在 #1d1e22 上 ~9:1） */
+  --lopx-nav-active: #2c6688;
+
+  /* 动效节奏 token（2026-10-01）—— fast 微反馈 / mid 卡片位移 / slow 入场；
+     ease 只给位移与入场用，颜色/描边类小过渡用默认 ease 即可。
+     收敛历史：此前并存 160/180/200/220ms 与 0.25/0.28/0.32s 两族杂值。 */
+  --lopx-dur-fast: 180ms;
+  --lopx-dur-mid: 0.25s;
+  --lopx-dur-slow: 0.5s;
+  --lopx-ease: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* ---- 9. 首页横幅（index_img 启用后）----
+   背景图主体（人物）位于画面正中，主题默认把站点标题放在 top: 43% 处，
+   正好压在人物面部——浅肤色上白字对比度不足，实测已糊成一片。
+   处理：① 标题上移到上方区域；② 顶部补一层由深到透明的渐变压暗，
+   顺带稳住悬浮导航与标题的对比度。滚动提示 z-index 为 11，不受遮罩影响。 */
+#page-header.full_page::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(0, 0, 0, 0.42) 0%,
+    rgba(0, 0, 0, 0.18) 22%,
+    rgba(0, 0, 0, 0) 46%
+  );
+  pointer-events: none;
+  z-index: 1;
+}
+
+#page-header.full_page #site-info {
+  top: 22vh;
+  z-index: 2;
+}
+
+/* ---- 10. 文字色相统一（清理主题源码遗留色）----
+   ① 正文：主题 --font-color = #4c4948 是暖灰，改为绿灰调 #3d464e，与标题同色相
+   ② 标题：主题 source/css/var.styl 的 $font-color = #1F2D3D 是深蓝，
+      且不经 CSS 变量下发，编译成字面量写进 h2 / h1.page-title / 文章锚点标题，
+      连 h2 的下划线也是该色，只能在选择器层面覆盖。
+      实测命中：/tech/notes/ h2×5、/indie/devlog/ h2、/tags/ h1.page-title、
+      文章页 h1×2 与 h2×5；/garden/ 各页为 0（已是绿灰）。 */
+:root:root {
+  --font-color: var(--lopx-body);
+}
+
+:root:root #article-container h1,
+:root:root #article-container h2,
+:root:root #article-container h3,
+:root:root #article-container h4,
+:root:root h1.page-title {
+  color: var(--lopx-ink);
+}
+
+:root:root #article-container h2 {
+  border-bottom-color: rgba(58, 122, 160, 0.35);
+}
+
+/* ---- 11. 代码块浅色化后的文字对比度修正 ----
+   highlight_theme 已由 pale night（深蓝紫底）改为 mac light（白底）。
+   实测 mac light 的默认代码文字与行号同为 #90A4AE 蓝灰，
+   在白底上对比度仅 2.59:1（WCAG AA 需 4.5:1），且色相偏蓝、与站点绿灰冲突。
+   语法着色 token（string 等）由主题另行下发，不受本规则影响。 */
+/* 亮色：mac light 默认文字对比度不足，统一加深到 #3f4a52 */
+:root:root:not([data-theme='dark']) figure.highlight pre,
+:root:root:not([data-theme='dark']) figure.highlight code,
+:root:root:not([data-theme='dark']) figure.highlight table,
+:root:root:not([data-theme='dark']) figure.highlight .line {
+  color: #3f4a52;
+}
+
+:root:root:not([data-theme='dark']) figure.highlight .gutter,
+:root:root:not([data-theme='dark']) figure.highlight .gutter .line,
+:root:root:not([data-theme='dark']) figure.highlight .line-numbers {
+  color: #a3aeb4;
+}
+
+/* 暗色：§49 把代码块背景改到 #14171e，默认文字若仍是 #3f4a52 会掉到 3.9:1。
+   主题用 CSS 变量 --hl-color / --hlnumber-color 控制默认代码文字与行号色，
+   直接覆盖变量最干净，也不会误伤 token 类（它们 specificity 同等但后定义）。
+   但 Hexo 生成的代码行是 `pre > span.line`（不在 `code` 内），主题那条
+   `pre code { color: var(--hl-color) }` 漏掉 .line；所以再补一条 pre 的 color。 */
+[data-theme='dark'] {
+  --hl-color: #c9d6e0;
+  --hlnumber-color: rgba(255, 255, 255, 0.6);
+}
+
+[data-theme='dark'] #article-container figure.highlight pre {
+  color: #c9d6e0;
+}
+
+/* mac light 主题把 token 色硬编码为亮色方案值，在 §49 的深色代码块底上
+   注释色 #969896 / meta 色 #7c4dff 偏低。仅对低对比度 token 提亮，不动 keyword/string/number。 */
+:root:root[data-theme='dark'] figure.highlight .comment,
+:root:root[data-theme='dark'] figure.highlight .meta {
+  color: #a8b4be;
+}
+
+/* 用 !important 兜底：主题 token 规则被编译进 index.css 且可能后加载（虽然
+   实测 custom.css 后加载，但某些 token 类仍无法被 2 个 id 的规则覆盖），
+   直接对低对比度 token 上 important 最安全，只影响暗色代码块可读性。 */
+[data-theme='dark'] #post #article-container figure.highlight pre .comment,
+[data-theme='dark'] #post #article-container figure.highlight pre .meta {
+  color: #a8b4be !important;
+}
+

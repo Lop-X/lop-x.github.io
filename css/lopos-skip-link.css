@@ -1,0 +1,32 @@
+.lopx-skip-link {
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  z-index: 10001;
+  padding: 10px 18px;
+  border-radius: 8px;
+  background: #1f6288;
+  color: #ffffff;
+  font-size: 0.9rem;
+  font-weight: 600;
+  line-height: 1.4;
+  text-decoration: none;
+  transform: translateY(-250%);
+  transition: transform 0.18s ease;
+}
+
+.lopx-skip-link:focus {
+  transform: translateY(0);
+  outline: 2px solid #ffffff;
+  outline-offset: 2px;
+}
+
+#content-inner:focus {
+  outline: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lopx-skip-link {
+    transition: none;
+  }
+}

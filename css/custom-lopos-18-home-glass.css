@@ -1,0 +1,102 @@
+/* ============================================================
+   48. 首页卡片「iOS 毛玻璃」—— 2026-10-12
+   目标：把首页三类卡片从「白底实卡」改成半透明玻璃板，
+        靠 backdrop-filter 模糊卡片背后的东西，得到 iOS 控制中心的质感。
+   模糊对象（首页实际存在的背景层，自下而上）：
+     body 底色 #eef2f7 → #web_bg(z:-999) → body::before 三团柔光球(z:-1，第 41 节)
+     → #lopx-bg-particles WebGL 粒子层 → 卡片
+   ⇒ 卡片能吃到柔光球的色相渐变 + 粒子，模糊后即「有内容的玻璃」；
+     若日后把第 41 节的柔光球关掉，玻璃会退化成单色半透明（效果会明显变平）。
+   ------------------------------------------------------------
+   【可调接口】只需改 48.1 的两组变量，别处不用碰：
+     --lopx-glass-alpha       底色不透明度   越小越透（建议 0.35–0.75）
+     --lopx-glass-blur        背景模糊半径    （建议 8–28px）
+     --lopx-glass-saturate    背景饱和提升    iOS 感的关键（建议 1.2–2.4）
+     --lopx-glass-brightness  背景提亮       （建议 0.98–1.12）
+     --lopx-glass-rgb         底色 RGB       （白玻璃 / 深灰玻璃）
+     --lopx-glass-border      1px 外描边色
+     --lopx-glass-edge        顶部 1px 内高光（玻璃厚度感）
+     --lopx-glass-shadow      投影
+     --lopx-glass-sheen       斜向高光渐变（设 none 关闭）
+     --lopx-glass-filter      滤镜链（由上面四项拼成，一般不用改）
+   三档预设：轻薄 alpha .40 / blur 14 ｜ 标准 alpha .55 / blur 20 ｜
+             厚重 alpha .72 / blur 26
+   作用范围：hero 大卡（#home-about）、3 张空间卡（.space-card）、
+             4 个站点数据小卡（.lopx-hero-stats li）。
+             首页「近期文章」是列表行不是卡片（第 18.4 节已刻意去底），不在此列。
+   兼容：不支持 backdrop-filter 的浏览器走 48.4 的实色兜底。
+   ============================================================ */
+
+/* ---- 48.1 可调参数 ---- */
+#lopx-home {
+  --lopx-glass-rgb: 255, 255, 255;
+  --lopx-glass-alpha: 0.42;
+  --lopx-glass-blur: 24px;
+  --lopx-glass-saturate: 1.8;
+  --lopx-glass-brightness: 1.04;
+  --lopx-glass-border: rgba(255, 255, 255, 0.65);
+  --lopx-glass-edge: rgba(255, 255, 255, 0.8);
+  --lopx-glass-shadow: 0 6px 26px -10px rgba(23, 42, 58, 0.18), 0 1px 2px rgba(23, 42, 58, 0.05);
+  --lopx-glass-sheen: linear-gradient(180deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0) 44%);
+  --lopx-glass-filter: blur(var(--lopx-glass-blur)) saturate(var(--lopx-glass-saturate))
+    brightness(var(--lopx-glass-brightness));
+}
+
+/* 暗色：玻璃要更深、描边更弱（亮色那套白描边在暗底上会发灰边） */
+[data-theme='dark'] #lopx-home {
+  --lopx-glass-rgb: 32, 34, 41;
+  --lopx-glass-alpha: 0.5;
+  --lopx-glass-blur: 20px;
+  --lopx-glass-saturate: 1.5;
+  --lopx-glass-brightness: 1.02;
+  --lopx-glass-border: rgba(255, 255, 255, 0.1);
+  --lopx-glass-edge: rgba(255, 255, 255, 0.07);
+  --lopx-glass-shadow: 0 8px 30px -12px rgba(0, 0, 0, 0.62);
+  --lopx-glass-sheen: linear-gradient(180deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0) 44%);
+}
+
+/* ---- 48.2 应用：外层三段整卡吃完整玻璃（模糊背后的柔光球与粒子） ---- */
+#lopx-home > section {
+  background-color: rgba(var(--lopx-glass-rgb), var(--lopx-glass-alpha));
+  background-image: var(--lopx-glass-sheen);
+  border-color: var(--lopx-glass-border);
+  box-shadow: var(--lopx-glass-shadow), inset 0 1px 0 var(--lopx-glass-edge);
+  -webkit-backdrop-filter: var(--lopx-glass-filter);
+  backdrop-filter: var(--lopx-glass-filter);
+}
+
+/* 卡中卡：空间卡与数据小卡都嵌在玻璃面板里，再叠一层模糊只会更浑、
+   还多付 7 个合成层 —— 只保留同款半透明底色与高光边，
+   视觉上是「玻璃板上的一层磨砂贴片」。 */
+#lopx-home .lopx-hero-stats li,
+#lopx-home .space-card {
+  background-color: rgba(var(--lopx-glass-rgb), var(--lopx-glass-alpha));
+  background-image: var(--lopx-glass-sheen);
+  border-color: var(--lopx-glass-border);
+  box-shadow: var(--lopx-glass-shadow), inset 0 1px 0 var(--lopx-glass-edge);
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+
+/* ---- 48.3 空间卡 hover：保留身份色描边，阴影换成玻璃版（原第 44 节规则在其后覆盖） ---- */
+#lopx-home .space-card:hover {
+  border-color: var(--lopx-space-accent);
+  box-shadow: 0 14px 34px -14px rgba(23, 42, 58, 0.3), inset 0 1px 0 var(--lopx-glass-edge);
+}
+
+[data-theme='dark'] #lopx-home .space-card:hover {
+  box-shadow: 0 14px 34px -14px rgba(0, 0, 0, 0.7), inset 0 1px 0 var(--lopx-glass-edge);
+}
+
+/* ---- 48.4 兜底：不支持 backdrop-filter 时给足不透明度，避免字浮在背景上看不清 ---- */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  #lopx-home {
+    --lopx-glass-alpha: 0.92;
+  }
+
+  #lopx-home > section,
+  #lopx-home .space-card {
+    background-image: none;
+  }
+}
+

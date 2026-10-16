@@ -1,0 +1,412 @@
+/* ============================================================
+   14. 首页入场 / 页面切换过渡 —— 2026-09-30
+   站点启用了 pjax（_config.anzhiyu.yml pjax.enable = true），
+   切页时 DOM 会被整体替换，因此纯 CSS 动画会在每次切换时自动重放，
+   无需额外 JS 即可得到「不瞬间切换」的效果。
+   仅作用于首页区块，不改动 #page 上主题原有的 slide-in。
+   ============================================================ */
+@keyframes lopx-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+#lopx-home > section {
+  animation: lopx-fade-up var(--lopx-dur-slow) var(--lopx-ease) backwards;
+}
+
+#lopx-home > section:nth-of-type(1) {
+  animation-delay: 0.04s;
+}
+
+#lopx-home > section:nth-of-type(2) {
+  animation-delay: 0.15s;
+}
+
+#lopx-home > section:nth-of-type(3) {
+  animation-delay: 0.26s;
+}
+
+/* 首页文章列表项：逐条错开，避免整体同时出现 */
+#lopx-home #recent-writing li {
+  animation: lopx-fade-up var(--lopx-dur-slow) var(--lopx-ease) backwards;
+}
+
+#lopx-home #recent-writing li:nth-child(1) {
+  animation-delay: 0.34s;
+}
+
+#lopx-home #recent-writing li:nth-child(2) {
+  animation-delay: 0.42s;
+}
+
+#lopx-home #recent-writing li:nth-child(3) {
+  animation-delay: 0.5s;
+}
+
+#lopx-home #recent-writing li:nth-child(n + 4) {
+  animation-delay: 0.58s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+  #lopx-home > section,
+  #lopx-home #recent-writing li {
+    animation: none;
+  }
+}
+
+/* ============================================================
+   15. 分页面卡片效果 —— 2026-09-30
+   参考 blog.anheyu.com（AnZhiYu 官方站）的卡片语言：
+   白底 + 大圆角 + 极淡描边 + 柔和投影，hover 轻微上浮。
+   作用于三个 space 主页的内容区块，以及各列表页的行 hover。
+   不改模板结构，纯覆盖式声明。
+   ============================================================ */
+
+/* 15.1 区块卡片（2026-10-02：tech/indie 主页已改卡片网格，仅 garden 生效）
+   2026-10-05：横向内衬 26 → 32，与全站卡片 token 一致（卡片内容左缘 = 卡片左缘 + 32） */
+#garden-space > section {
+  padding: 22px 32px;
+  border: 1px solid var(--lopx-line);
+  border-radius: 16px;
+  background: var(--lopx-surface);
+  box-shadow: 0 2px 10px rgba(30, 38, 44, 0.04);
+  transition: box-shadow var(--lopx-dur-mid) var(--lopx-ease),
+    transform var(--lopx-dur-mid) var(--lopx-ease),
+    border-color var(--lopx-dur-mid) ease;
+}
+
+#garden-space > section:hover {
+  border-color: rgba(58, 122, 160, 0.3);
+  box-shadow: 0 10px 30px rgba(30, 38, 44, 0.1);
+  transform: translateY(-3px);
+}
+
+/* 15.2 列表页行 hover（garden 分类页；tech/indie 列表页已改卡片网格） */
+#garden-space .article-sort-item,
+#garden-category .article-sort-item {
+  border-radius: 10px;
+  transition: background-color var(--lopx-dur-mid) ease;
+}
+
+#garden-space .article-sort-item:hover,
+#garden-category .article-sort-item:hover {
+  background-color: rgba(58, 122, 160, 0.05);
+}
+
+/* 15.3 列表页整块：加一张外卡片，避免行 hover 悬空在页面底色上 */
+#garden-category {
+  border: 1px solid var(--lopx-line);
+  border-radius: 18px;
+  background: var(--lopx-surface);
+  box-shadow: 0 2px 12px rgba(30, 38, 44, 0.045);
+}
+
+/* 2026-10-05：此处原有一条 #garden-space > section { max-width: 926px }
+   （"卡片内边距会压缩 900 内容，向右放宽 26px 补偿"）。既然 12.2 的 900 限宽已去掉，
+   这条补偿规则一并删除 —— 列表卡片直接铺满容器内容区（172–1268）。 */
+
+/* ============================================================
+   16. 整体风格向 ragnote.top 靠拢 —— 2026-09-30
+   ragnote.top 的设计要素（自其线上 CSS 提取）：
+     主色 #67b2d0 · 高亮描边 #8ab4f8
+     底色 #fafafa（浅）/ #171717（深），卡片 #fff
+     文字 #171717 · #0f172a 近黑，次要 #4b5563 / #8a8a8a
+     描边 #e6e8ee · #e2e8f0 · #d1d5db
+     字体 MiSans
+   本段把全站底色、文字、圆角、阴影、描边统一到该体系。
+   主色沿用已达标的青蓝 #3a7aa0：ragnote 的 #67b2d0 在白底上
+   对比仅 2.4:1，作为文字不可读，故取同色相的加深版。
+   ============================================================ */
+
+:root:root {
+  /* 底色：2026-10-11 由 #fafafa 再降到 #eef2f7（用户选定 A1 方案）。
+     实测（CDP 探针 1440×900）：亮色下卡片 #fff 与底色的对比度只有 1.044:1，
+     三张白卡与页面几乎同色，整页发平；降到 #eef2f7 后为 1.124:1，与暗色侧持平。
+     ⚠️ 这里有**两个**变量都要给，缺一个将来换肤就会出现两套底色：
+       body    -> --global-bg            (_global/index.styl:240)
+       #web_bg -> --anzhiyu-background   (_global/index.styl:284)
+     #web_bg 带 z-index:-999 且为定位元素，绘制在 body 背景**之上** →
+     屏幕实际底色看的是 --anzhiyu-background；--global-bg 只在 #web_bg
+     未覆盖到的旋转边角可见。两者取值必须一致。 */
+  --anzhiyu-background: #eef2f7;
+  --global-bg: #eef2f7;
+  --anzhiyu-card-bg: #ffffff;
+  --anzhiyu-fontcolor: #171717;
+  --anzhiyu-secondtext: #646e76;
+
+  /* 圆角与投影：更柔和、更克制 */
+  --anzhiyu-border-radius: 12px;
+  --anzhiyu-shadow-border: 0 2px 10px rgba(15, 23, 42, 0.04);
+
+  /* 站内统一 token（2026-10-01：卡片底色与强调色提升为全站 token，
+     便于第 22 节用一条暗色覆盖统一处理，不必逐个选择器重写） */
+  --lopx-ink: #171717;
+  --lopx-body: #3d4149;
+  /* 2026-10-03 对比度小修：#8a8f98 白底仅 3.25:1（12–15px 小字 AA 要 4.5），
+     全站亮色灰统一 #646e76（5.2:1）；暗色 #a1a2b8 不动 */
+  --lopx-muted: #646e76;
+  --lopx-line: #e6e8ee;
+  --lopx-surface: #ffffff;
+  --lopx-accent: #3a7aa0;
+  --lopx-radius: 16px;
+}
+
+/* 16.1 字体：MiSans（与 ragnote 同源，加载失败自动回落系统字体） */
+:root:root body,
+:root:root button,
+:root:root input,
+:root:root textarea,
+:root:root select {
+  font-family: 'MiSans', -apple-system, BlinkMacSystemFont, 'Segoe UI',
+    'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+}
+
+/* 16.2 全站圆角与描边统一 */
+:root:root {
+  --style-border: 1px solid var(--lopx-line);
+  --style-border-hover: 1px solid rgba(58, 122, 160, 0.32);
+}
+
+/* 16.3 段落节奏：行高与段距略放松，贴近 ragnote 的呼吸感 */
+:root:root #article-container {
+  line-height: 1.85;
+}
+
+:root:root #article-container p {
+  margin: 0 0 1.15em;
+}
+
+/* ============================================================
+   17. Garden 彩色分类卡片 + 追番页卡片强化 —— 2026-09-30
+   ============================================================ */
+
+/* 17.1 Garden 分类：胶囊 → 彩色卡片（每类一个色相，左下图标的观感）
+   2026-10-05 对比度修正：卡片标签是 16.32px/600 白字（未达 WCAG「大字」门槛，
+   需 ≥4.5:1），而白字压在渐变中段。对线上截图做像素采样实测：
+   Games 4.00 / Anime 3.94 / Music 3.61 / Thoughts 2.96 / 背单词 3.04 —— 5 张全部不达标。
+   修法：把五组渐变的两个端色等比压暗（保持色相与渐变方向不变），
+   使渐变 50%（即标签所在位置）的白字对比度达到 5.0:1。
+   取值由脚本反解：对 50% 处混合色做亮度二分，求出等比系数 k（0.74~0.88）。
+   改后中点 5.00、最亮端 4.08~4.31（标签不在最亮端，留有余量）。 */
+#garden-space > nav {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 28px;
+}
+
+#garden-space > nav a {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: 6px;
+  min-height: 104px;
+  padding: 16px 18px;
+  border: 0;
+  border-radius: 14px;
+  background-image: linear-gradient(135deg, var(--gc1, #3a7aa0), var(--gc2, #4d93bb));
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.35;
+  box-shadow: 0 2px 10px rgba(15, 23, 42, 0.08);
+  transition: transform var(--lopx-dur-mid) var(--lopx-ease),
+    box-shadow var(--lopx-dur-mid) var(--lopx-ease);
+}
+
+#garden-space > nav a:hover {
+  border-color: transparent;
+  background-image: linear-gradient(135deg, var(--gc1, #3a7aa0), var(--gc2, #4d93bb));
+  color: #fff;
+  transform: translateY(-4px);
+  box-shadow: 0 12px 26px rgba(15, 23, 42, 0.18);
+}
+
+#garden-space > nav a small {
+  color: rgba(255, 255, 255, 0.78);
+  font-size: 0.78rem;
+}
+
+#garden-space > nav a:nth-child(1) {
+  --gc1: #336b8c;
+  --gc2: #4380a3; /* Games */
+}
+
+#garden-space > nav a:nth-child(2) {
+  --gc1: #4a5ab1;
+  --gc2: #6b78c9; /* Anime */
+}
+
+#garden-space > nav a:nth-child(3) {
+  --gc1: #6b54a2;
+  --gc2: #8872b3; /* Music */
+}
+
+#garden-space > nav a:nth-child(4) {
+  --gc1: #8e572f;
+  --gc2: #a46e47; /* Thoughts */
+}
+
+#garden-space > nav a:nth-child(5) {
+  --gc1: #2c6f63;
+  --gc2: #428776; /* 背单词 */
+}
+
+@media screen and (max-width: 768px) {
+  #garden-space > nav {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* 17.2 追番页封面卡片：页面自带 <style> 且在 DOM 中靠后，
+   故用 #article-container 前缀抬高特异性以确保生效 */
+#article-container .anime-gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+  gap: 18px;
+}
+
+#article-container .anime-gallery-card {
+  overflow: hidden;
+  border: 1px solid var(--lopx-line);
+  border-radius: 16px;
+  background: var(--lopx-surface);
+  box-shadow: 0 2px 10px rgba(15, 23, 42, 0.05);
+  transition: transform var(--lopx-dur-mid) var(--lopx-ease),
+    box-shadow var(--lopx-dur-mid) var(--lopx-ease),
+    border-color var(--lopx-dur-mid) ease;
+}
+
+#article-container .anime-gallery-card:hover {
+  border-color: rgba(58, 122, 160, 0.35);
+  box-shadow: 0 14px 30px rgba(15, 23, 42, 0.14);
+  transform: translateY(-5px);
+}
+
+#article-container .anime-gallery-img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  object-fit: cover;
+  background: #eef1f4;
+}
+
+#article-container .anime-gallery-title {
+  display: block;
+  padding: 10px 12px 12px;
+  color: var(--lopx-ink);
+  font-size: 0.9rem;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+/* ============================================================
+   18. 首页卡片：极简化 —— 2026-10-01 重构
+   参考 ragnote.top 的卡片语言（自其线上 CSS 提取）：
+     .article-card       { background:#fff; border:1px solid #e4e6e9;
+                           box-shadow:0 1px 2px rgba(0,0,0,.05) }
+     .article-card:hover { background:#f2f3f5; border-color:#0ea5e9;
+                           box-shadow:0 4px 6px rgba(0,0,0,.07) }
+   即「实色底 + 1px 描边 + 贴边浅阴影」，没有毛玻璃、位移与渐变。
+   改前本站首页叠了三层：主题给 #lopx-home 的白卡 → 两团径向光斑
+   → rgba(255,255,255,.68) + blur(18px) 的玻璃卡。白上叠白、边界发糊。
+   本次拆到只剩一层：页面铺 #fafafa，每个内容区块是一张白卡。
+   ============================================================ */
+
+/* 18.1 摘掉主题给 #lopx-home 的「外层大白卡」
+   来源：.layout > div:first-child:not(.recent-posts)，它会给首个子 div 加上
+   background: var(--anzhiyu-card-bg) + 12px 圆角 + 描边投影。
+   与内部区块叠在一起就是「卡套卡」，这里把它还原成透明容器。
+   左右内边距同时归零，使卡片与 /tech/ 等页面共用同一条 1160 容器轴线。 */
+#lopx-home {
+  padding: 56px 0 72px;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  background-image: none;
+  box-shadow: none;
+}
+
+/* 18.2 区块卡片：只有一层，实色底 + 贴边浅阴影
+   2026-10-05 轴线修正：横向内衬 26 → 32。实测全站内容左缘只有首页(167)与
+   About(165)偏离，其余（文章正文、space h1、essay 横幅标题与正文）都在 173
+   = 140(容器) + 1(卡片描边) + 32。故留 32，把这两个离群者对齐，而不是把 4 处
+   都改成 24 —— 32 是站内已有的主流取值。 */
+#lopx-home > section {
+  padding: 24px 32px;
+  border: 1px solid var(--lopx-line);
+  border-radius: 12px;
+  background: var(--lopx-surface);
+  /* 2026-10-11：0 1px 2px / .05 的贴边影太弱，卡片浮不起来（配合底色降档一起做）。
+     改为弥散的双层投影：近层压住边缘、远层扩散出柔和光晕。 */
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.05), 0 8px 24px rgba(15, 23, 42, 0.05);
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+
+/* 18.3 原「拆掉首页 .myInfoAndSayHello 第二层卡片」的规则 —— 2026-10-03 已删：
+   首页 hero 改用 .lopx-hero 结构（第 1 节），该元素在 / 与 /about/ 上均已无命中。 */
+
+/* 18.4 文章列表行：去掉半透明底，改由分隔线与 hover 划分 */
+#lopx-home #recent-writing li {
+  border-radius: 8px;
+  background: transparent;
+  box-shadow: none;
+  transition: background-color var(--lopx-dur-mid) ease;
+}
+
+#lopx-home #recent-writing li:hover {
+  background-color: rgba(58, 122, 160, 0.05);
+}
+
+/* 18.5 原「首页 Projects 空块」规则 —— 2026-10-09 已删：
+   「项目」这条 IA 整体移除（模板 section#home-projects 与 /projects/ 页面同批删除），
+   该 :has() 隐藏规则随之失效。 */
+
+/* 18.6 滚动浮起：保留（进入视口时自下浮起），去掉缩放让位移更克制 */
+@supports (animation-timeline: view()) {
+
+  @keyframes lopx-rise {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  #lopx-home > section,
+  #lopx-home #recent-writing li {
+    animation: lopx-rise linear both;
+    animation-timeline: view();
+    animation-range: entry 4% cover 28%;
+  }
+
+  /* 重置第 14 节按序号设置的固定延迟：滚动驱动下延迟会错位 */
+  #lopx-home > section:nth-of-type(n),
+  #lopx-home #recent-writing li:nth-child(n) {
+    animation-delay: 0s;
+  }
+}
+
+/* 18.6 窄屏：左右留一点边距，卡片不贴屏边 */
+@media screen and (max-width: 768px) {
+  #lopx-home {
+    padding: 40px 16px 56px;
+  }
+
+  #lopx-home > section {
+    padding: 20px 18px;
+  }
+}

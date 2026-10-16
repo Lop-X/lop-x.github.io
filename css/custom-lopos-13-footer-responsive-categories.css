@@ -1,0 +1,350 @@
+/* ============================================================
+   37. 字号碎片化收敛（近邻合并）—— 2026-10-09
+   背景：探针普查发现全站**实际生效 37 档字号**，其中一大部分是本文件
+   自己引入的（0.78 / 0.82 / 0.85 / 0.86 / 0.88 / 0.92 / 0.95 / 0.98 /
+   1.02rem，以及 12.5 / 15 / 16px），与主题原生比例尺（0.7 / 0.75 /
+   0.8 / 0.875 / 0.9 / 1 / 1.1 / 1.2 / 1.3 / 1.5 / 1.8 / 2rem）混在一起。
+
+   处理：**只做近邻合并**——把相距 ≤ 0.64px 的取值摞到同簇中
+   出现次数最多的那个上。本文件内 28 档 → 15 档，最大视觉偏差 0.64px。
+
+     0.68 / 0.72rem        -> 0.7rem
+     0.75 / 0.8rem, 12.5px -> 0.78rem
+     0.85 / 0.86rem        -> 0.82rem
+     0.88 / 0.92rem        -> 0.9rem
+     15px / 0.98rem        -> 0.95rem
+     16px / 1.02rem        -> 1rem
+
+   刻意保留（不是漏改）：
+     · `.nav-label .nav-sub-label` 的 0.72em —— em 相对父级（12px）计算，
+       实际 8.64px；改成 rem 会变成 11.2px，放大 30%，必须保持 em。
+     · `#article-container` 的 17px —— 第 25 节的正文基准，刻意设定。
+     · 1.05rem —— 与 17px 仅差 0.2px，但语义不同（UI 标题 vs 正文），不强行合并。
+     · 21.6px 以上（1.35 / 1.5 / 1.8 / 2 / 2.35 / 2.8rem）—— 各自独立层级，无近邻。
+   注意：主题自身的字号未动，仍会贡献若干档；如需进一步收敛要覆写主题规则，
+   收益低于风险，暂不做。
+   ============================================================ */
+
+/* ============================================================
+   38. 页脚站点统计（总访问量 / 独立访客）—— 2026-10-09
+   问题：主题原生的 `card_webinfo` 只在 widget/index.pug 的「非文章页」分支渲染，
+   于是**文章页（访问量最大的一类页面）看不到站点总 PV/UV**。
+   做法：把 card_webinfo 里的两个 busuanzi 块**整体删除**，改由 includes/footer.pug
+   无条件输出。全站 43 个页面生效，实测 71 页 **0 处重复 id**。
+   （曾试图用「有侧栏就跳过」的守卫条件绕开重复 id，但 /archives/ 与 /tags/
+     的 page.aside 并非 false，守卫失效 → 才改为「删除源块、只留页脚一处」。）
+   文字颜色继承页脚（深浅色模式各自适配），不写死颜色。
+   ============================================================ */
+#footer-site-stats {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: baseline;
+  gap: 4px 20px;
+  margin-top: 10px;
+  font-size: 0.78rem;
+  line-height: 1.6;
+  /* 页脚底色是浅色渐变（#footer 用 --anzhiyu-card-bg），文字继承 --anzhiyu-fontcolor。
+     下面三处 opacity 会逐层相乘，最低有效 alpha 必须 ≥ 0.76 —— 在此值下
+     浅色模式对白底约 5.3:1、暗色模式约 7.0:1，均高于正文 4.5 的门槛。
+     不要再调低，否则单位字（次/人）会掉到 4.5 以下。 */
+  opacity: 0.9;
+}
+
+.footer-stat {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 5px;
+}
+
+.footer-stat-label {
+  opacity: 0.9;
+}
+
+.footer-stat-value {
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.footer-stat-unit {
+  opacity: 0.85;
+}
+
+/* ============================================================
+   39. 移动端显示缺陷修复 —— 2026-10-10
+   诊断方式：无头 Chrome 在 390×844 / 360×800 / 320×568 三档视口
+   对 13 个页面跑几何 + 「裁切/重叠」双探针，并逐页截图做像素扫描。
+   结论：全站无横向溢出、无文字竖排、无媒体越界；以下 3 处是真实缺陷。
+
+   ---------- 39.1 /garden/anime/ 追番图窗在 ≤768px 塌成竖排小卡 ----------
+   现状：3 张卡竖向堆叠、每张 150×200 贴左，右侧空 220px（像素扫描实测）。
+   根因：第 17.2 节（约 1692 行）把图窗从「横向滑动 flex」改成 grid：
+         display:grid; grid-template-columns:repeat(auto-fill, minmax(170px,1fr))
+         但它没接管更早那一版（约 803 行）留下的 padding:4px 4px 14px
+         与 overflow:auto hidden —— auto-fill 按「内容宽 350px」计算轨道数
+         ⇒ floor((350+18)/(170+18)) = 1 列 350px；而卡片在 ≤768px 仍是 150px 宽
+         ⇒ 一格 350px 里塞 150px 的卡，右空 200px，3 张竖向堆叠。
+   处理：移动端改回 2 列等宽网格，并清掉那一版遗留的 padding / overflow。
+   ============================================================ */
+
+/* 39.1b 桌面端：卡片定宽 200px 塞进 179px 轨道 → 相邻卡重叠 3px
+   实测：画廊 778px、`repeat(auto-fill, minmax(170px,1fr))` 且仍有 padding 4px
+         ⇒ 内容宽 770px ⇒ floor((770+18)/188) = 4 轨，每轨 (770-54)/4 = 179px；
+         而卡片定宽 200px ⇒ 每张溢出轨道 21px ⇒ 相邻卡 gap = -3px
+         （2x 截图可见后一张卡的圆角压住前一张的右边框）。
+   处理：卡片改为跟随列宽（全局，不只窄屏）。桌面卡 200 → 179px，间隙恢复 18px；
+         移动端本来就该跟随列宽，原先写在媒体查询里的那条已合并到这里。 */
+#article-container .anime-gallery-card {
+  width: auto;
+}
+
+@media screen and (max-width: 768px) {
+
+  #article-container .anime-gallery {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+    padding: 0;
+    /* 原 overflow-x:auto 是为横向滑动条准备的；改成网格后它只会裁掉 hover 投影 */
+    overflow: visible;
+  }
+}
+
+/* ---------- 39.2 归档页 /archives/ 列表项把日期裁掉（全视口，非移动端独有）----------
+   现状：每条只有标题 + 标签，日期（2026-09-19）在桌面 1440 上也完全看不见。
+   根因：主题 `archives.styl` 给 `.article-sort-item-info` 固定 height/max-height 80px，
+         内部 `.article-meta-wrap` 取 height:35% = 28px，且它是 display:block ——
+         子项 `.article-sort-item-tags`(inline, 22px) 与
+         `div.article-sort-item-time`(block, 32px) 只能竖向堆叠，共需约 64px；
+         超出的部分被 `.article-sort-item { overflow: hidden }` 裁掉，日期整行消失。
+   处理：把 meta 改成「标签 + 日期同一行」的 flex 行并放开高度 —— 这正是主题原意
+         （35% 的 28px 本来就只够放一行）。行高不变（item 仍 80px），
+         只有日期这一行「回来」；窄屏放不下时自动换行，info 内容 74px < 80px 不会被裁。
+   变体：动态页 /essay/ 横幅底部胶囊同属「容器过矮」一类，但实测未被裁，本轮不动。
+   ============================================================ */
+#archive .article-sort .article-meta-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0 8px;
+  height: auto;
+  min-height: 22px;
+}
+
+#archive .article-sort .article-meta-wrap .article-sort-item-time {
+  /* 原为 block，会独占一行；改为行内参与上面的 flex 行 */
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  /* ≤360px 时 info 列只有 ~91px，`2026-09-19` 会在连字符处断成两行。
+     用 nowrap + flex-shrink:0 把日期钉成不可压缩的整体：放不下时整块换行，
+     而不是内部折断。实测 320/360 下日期回归单行。 */
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* ---------- 39.3 首页空间卡在 ≤340px 被右侧裁掉 21px ----------
+   现状：320 视口下三张 .space-card 各自溢出 .space-list 右缘 21px（被祖先裁掉）。
+   根因：移动端把 .space-list 写成 `grid-template-columns: 1fr`，
+         而 `1fr` = `minmax(auto, 1fr)`，其自动最小尺寸 = 卡片自身的 min-content。
+         卡片里 `.space-latest-title` 是 white-space:nowrap，min-content = 整串标题宽
+         （indie 卡「用 EasyX 制作 Snake Game 记录」= 192px）
+         ⇒ 卡片 min-content = 192 + 8(gap) + 29(caption) + 40(padding) + 2(border) = 271.25px
+         ⇒ 轨道被顶到 271.25px，而容器（320 视口）只有 250px ⇒ 溢出 21px。
+   处理：用 `minmax(0, 1fr)` 去掉自动最小尺寸，轨道回到容器宽，
+         标题按既有的 `min-width:0 + nowrap + ellipsis` 正常出省略号。
+         桌面端一并从 `repeat(3, 1fr)` 改为 `repeat(3, minmax(0, 1fr))` ——
+         当前 min-content(271) < 轨道(≈320) 故为**零视觉变化**，仅防同类回归。
+   ============================================================ */
+#lopx-home .space-list {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+@media screen and (max-width: 768px) {
+  #lopx-home .space-list {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* ---------- 39.4 本轮确认「不是缺陷」的项（勿重复排查）----------
+   · 首页三段 section 的卡片边框轴实测左右缘均为 15 / 374（像素扫描 7 行全部一致）。
+     探针里 `#recent-writing l=16` 与 `#about-page l=35` 的差值是
+     「卡片边框轴 vs 卡片内文轴」的错觉（SKILL 坑 18），不是错位。
+   · 移动端导航汉堡图标 `i.anzhiyu-icon-bars` 比 `.site-page` 下溢 7px，
+     但 #nav 不裁切，放大 3 倍截图确认三条线完整 —— 非缺陷。
+   · 文章页 H2 的 `a.headerlink` 下溢 13px、归档计数 `span.card-archive-list-count`
+     溢出 3px，均为主题原生且不可见，非缺陷。
+   · 追番页番剧简介 `p` 被压到 72px：npm 包 hexo-bilibili-bangumi 自带
+     `-webkit-line-clamp:3` + ellipsis，是**有意的 3 行截断**。
+   · 抽屉菜单（.anzhiyu-icon-bars 打开）实测内容自 y=30 起完整可见，无裁切。
+   ============================================================ */
+
+/* ============================================================
+   40. 分类页入口 + 首页技能标签改版 —— 2026-10-10（第二轮·观感）
+
+   ---------- 40.1 /categories/ 的分类入口改等宽网格卡片 ----------
+   现状（探针实测）：
+     · 390 视口 —— 容器 288px，5 个胶囊高 51px、宽 102～181px 不等，
+       因主题给了 `justify-content:center`，居中后排成 1+1+2+1 共四行，
+       看着像一堆零散标签，而且每行留白不均、参差感强。
+     · 1440 视口 —— 容器 1078px，5 个胶囊挤成一行 41px 高的细小胶囊，
+       下面整屏 800+px 全是空白。
+   根因：真源 `themes/anzhiyu/source/css/_page/tag_page.styl` 末尾
+     `body[data-type="tags"],body[data-type="categories"] #tag #tag-page-tags`
+     只给了 flex 换行 + 居中，胶囊宽度按文字自适应 → 既不等宽也不成阵。
+   处理：改成等宽网格卡片。
+     · 移动端 2 列（≤360px 自动降 1 列），每卡高 60px；
+     · 桌面端 `auto-fill(190px)`，1440 下恰好 5 列一行（5×190+4×12=998 ≤ 1078）；
+     · 卡内「# 名称」左对齐、篇数徽章靠右（`margin-left:auto`），
+       整卡可点（min-height 60～64px，远超 44px 的移动端最小点击面积）。
+
+   ⚠️ 只命中 `#tag > .category-lists#tag-page-tags`：
+     `/categories/` 的容器是 `<div class="category-lists" id="tag-page-tags">`，
+     `/tags/` 的同名容器**没有 .category-lists 类**（外面多套一层
+     `.tag-cloud-list.is-center`），因此标签页不受影响 —— 这是刻意保留的。
+   ⚠️ 特异性 `#page #tag > .category-lists#tag-page-tags` = (3,1,0)，
+     高于主题的 (2,1,1)，无需依赖加载顺序；但主题给 a 的
+     `color: … !important` 与 hover 的 `color: … !important` 必须照样用
+     `!important` 才能覆盖。
+   ============================================================ */
+#page #tag > .category-lists#tag-page-tags {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+  gap: 12px;
+  justify-content: initial;
+}
+
+#page #tag > .category-lists#tag-page-tags > a {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  min-height: 64px;
+  margin: 0;
+  padding: 0 16px;
+  border: 1px solid var(--lopx-line);
+  border-radius: 12px;
+  background: var(--lopx-surface);
+  color: var(--lopx-ink) !important;
+  font-size: 1rem;
+  line-height: 1.3;
+  transition: border-color 0.25s, box-shadow 0.25s, transform 0.25s, color 0.25s;
+}
+
+#page #tag > .category-lists#tag-page-tags > a .tags-punctuation {
+  margin-right: 3px;
+  color: var(--lopx-muted);
+}
+
+#page #tag > .category-lists#tag-page-tags > a .tagsPageCount {
+  margin-left: auto;
+  min-width: 24px;
+  padding: 3px 7px;
+  border: 0;
+  border-radius: 999px;
+  background: rgba(58, 122, 160, 0.1);
+  color: var(--lopx-muted);
+  font-size: 0.72rem;
+  line-height: 1.4;
+  text-align: center;
+}
+
+#page #tag > .category-lists#tag-page-tags > a:hover {
+  border-color: var(--anzhiyu-main);
+  background: var(--lopx-surface);
+  color: var(--anzhiyu-main) !important;
+  box-shadow: 0 6px 18px rgba(58, 122, 160, 0.14);
+  transform: translateY(-2px);
+}
+
+#page #tag > .category-lists#tag-page-tags > a:hover .tagsPageCount {
+  background: var(--anzhiyu-main);
+  color: #fff;
+}
+
+[data-theme='dark'] #page #tag > .category-lists#tag-page-tags > a .tagsPageCount {
+  background: rgba(103, 178, 208, 0.14);
+}
+
+@media screen and (max-width: 768px) {
+  #page #tag > .category-lists#tag-page-tags {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+
+  #page #tag > .category-lists#tag-page-tags > a {
+    min-height: 60px;
+    padding: 0 12px;
+    font-size: 0.95rem;
+  }
+}
+
+/* ≤360px 两列会挤到每列 100px 出头，「游戏开发」+ 徽章放不下 → 降为一列 */
+@media screen and (max-width: 360px) {
+  #page #tag > .category-lists#tag-page-tags {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* ---------- 40.2 首页技能标签：手机端去掉胶囊，改一行灰字 ----------
+   现状（探针实测，390 视口）：
+     `.lopx-hero-chips` 是 flex-wrap，4 个胶囊宽 82 / 66 / 59 / 82px，
+     加 3 处 gap(8px) 与 4×2px 边框 = 321px，**比容器 320px 只宽 1px**，
+     于是 `Indie Game` 被挤到第二行 → 视觉上「第一排 3 个、第二排 1 个」。
+   处理：手机端不再用胶囊外形，改成一行浅灰小字，标签之间用小圆点分隔。
+     去掉 padding/border 后字号降到 0.76rem，四个词合计约 274px < 320px，
+     **恰好一行放得下**，不会再出现 3+1；320px 窄屏放不下时会像普通文本
+     那样自然折行，不会再有「半行孤岛」。
+   桌面端（>768px）保持原有胶囊一行，不动。
+   ============================================================ */
+@media screen and (max-width: 768px) {
+  #lopx-home .lopx-hero-chips {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 2px 0;
+    margin-top: 14px;
+    color: var(--lopx-muted);
+    font-size: 0.76rem;
+    line-height: 1.7;
+  }
+
+  #lopx-home .lopx-hero-chips li {
+    display: inline-flex;
+    align-items: center;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: none;
+    color: inherit;
+    font-size: inherit;
+    font-weight: 500;
+  }
+
+  /* 分隔圆点：比「·」更收敛，且用 currentColor 自动跟随明暗主题 */
+  #lopx-home .lopx-hero-chips li:not(:last-child)::after {
+    content: '';
+    display: inline-block;
+    width: 3px;
+    height: 3px;
+    margin: 0 9px;
+    border-radius: 50%;
+    background: currentColor;
+    opacity: 0.4;
+  }
+}
+
+/* ≤355px：四个词（约 276px）放不进 250px 的容器，会折成 3+1 且行末残留一个分隔圆点。
+   改为两列对齐排布并去掉分隔点 —— 此时换成网格自然成阵，不再需要圆点。
+   断点取 355 而非 360：360px 容器宽 284px ≥ 276px，本来就能一行放下，不该误伤。 */
+@media screen and (max-width: 355px) {
+  #lopx-home .lopx-hero-chips {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 4px 0;
+  }
+
+  #lopx-home .lopx-hero-chips li:not(:last-child)::after {
+    content: none;
+  }
+}
+

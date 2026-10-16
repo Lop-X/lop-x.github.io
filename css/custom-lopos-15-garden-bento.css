@@ -1,0 +1,330 @@
+/* ============================================================
+   44. Garden 空间主页：Bento 动效卡片 —— 2026-10-11
+   取代原「h1 大标题 + 分类名一行 + 胶囊 nav + 最近更新列表」四段式页头：
+   前三段都是说明性内容，首屏约 300px 没有任何「内容本身」。
+   结构 themes/anzhiyu/layout/garden.pug；入场动效 includes/additional-js.pug。
+
+   动效分两层，两层都能降级：
+     ① 进场 —— 错峰上浮淡入 + 数字滚动 + 环形/刻度生长。
+        隐藏态一律挂在 html.js 前缀下（脚本自己加），所以：
+          · 脚本不执行 → 卡片、环形、刻度都是最终态，正常可见；
+          · prefers-reduced-motion → 脚本直接补 is-in，跳过全部动画。
+     ② 悬停 —— 上浮 3px + 边框加深 + 阴影扩散。纯 CSS，无 JS 也生效。
+
+   ⚠️ 隐藏态写成「默认最终态 + .js 下初始态」而不是反过来：
+      反过来（默认隐藏、is-in 显示）一旦脚本在加 is-in 之前抛错，内容就永久消失。
+   ⚠️ 卡片不是整块 <a>：--wide / --foot 内含多条链接（见 garden.pug 注释）。
+   ============================================================ */
+
+/* 视觉隐藏但保留给读屏 / SEO 的 h1。全站通用，定义在这里只是因为目前只有
+   Garden 主页需要（空间页的 h1 是可见的）。 */
+.lopx-visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+#garden-space .garden-bento {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  grid-auto-rows: minmax(104px, auto);
+  gap: 12px;
+}
+
+#garden-space .garden-tile {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 16px 18px;
+  overflow: hidden;
+  border: 1px solid var(--garden-line);
+  border-radius: 12px;
+  background: var(--lopx-surface);
+  color: var(--garden-ink);
+  text-decoration: none;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.05), 0 8px 24px rgba(15, 23, 42, 0.05);
+  transition: opacity 0.5s ease, transform 0.55s cubic-bezier(0.22, 0.61, 0.36, 1),
+    border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+/* 跨度：2×2 均分（每行 7 + 5 列）。
+   2026-10-11 首版大卡是「7 列跨 2 行 + 右侧两卡叠放 + 底部通栏」，实测大卡
+   285px 高而内容只有 128px，中段空 157px —— 因为右侧两卡被环形/刻度撑到
+   144/130，两行合计 286，而 Garden 当时只有 2 篇文章喂不满那个高度。
+   改成 2×2 后页面总高不变（仍是 286），大卡回落到 144 与内容贴合。
+   DOM 顺序 --wide / --anime / --study / --foot 正好落成
+   「最近记录 + 追番」/「背单词 + 通道」，无需调整模板。 */
+#garden-space .garden-tile--wide {
+  grid-column: span 7;
+}
+
+#garden-space .garden-tile--anime,
+#garden-space .garden-tile--study {
+  grid-column: span 5;
+}
+
+#garden-space .garden-tile--foot {
+  grid-column: span 7;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+#garden-space .garden-tile-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+#garden-space .garden-tile-label {
+  color: var(--garden-muted);
+  font-size: 0.78rem;
+  letter-spacing: 0.04em;
+}
+
+#garden-space .garden-tile-note,
+#garden-space .garden-tile-sub {
+  color: var(--garden-muted);
+  font-size: 0.78rem;
+}
+
+#garden-space .garden-tile-note {
+  font-variant-numeric: tabular-nums;
+}
+
+/* 最近记录 */
+#garden-space .garden-log {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+#garden-space .garden-log-link {
+  display: grid;
+  grid-template-columns: 6.5rem minmax(0, 1fr);
+  gap: 12px;
+  align-items: baseline;
+  padding: 10px 0;
+  border-top: 1px solid var(--garden-line);
+}
+
+#garden-space .garden-log-date {
+  color: var(--garden-muted);
+  font-size: 0.78rem;
+  font-variant-numeric: tabular-nums;
+}
+
+#garden-space .garden-log-title {
+  color: var(--garden-ink);
+  font-size: 0.95rem;
+  font-weight: 600;
+  transition: color var(--lopx-dur-fast) ease;
+}
+
+#garden-space .garden-log-link:hover .garden-log-title {
+  color: var(--garden-accent);
+}
+
+/* 追番 / 背单词：大数字 + 图形 */
+#garden-space .garden-metric {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: auto;
+}
+
+#garden-space .garden-figure {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+}
+
+#garden-space .garden-figure-num {
+  color: var(--garden-ink);
+  font-size: 1.75rem;
+  font-weight: 700;
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+}
+
+#garden-space .garden-figure-unit {
+  color: var(--garden-muted);
+  font-size: 0.8rem;
+}
+
+/* 环形：r=22 → 周长 138.2。默认落在「最终比例」上，.js 下才退回空环 */
+#garden-space .garden-ring {
+  width: 48px;
+  height: 48px;
+  flex: none;
+}
+
+#garden-space .garden-ring-track {
+  fill: none;
+  stroke: rgba(58, 122, 160, 0.14);
+  stroke-width: 5;
+}
+
+#garden-space .garden-ring-val {
+  fill: none;
+  stroke: var(--garden-accent);
+  stroke-width: 5;
+  stroke-linecap: round;
+  stroke-dasharray: 138.2px;
+  stroke-dashoffset: calc(138.2px * (1 - var(--garden-ring-ratio, 0)));
+  transform: rotate(-90deg);
+  transform-origin: 50% 50%;
+  transition: stroke-dashoffset 1s cubic-bezier(0.22, 0.61, 0.36, 1) 0.25s;
+}
+
+/* 分组刻度（背单词）：默认点亮，.js 下才从 0 生长 */
+#garden-space .garden-scale {
+  display: flex;
+  gap: 4px;
+}
+
+#garden-space .garden-scale i {
+  display: block;
+  width: 18px;
+  height: 6px;
+  border-radius: 3px;
+  background: var(--garden-accent);
+  transform: scaleX(1);
+  transform-origin: left center;
+  transition: transform 0.6s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+/* 通道卡 */
+#garden-space .garden-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+#garden-space .garden-chip {
+  padding: 5px 12px;
+  border: 1px solid var(--garden-line);
+  border-radius: 999px;
+  color: var(--garden-muted);
+  font-size: 0.78rem;
+  line-height: 1.4;
+  transition: color var(--lopx-dur-fast) ease, border-color var(--lopx-dur-fast) ease;
+}
+
+#garden-space .garden-chip:hover {
+  border-color: var(--garden-accent);
+  color: var(--garden-ink);
+}
+
+/* —— 进场：html.js 由 additional-js.pug 里的脚本添加 —— */
+.js #garden-space .garden-tile {
+  opacity: 0;
+  transform: translateY(16px);
+}
+
+.js #garden-space .garden-tile.is-in {
+  opacity: 1;
+  transform: none;
+}
+
+.js #garden-space .garden-tile .garden-ring-val {
+  stroke-dashoffset: 138.2px;
+}
+
+.js #garden-space .garden-tile.is-in .garden-ring-val {
+  stroke-dashoffset: calc(138.2px * (1 - var(--garden-ring-ratio, 0)));
+}
+
+.js #garden-space .garden-tile .garden-scale i {
+  transform: scaleX(0);
+}
+
+.js #garden-space .garden-tile.is-in .garden-scale i {
+  transform: scaleX(1);
+}
+
+.js #garden-space .garden-tile.is-in .garden-scale i:nth-child(2) {
+  transition-delay: 0.12s;
+}
+
+.js #garden-space .garden-tile.is-in .garden-scale i:nth-child(3) {
+  transition-delay: 0.24s;
+}
+
+/* —— 悬停 ——
+   .is-in 前缀是为了压过上面那条 .js 的 transform: none（同为 1 id，它多两个类）。 */
+#garden-space .garden-tile:hover {
+  border-color: rgba(58, 122, 160, 0.32);
+  box-shadow: 0 2px 6px rgba(15, 23, 42, 0.06), 0 14px 30px rgba(15, 23, 42, 0.09);
+}
+
+.js #garden-space .garden-tile.is-in:hover {
+  transform: translateY(-3px);
+}
+
+:root:root[data-theme='dark'] #garden-space .garden-tile {
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+:root:root[data-theme='dark'] #garden-space .garden-tile:hover {
+  border-color: rgba(122, 168, 200, 0.4);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.55);
+}
+
+/* Garden 卡片响应式 */
+@media screen and (max-width: 768px) {
+  #garden-space .garden-bento {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  #garden-space .garden-tile--wide,
+  #garden-space .garden-tile--anime,
+  #garden-space .garden-tile--study,
+  #garden-space .garden-tile--foot {
+    grid-column: auto;
+    grid-row: auto;
+  }
+
+  #garden-space .garden-tile--foot {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  #garden-space .garden-log-link {
+    grid-template-columns: 5.5rem minmax(0, 1fr);
+    gap: 10px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #garden-space .garden-tile,
+  #garden-space .garden-ring-val,
+  #garden-space .garden-scale i,
+  #garden-space .garden-log-title {
+    transition: none !important;
+  }
+
+  #garden-space .garden-tile {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  #garden-space .garden-scale i {
+    transform: scaleX(1) !important;
+  }
+}
+

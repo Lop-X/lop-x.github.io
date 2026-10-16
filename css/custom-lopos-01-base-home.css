@@ -1,0 +1,639 @@
+/* ============================================================
+   0. 【已移除】MiSans webfont 的 @import —— 2026-10-09
+   原第 1 行：@import url('https://cdn.jsdelivr.net/npm/misans@1.0.0/lib/misans.css');
+   移除原因（全部为实测，不是推测）：
+   1) 该 URL 已失效，jsDelivr 返回 50 字节纯文本
+      「Couldn't find the requested release version 1.0.0.」，不是 CSS。
+   2) 因内容不是 CSS，浏览器**没有注册任何 @font-face**：
+      探针实测 document.fonts.size = 1，且其中不含 MiSans（只有 anzhiyufont）。
+      本机字体目录与注册表也查无 MiSans —— 即第 16.1 节的 'MiSans' 一直都只是
+      字体栈里一个永远命不中的名字，实际渲染早已回落 Microsoft YaHei。
+   3) 代价却是实打实的：@import 写在 custom.css 首行，而 custom.css 在 <head>
+      里同步加载 → 这是一个**渲染阻塞请求**。冷启动实测三次：
+         misans 耗时 5863 / 11789 / 4333 ms
+         对应 FCP   6020 / 11936 / 4464 ms
+      两者几乎相等（差值恒定 ~150ms），即首屏时间基本由这条失效请求独占。
+   因此移除 = 零视觉变化 + 直接砍掉一个跨域阻塞往返。
+   字体栈里的 'MiSans' 予以保留：若将来本机装了 MiSans，仍可优雅生效。
+   ============================================================ */
+
+#lopx-home {
+  --lopx-css-loaded: 1;
+  --lopx-accent: #3a7aa0;
+  --lopx-ink: #1e262c;
+  --lopx-muted: #646e76;
+  --lopx-line: #e2e8ec;
+  --lopx-surface: #ffffff;
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 56px 32px 72px;
+  color: var(--lopx-ink);
+}
+
+/* Home hero（2026-10-03 两栏；第三轮按用户反馈：头像放左边更像「作者卡」）。
+   原本是「头像居中一行 + 另起一块左对齐文字卡」，文字卡宽 1106 而标题只占约 330px，
+   右侧留白约 700px；独立状态条又夹在卡片之间显得突兀。合并为一张两栏卡。 */
+#lopx-home > section#home-about {
+  margin-top: 0;
+  margin-bottom: 30px;
+}
+
+/* 去掉 About 页面级留白，使其嵌入首页容器（卡片外观来自 18.2 的 #home-about 规则） */
+#lopx-home #about-page {
+  max-width: none;
+  margin: 0;
+  padding: 0;
+}
+
+.lopx-hero {
+  display: grid;
+  /* 左栏 184px：头像 + 状态小卡叠起来约 236px，与右栏文字块（名字/一句话/4 个 chips
+     约 180px）高度接近；align-items: center 让文字垂直居中，避免右下角出现大片空白。 */
+  grid-template-columns: 184px minmax(0, 1fr);
+  gap: 30px;
+  align-items: center;
+}
+
+.lopx-hero-name {
+  margin: 0;
+  color: var(--lopx-ink);
+  font-size: clamp(1.5rem, 3.4vw, 2.25rem);
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.lopx-hero-intro {
+  max-width: 620px;
+  margin: 10px 0 0;
+  color: var(--lopx-muted);
+  font-size: 1rem;
+  line-height: 1.7;
+}
+
+/* 方向标签：与 About 页的 chips 同一套取值（29.1 的 .lopx-about-dirs） */
+.lopx-hero-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 18px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.lopx-hero-chips li {
+  padding: 5px 11px;
+  border: 1px solid var(--lopx-line);
+  border-radius: 999px;
+  color: var(--lopx-muted);
+  font-size: 0.78rem;
+  font-weight: 550;
+  line-height: 1.5;
+}
+
+/* 右栏改为三行文字 + 右下角「站点数据」微卡（2026-10-05）。
+   背景：右栏宽 892px，而名字 / 一句话 / chips 合计只占约 360px，
+   右侧空出约 530px（占卡片 48%），即此前反馈的「hero 右半空旷」。
+   修法：右栏切成两列网格，stats 跨三行并 align-self:end 贴住右下角，
+   与左下角的状态小卡形成对角呼应，卡片四角都有内容。 */
+.lopx-hero-text {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-areas:
+    'name stats'
+    'intro stats'
+    'chips stats';
+  align-content: center;
+  column-gap: 34px;
+}
+
+.lopx-hero-name {
+  grid-area: name;
+}
+
+.lopx-hero-intro {
+  grid-area: intro;
+}
+
+.lopx-hero-chips {
+  grid-area: chips;
+}
+
+.lopx-hero-stats {
+  grid-area: stats;
+  align-self: end;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.lopx-hero-stats li {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 92px;
+  padding: 9px 12px;
+  border: 1px solid var(--lopx-line);
+  border-radius: 12px;
+  background: rgba(58, 122, 160, 0.06);
+}
+
+.lopx-hero-stats b {
+  color: var(--lopx-ink);
+  font-size: 1.05rem;
+  font-weight: 700;
+  line-height: 1.15;
+}
+
+.lopx-hero-stats span {
+  color: var(--lopx-muted);
+  font-size: 0.7rem;
+  line-height: 1.3;
+}
+
+[data-theme='dark'] #lopx-home .lopx-hero-stats li {
+  background: rgba(103, 178, 208, 0.09);
+}
+
+/* ≤1080px：文字与数据卡并排会挤成多行，回退为纵向流式。
+   数据卡默认排列（2×2 @375 手机，4 列一排 @1024）交给 auto-fit，
+   避免在 1024 这种中间宽度上出现两个 350px 的空旷大格。 */
+@media screen and (max-width: 1080px) {
+  .lopx-hero-text {
+    display: block;
+  }
+
+  .lopx-hero-stats {
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    margin-top: 22px;
+  }
+}
+
+/* 右栏：头像在上、状态小卡在下（整列 208px，与左栏文字底对齐感更强） */
+.lopx-hero-side {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.lopx-hero-avatar {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+  border: 1px solid var(--lopx-line);
+  border-radius: 18px;
+  background: #eef4f8;
+  box-shadow: 0 8px 22px rgba(39, 50, 57, 0.1);
+}
+
+.lopx-hero-avatar img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* 右下角状态小卡：沿用全站强调色的渐变块 + 呼吸圆点，
+   观感对齐原版 AnZhiYu 首页右下角那张彩色小卡；文案留空则整块不渲染 */
+.lopx-hero-status {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 11px 13px;
+  border-radius: 12px;
+  background-image: linear-gradient(135deg, #2f6f92 0%, #3a7aa0 100%);
+  color: #ffffff;
+  font-size: 0.78rem;
+  font-weight: 550;
+  line-height: 1.45;
+}
+
+.lopx-hero-status-dot {
+  flex: none;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #cfe8f6;
+  box-shadow: 0 0 0 3px rgba(207, 232, 246, 0.28);
+}
+
+/* 窄屏：单列，头像缩到 96px 与状态卡并排一行 */
+@media screen and (max-width: 768px) {
+  .lopx-hero {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 20px;
+  }
+
+  .lopx-hero-side {
+    flex-direction: row;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .lopx-hero-avatar {
+    flex: none;
+    width: 96px;
+  }
+
+  .lopx-hero-status {
+    /* 2026-10-05：原 flex: 1 1 auto 会把胶囊拉到 195px（内容仅约 145），
+       右侧留出一条 50px 空条；改为按内容收窄，与 96px 头像并排更紧凑。 */
+    flex: 0 1 auto;
+    min-width: 0;
+  }
+}
+
+/* Projects */
+#lopx-home section {
+  margin-top: 48px;
+}
+
+#lopx-home section h2 {
+  margin: 0 0 20px;
+  color: var(--lopx-ink);
+  font-size: 1.35rem;
+  font-weight: 700;
+  letter-spacing: 0;
+}
+
+#recent-writing > p {
+  margin: 0;
+  padding: 20px 0;
+  border-top: 1px solid var(--lopx-line);
+  border-bottom: 1px solid var(--lopx-line);
+  color: var(--lopx-muted);
+}
+
+/* Recent Writing */
+#recent-writing {
+  max-width: 900px;
+}
+
+/* Recent Writing 标题行右侧的订阅入口（RSS，2026-10-01） */
+#lopx-home #recent-writing .section-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+#lopx-home #recent-writing .section-head h2 {
+  margin: 0 0 20px;
+}
+
+#lopx-home .rss-link {
+  flex-shrink: 0;
+  padding: 3px 12px;
+  border: 1px solid var(--lopx-line);
+  border-radius: 999px;
+  font-size: 0.78rem;
+  color: var(--lopx-muted);
+  text-decoration: none;
+  transition: color var(--lopx-dur-fast) ease, border-color var(--lopx-dur-fast) ease;
+}
+
+#lopx-home .rss-link:hover {
+  color: var(--lopx-accent);
+  border-color: var(--lopx-accent);
+}
+
+#recent-writing ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--lopx-line);
+}
+
+#recent-writing li {
+  display: grid;
+  grid-template-columns: 120px minmax(0, 1fr);
+  gap: 20px;
+  align-items: baseline;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--lopx-line);
+}
+
+#recent-writing time {
+  color: var(--lopx-muted);
+  font-size: 0.82rem;
+  font-variant-numeric: tabular-nums;
+}
+
+#recent-writing li a {
+  color: var(--lopx-ink);
+  font-size: 1rem;
+  line-height: 1.5;
+  transition: color var(--lopx-dur-mid) ease;
+}
+
+#recent-writing li a:hover {
+  color: var(--lopx-accent);
+}
+
+/* Responsive */
+@media screen and (max-width: 768px) {
+  #lopx-home {
+    padding: 40px 20px 56px;
+  }
+
+  #lopx-home > section#home-about {
+    margin-bottom: 16px;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  #recent-writing li {
+    display: block;
+    padding: 14px 0;
+  }
+
+  #recent-writing time {
+    display: block;
+    margin-bottom: 4px;
+  }
+}
+
+/* Hardware & Soft */
+#space-tech,
+#space-tech-cat {
+  --hardware-ink: var(--lopx-ink);
+  --hardware-muted: var(--lopx-muted);
+  --hardware-line: var(--lopx-line);
+  --hardware-accent: var(--lopx-accent);
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 48px 32px 72px;
+  color: var(--hardware-ink);
+}
+
+/* Hardware & Soft Header */
+#space-tech > h1,
+#space-tech-cat > h1 {
+  margin: 0;
+  color: var(--hardware-ink);
+  font-size: 2.8rem;
+  font-weight: 750;
+  letter-spacing: 0;
+  line-height: 1.1;
+}
+
+#space-tech > p {
+  max-width: 680px;
+  margin: 14px 0 0;
+  color: var(--hardware-muted);
+  font-size: 1rem;
+  line-height: 1.7;
+}
+
+/* 2026-10-02：旧双段列表（.project-list / section / > article）样式已删，
+   列表改由第 28 节卡片网格渲染；胶囊导航视觉在 20.8、布局在 28.8；
+   窄屏取值统一由 12.6 提供（覆盖本节容器/标题规则）。 */
+#space-tech-cat > h1 {
+  margin-bottom: 22px;
+  color: var(--hardware-ink);
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: 0;
+}
+
+#space-tech-cat > p {
+  margin: 0;
+  padding: 20px 0;
+  border-top: 1px solid var(--hardware-line);
+  border-bottom: 1px solid var(--hardware-line);
+  color: var(--hardware-muted);
+}
+
+/* Indie */
+#space-indie,
+#space-indie-cat {
+  --indie-ink: var(--lopx-ink);
+  --indie-muted: var(--lopx-muted);
+  --indie-line: var(--lopx-line);
+  --indie-accent: var(--lopx-accent);
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 48px 32px 72px;
+  color: var(--indie-ink);
+}
+
+/* Indie Header */
+#space-indie > h1,
+#space-indie-cat > h1 {
+  margin: 0;
+  color: var(--indie-ink);
+  font-size: 2.8rem;
+  font-weight: 750;
+  letter-spacing: 0;
+  line-height: 1.1;
+}
+
+#space-indie > p {
+  max-width: 680px;
+  margin: 14px 0 0;
+  color: var(--indie-muted);
+  font-size: 1rem;
+  line-height: 1.7;
+}
+
+#space-indie-cat > h1 {
+  margin-bottom: 22px;
+  color: var(--indie-ink);
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: 0;
+}
+
+#space-indie-cat > p {
+  margin: 0;
+  padding: 20px 0;
+  border-top: 1px solid var(--indie-line);
+  border-bottom: 1px solid var(--indie-line);
+  color: var(--indie-muted);
+}
+
+/* Garden */
+#garden-space,
+#garden-category {
+  --garden-ink: #1e262c;
+  --garden-muted: #646e76;
+  --garden-line: var(--lopx-line);
+  --garden-accent: #3a7aa0;
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 48px 32px 72px;
+  color: var(--garden-ink);
+}
+
+/* Garden 分类页 Header
+   空间主页 2026-10-11 起不再有页头（h1 只做无障碍保留，样式见第 44 节），
+   所以此处只剩分类页 —— #garden-category 的整套列表样式原样保留。 */
+#garden-category > h1 {
+  margin: 0;
+  color: var(--garden-ink);
+  font-size: 2.8rem;
+  font-weight: 700;
+  letter-spacing: 0;
+  line-height: 1.1;
+}
+
+/* Garden Posts
+   2026-10-05：去掉 max-width:900px（原值见 12.2 同款规则）—— 分类页的列表与
+   上方 nav 行同页，限到 900 会让列表比导航窄 170px，故跟齐容器内容区。 */
+#garden-category > .article-sort {
+  margin-top: 58px;
+}
+
+#garden-category .article-sort {
+  margin-top: 0;
+}
+
+#garden-category .article-sort .article-sort-item {
+  display: grid;
+  grid-template-columns: 120px minmax(0, 1fr);
+  gap: 20px;
+  align-items: baseline;
+  min-height: 0;
+  padding: 16px 0;
+  border-top: 1px solid var(--garden-line);
+  background: transparent;
+}
+
+#garden-category .article-sort .article-sort-item:last-child {
+  border-bottom: 1px solid var(--garden-line);
+}
+
+#garden-category .article-sort .article-sort-item.year {
+  display: block;
+  padding: 30px 0 10px;
+  border: 0;
+  color: var(--garden-muted);
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+}
+
+#garden-category .article-sort .article-sort-item-img {
+  display: none;
+}
+
+#garden-category .article-sort .article-sort-item-info {
+  display: contents;
+}
+
+#garden-category .article-sort .article-sort-item-title {
+  grid-column: 2;
+  grid-row: 1;
+  margin: 0;
+  color: var(--garden-ink);
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.5;
+  transition: color var(--lopx-dur-mid) ease;
+  /* 覆盖主题：解除单行截断与百分比高度，避免标题只显示一半 */
+  display: block;
+  height: auto;
+  overflow: visible;
+  -webkit-line-clamp: unset;
+  text-overflow: clip;
+  white-space: normal;
+}
+
+#garden-category .article-sort .article-sort-item-title:hover {
+  color: var(--garden-accent);
+}
+
+#garden-category .article-sort .article-sort-item-index,
+#garden-category .article-sort .article-meta-wrap {
+  display: none;
+}
+
+#garden-category .article-sort .article-sort-item-time {
+  grid-column: 1;
+  grid-row: 1;
+  color: var(--garden-muted);
+  font-size: 0.78rem;
+  font-variant-numeric: tabular-nums;
+}
+
+#garden-category .article-sort .article-sort-item-time i {
+  display: none;
+}
+
+#garden-category > p {
+  margin-top: 48px;
+  padding: 20px 0;
+  border-top: 1px solid var(--garden-line);
+  border-bottom: 1px solid var(--garden-line);
+  color: var(--garden-muted);
+}
+
+/* Garden Responsive */
+@media screen and (max-width: 768px) {
+  #garden-space,
+  #garden-category {
+    padding: 40px 20px 56px;
+  }
+
+  #garden-category > h1 {
+    font-size: 2.35rem;
+  }
+
+  #garden-category > .article-sort {
+    margin-top: 46px;
+  }
+
+  #garden-category .article-sort .article-sort-item {
+    grid-template-columns: 100px minmax(0, 1fr);
+    gap: 14px;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  #garden-space,
+  #garden-category {
+    padding-right: 20px;
+    padding-left: 20px;
+  }
+
+  #garden-category .article-sort .article-sort-item {
+    display: block;
+    padding: 14px 0;
+  }
+
+  #garden-category .article-sort .article-sort-item-title {
+    display: block;
+  }
+
+  #garden-category .article-sort .article-sort-item-time {
+    display: block;
+    margin-bottom: 4px;
+  }
+}
+
+/* About */
+#about-page {
+  max-width: 1000px;
+  margin: 0 auto;
+  /* 2026-10-05：左右内衬 32px 归零。
+     这层内衬是 2026-10-03「铺满容器 + 内部两栏」方案留下的，副作用是卡片左缘
+     实测 172，而首页 / 动态页都是 140 —— 跨页切页时内容块会横向跳 32px。
+     归零后卡片 1160 @ x=140，三页同一轴线；内部两栏同时由 538 放宽到 570。 */
+  padding: 24px 0 72px;
+  color: var(--lopx-ink);
+}
+
+/* 2026-10-03：首页 hero 改两栏后，以下规则已无命中（探针在 / 与 /about/ 上实测 0 个元素），
+   已删除：#about-page .author-box / .author-tag-left / .author-tag-right / .author-tag /
+   .author-img（含 hover 与各响应式分支）/ .author-content / .myInfoAndSayHello 及其
+   .title1 / .title2 —— 首页改用 .lopx-hero 系列（见第 1 节），
+   /about/ 用的是 .lopx-about-* 系列（见第 29 节）。 */
+
+/* About Responsive：容器内边距仍按页面级调整（正文规则已随 hero 改版删除）。
+   左右内衬一并归零 —— 移动端由外层 #page 提供约 15px 边距，与动态页一致。 */
+@media screen and (max-width: 768px) {
+  #about-page {
+    padding: 16px 0 56px;
+  }
+}
