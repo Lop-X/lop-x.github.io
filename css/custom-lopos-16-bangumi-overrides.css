@@ -204,7 +204,9 @@
    这里恢复卡片，但去掉原版那层 0 10px 28px 的浮起投影 ——
    一屏四五张卡，投影叠起来就是一堆浮方块。 */
 #article-container .bangumi-item {
-  display: block;
+  display: flex;
+  gap: 18px;
+  align-items: flex-start;
   min-height: 0;
   margin: 0 0 14px;
   padding: 18px 20px;
@@ -224,11 +226,27 @@
   margin-bottom: 0;
 }
 
-/* 47.2 封面位隐藏：原版是左 110px 固定图位。
-   实测 lain.bgm.tv 直连 15s 超时、img.naturalWidth 恒 0（onerror → 404-skeleton），
-   保留图位等于每条左边挖一个 110px 的洞。图源恢复可靠后再放开。 */
+/* 47.2 封面位：恢复左 110px 固定图位。
+   之前隐藏是因为图源 lain.bgm.tv 国内直连超时、naturalWidth 恒 0。
+   现在封面地址在构建期被改写到镜像（scripts/filters/bangumi-cover-mirror.js
+   读 _config.yml 的 bangumi.coverMirror），镜像实测 200 / 1.9s，可以正常出图。
+   原图 400×562（1:1.405），锁 aspect-ratio 让加载中和失败时都不塌高。 */
 #article-container .bangumi-picture {
-  display: none;
+  display: block;
+  flex: 0 0 110px;
+  width: 110px;
+  margin: 0;
+}
+
+#article-container .bangumi-picture img {
+  display: block;
+  width: 110px !important;
+  height: auto !important;
+  aspect-ratio: 400 / 562;
+  margin: 0 !important;
+  border-radius: 8px;
+  object-fit: cover;
+  background: var(--lopx-line);
 }
 
 #article-container .bangumi-info {
@@ -486,6 +504,17 @@
   #article-container .bangumi-summary {
     font-size: 12.5px;
     line-height: 1.75;
+  }
+
+  /* 390 视口下 110px 图位会把文字列压到 190px 以内，标题和简介都要反复折行，
+     缩到 88px（高 124px）后文字列回到 210px 以上。 */
+  #article-container .bangumi-picture {
+    flex: 0 0 88px;
+    width: 88px;
+  }
+
+  #article-container .bangumi-picture img {
+    width: 88px !important;
   }
 }
 
