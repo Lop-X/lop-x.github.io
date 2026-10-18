@@ -22537,88 +22537,32 @@ i.bber-gotobb {
   pointer-events: all;
 }
 
-/* bilibli番剧插件 */
-#page #article-container .bangumi-tab.bangumi-active {
-  background: var(--anzhiyu-theme);
-  color: var(--anzhiyu-ahoverbg);
-  border-radius: 10px;
-}
-#page #article-container .bangumi-tabs .bangumi-tab {
-  border-bottom: none;
-  border-radius: 10px;
-}
-#page #article-container .bangumi-tabs a.bangumi-tab:hover {
-  text-decoration: none !important;
-  border-radius: 10px;
-  column-gap: var(--anzhiyu-ahoverbg);
-}
-#page #article-container .bangumi-pagination a.bangumi-button {
-  border-bottom: none;
-  border-radius: 10px;
-}
-.bangumi-button:hover {
-  background: var(--anzhiyu-theme) !important;
-  border-radius: 10px !important;
-  color: var(--anzhiyu-ahoverbg) !important;
-}
-a.bangumi-button.bangumi-nextpage:hover {
-  text-decoration: none !important;
-}
-.bangumi-button {
-  padding: 5px 10px !important;
-}
+/* ============================================================
+   旧版番剧插件补丁 —— 2026-10-19 已停用
 
-a.bangumi-tab {
-  padding: 5px 10px !important;
-}
-svg.icon.faa-tada {
-  font-size: 1.1em;
-}
-.bangumi-info-item {
-  border-right: 1px solid #f2b94b;
-}
-.bangumi-info-item span {
-  color: #f2b94b;
-}
-.bangumi-info-item em {
-  color: #f2b94b;
-}
+   这份文件是给 hexo-bilibili-bangumi 老版本（每条 6 个「小方块」指标那一版）
+   打的补丁，内容全部与现在插件自带的 index.css 和新布局冲突，
+   且大量使用 !important，会把 custom-lopos-16 里的覆盖整体压死：
 
-/* 修复 bgm 数据源封面尺寸不一致问题 */
-.bangumi-picture {
-  width: 110px !important;
-  height: 155px !important;
-  overflow: hidden;
-  border-radius: 8px;
-  background: var(--anzhiyu-secondbg);
-}
+     .bangumi-item { min-height:175px !important; padding:10px 0 !important }
+       → 卡片左右内边距被清零，文字直接贴边框；
+         条目高度被锁死 175，与内容无关。
+     .bangumi-info-item { border-right:1px solid #f2b94b }
+       → 每个指标带金色右边框。
+     .bangumi-info-item span / em { color:#f2b94b }
+       → 字段名与值一律染金（白底 1.68:1，不可读）。
+     #page #article-container .bangumi-tab.bangumi-active { background:... }
+       → 双 id 特异性，压过 custom-lopos-16 §47.7 的下划线式 tab。
+     .bangumi-picture { width/height:110/155px !important }
+       → 图位强制 110×155，即使 display:none 也不影响，但配置会误导。
 
-.bangumi-picture img {
-  width: 110px !important;
-  height: 155px !important;
-  object-fit: cover;
-  object-position: center top;
-  margin: 0 !important;
-  border-radius: 8px;
-  transition: transform 0.3s ease;
-}
+   停用后由两处接管：
+     · 插件自带 node_modules/hexo-bilibili-bangumi/lib/templates/index.css
+     · themes/lopOS/source/css/custom-lopos-16-bangumi-overrides.css（§45–§47）
 
-.bangumi-item:hover .bangumi-picture img {
-  transform: scale(1.05);
-}
-
-/* 优化番剧条目间距 */
-.bangumi-item {
-  min-height: 175px !important;
-  padding: 10px 0 !important;
-  border-radius: 12px;
-  transition: all 0.3s ease;
-}
-
-.bangumi-item:hover {
-  background: var(--anzhiyu-card-bg);
-  box-shadow: var(--anzhiyu-shadow-border);
-}
+   原文件备份：Temp/css-backup/bilibili-bangumi.css.bak
+   想恢复：把备份内容贴回本文件即可（需同步撤掉 §47 的卡片改造）。
+   ============================================================ */
 
 /*哔哩哔哩视频适配*/
 .aspect-ratio {

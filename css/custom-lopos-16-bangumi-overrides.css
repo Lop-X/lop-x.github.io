@@ -119,17 +119,10 @@
   color: #8fc2e0;
 }
 
-/* 45.5 追番 tabs：移动端三等分；active 字色提纯到 #fff（4.39 → 4.70:1） */
-#page #article-container .bangumi-tab.bangumi-active {
-  background: var(--lopx-accent);
-  color: #ffffff;
-}
-
-/* 暗色下 --lopx-accent 会翻成浅蓝 #67b2d0，白字只剩 2.37:1
-   ⇒ 改成与浅底配套的深字（实测 8.09:1）。 */
-[data-theme='dark'] #page #article-container .bangumi-tab.bangumi-active {
-  color: #0d0d0d;
-}
+/* 45.5 追番 tabs：移动端三等分
+   ⚠️ 这里原本还有一条 active 的实底胶囊配色（#page #article-container 双 id），
+   特异性压过 §47.7 的下划线式，导致桌面是下划线、移动端却是蓝胶囊。
+   2026-10-19 统一到 §47.7，那两条已删除。 */
 
 @media screen and (max-width: 768px) {
   #article-container .bangumi-tabs {
@@ -182,49 +175,58 @@
 }
 
 /* ============================================================
-   47. 追番列表重排 —— 2026-10-19
+   47. 追番列表重排 —— 2026-10-19（第二轮）
 
-   用户反馈：「界面不美观，简介也显示不全，整体显示效果很不好，看起来高端一点」。
-   逐项实测出的问题：
-     · 每条 6 个「小方块」指标（全11话 / 类型 / 想看 / 在看 / 已看 / 评分）
-       排成一行网格 —— 这是 bgm 全站热度，对本站读者没有信息量，却占了整条
-       卡片的视觉中心，看着像后台数据面板；
-     · 每条左侧固定 110px 封面位，图来自 lain.bgm.tv 外链，国内常年打不开
-       → 结构留着、图是空的，等于每条左边挖一个 110px 的洞；
-     · 简介被插件写死 `-webkit-line-clamp:3`，300 部番每部只能看三行开头；
-     · 每个条目一张带投影的白卡（`box-shadow: 0 10px 28px`），一屏挤三四张，
-       底面全是浮起来的方块。
+   第一轮把条目改成了「分隔线 + 完整简介」，用户反馈理解偏了：
+   不是要简介显示全文，是要**左右对齐、内容不超限、右边别像被砍掉**，
+   整体参考原版插件的观感。逐项实测出的真问题：
+     · 标题被评分压住 —— 评分绝对定位在条目右上、标题 padding-right:64px，
+       但 padding 只收窄文字不收窄元素框，1440 下标题框右缘 1183
+       vs 评分左缘 1105 = 重叠 78px（390 下 75px）。「右边被砍」就是它；
+     · 条目高度失控 —— 简介放开 clamp 后 1440 是 5 行、390 是 11 行，
+       条目高度铺满 207~804px，一屏看不完两条；
+     · 丢失 word-break:break-word —— 原版 index.css 有，长日文不断词会溢出；
+     · 分隔线列表没有空间界定，条目一长就糊成一片。
 
-   重排方向：卡片 → 分隔线列表（纯文字）。番剧名 + 右上角评分 + 一行轻量元信息
-   + 完整简介。封面位整个隐藏 —— 这一步是「高端」的关键：在封面图源不可靠的
-   前提下，留白比空白框好看，纯文字排版也比「图挂着但加载不出来」稳。
+   本轮回到原版形态：卡片（1px 边框 + 12px 圆角 + 18/20 内衬，去掉原版的
+   0 10px 28px 浮起投影）、简介 3 行截断、评分回 meta 行右端由 margin-left:auto
+   推到行尾 —— 左边由 padding 定、右边也由 padding 定，这才是「左右对齐」。
+   封面位仍然隐藏：lain.bgm.tv 实测 15s 超时、naturalWidth 恒 0，
+   留着就是每条挖一个 110px 的洞。
 
    本节的覆盖全部带 `#article-container` 前缀（1 id + 1 class），
    高于插件内联 style 里的 `.bangumi-*`（0 id + 1 class），不需要 !important。
    ============================================================ */
 
-/* 47.1 条目：卡片壳 → 分隔线 */
+/* 47.1 条目：回到原版插件的「卡片」形态（原版 .bangumi-item 就是
+   flex + padding 18/20 + 1px 边框 + 8px 圆角）。
+   上一版改成纯分隔线列表，丢掉了卡片的空间界定，条目一长就分不清边界。
+   这里恢复卡片，但去掉原版那层 0 10px 28px 的浮起投影 ——
+   一屏四五张卡，投影叠起来就是一堆浮方块。 */
 #article-container .bangumi-item {
   display: block;
   min-height: 0;
-  margin: 0;
-  padding: 22px 0;
-  border: none;
-  border-bottom: 1px solid var(--lopx-line);
-  border-radius: 0;
-  background: none;
+  margin: 0 0 14px;
+  padding: 18px 20px;
+  border: 1px solid var(--lopx-line);
+  border-radius: 12px;
+  background: #fafbfc;
   box-shadow: none;
 }
 
-#article-container .bangumi-item:first-of-type {
-  padding-top: 8px;
+/* 卡片底不能直接用 --lopx-surface：它在亮色下是纯白，而本页 #article-container
+   本身就是白卡，同色叠同色等于没有卡片。改用比白低一档的中性灰。 */
+[data-theme='dark'] #article-container .bangumi-item {
+  background: rgba(255, 255, 255, 0.028);
 }
 
 #article-container .bangumi-item:last-of-type {
-  border-bottom: none;
+  margin-bottom: 0;
 }
 
-/* 47.2 封面位隐藏（外链图不可达，留着只会每条挖一个 110px 的洞） */
+/* 47.2 封面位隐藏：原版是左 110px 固定图位。
+   实测 lain.bgm.tv 直连 15s 超时、img.naturalWidth 恒 0（onerror → 404-skeleton），
+   保留图位等于每条左边挖一个 110px 的洞。图源恢复可靠后再放开。 */
 #article-container .bangumi-picture {
   display: none;
 }
@@ -234,22 +236,50 @@
   padding-left: 0;
 }
 
-/* 47.3 标题：右侧留 64px 给绝对定位的评分 */
-#article-container .bangumi-title {
-  margin: 0 0 8px;
-  padding-right: 64px;
-  font-size: 17px;
-  font-weight: 650;
-  line-height: 1.4;
+/* 原版给 .bangumi-meta 写了 min-height:54px（给图位做视觉配重），
+   没有图之后这 54px 就是纯空白。 */
+#article-container .bangumi-meta {
+  min-height: 0;
 }
 
+/* 47.3 标题：独占整行，不再给评分让位。
+   上一版把评分绝对定位到条目右上、给标题 padding-right:64px，
+   实测长标题照样压上去：1440 标题框右缘 1183 vs 评分左缘 1105 = 重叠 78px；
+   390 更差（75px）。因为 padding 只收窄了文字，元素框仍是整行宽，
+   而评分浮在框上 —— 这就是用户说的「右边像被砍掉」。
+   现在评分回到 meta 行内（47.5），标题零让位。 */
+#article-container .bangumi-title {
+  margin: 0 0 7px;
+  padding-right: 0;
+  font-size: 16.5px;
+  font-weight: 650;
+  line-height: 1.42;
+}
+
+/* ⚠️ 这里必须 !important。
+   主题 _extra/anzhiyu/custom.css:118 有一条通用链接装饰：
+     #article-container a:not([data-fancybox=gallery]):not(.headerlink):
+       not(.cf-friends-link):not(.tag-Link):not(.btn-anzhiyu):not(.no-text-decoration)
+     { border-bottom: solid 2px var(--anzhiyu-lighttext); color: var(--anzhiyu-fontcolor);
+       padding: 0 .2em; }
+   它的特异性是 (1,5,1)，本节最朴素的 (1,1,1) 压不住，
+   于是番剧标题也带上了 2px 金色下边框（亮色下淡得像分割线，暗色下很扎眼），
+   颜色也被改成 --anzhiyu-fontcolor 而非 --lopx-ink。
+   主题给这个逃生口预留了 .no-text-decoration，但标题由插件模板输出，加不了 class。 */
 #article-container .bangumi-title a {
-  color: var(--lopx-ink);
+  color: var(--lopx-ink) !important;
+  border-bottom: none !important;
+  padding: 0 !important;
+  text-decoration: none !important;
   transition: color var(--lopx-dur-fast, 0.2s) ease;
 }
 
+/* 同上，hover 也要 !important，否则被上面那条 color !important 锁死不变色；
+   同时清掉主题通用链接的 2px 金线。 */
 #article-container .bangumi-title a:hover {
-  color: var(--lopx-accent);
+  color: var(--lopx-accent) !important;
+  border-bottom: none !important;
+  text-decoration: none !important;
 }
 
 /* 47.4 元信息：一行灰字。想看 / 在看 / 已看 是 bgm 全站统计，对读者无意义，隐去；
@@ -326,18 +356,25 @@
   display: none;
 }
 
-/* 47.5 评分：从网格里提出来，绝对定位到条目右上 —— 唯一保留的强调色，
-   给整条一个视觉落点，替代原来 6 个方块的作用。 */
+/* 47.5 评分：回到 meta 行内、靠 margin-left:auto 推到行尾。
+   这是「左右对齐」的关键 —— 元信息左起、评分右止，两条边都由卡片 padding 决定，
+   不会像绝对定位那样压到标题上。 */
 #article-container .bangumi-info-item-score {
-  position: absolute;
-  top: 20px;
-  right: 0;
+  position: static;
+  margin-left: auto;
+  padding-left: 12px;
   display: inline-flex;
   align-items: baseline;
   gap: 4px;
-  padding: 0;
   border: none;
+  border-radius: 0;
   background: none;
+}
+
+/* 行内后就不再需要「·」分隔（它已经是行尾独立的一块） */
+#article-container .bangumi-info-items > .bangumi-info-item-score::before {
+  content: none;
+  margin: 0;
 }
 
 #article-container .bangumi-info-item-score .bangumi-info-label {
@@ -346,42 +383,50 @@
 }
 
 #article-container .bangumi-info-item-score em {
-  font-size: 19px;
+  font-size: 15px;
   font-weight: 700;
   font-variant-numeric: tabular-nums;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.01em;
   color: var(--lopx-accent);
 }
 
-/* 47.6 简介：解除 3 行截断，完整显示。
-   插件写死的是 `.bangumi-summary>p{display:-webkit-box;...;-webkit-line-clamp:3}`，
-   这里必须同时把 display 改回 block，否则 overflow 放开了也还是 3 行。 */
+/* 47.6 简介：3 行截断（回到原版规格）+ 强制断词。
+   上一版把 clamp 整个放开想「显示全」，结果 1440 下一段 5 行、390 下 11 行，
+   条目高度在 207~804px 之间乱跳 —— 用户要的不是全文，是「不要超限、右边别被截」。
+   原版 index.css 的 .bangumi-summary>p 还有 word-break:break-word，
+   那是长日文/英文不断词造成右侧溢出的正解，一起补回来。 */
 #article-container .bangumi-summary {
-  margin-top: 10px;
+  margin-top: 9px;
   font-size: 13.5px;
-  line-height: 1.85;
+  line-height: 1.8;
   color: var(--lopx-muted);
 }
 
 #article-container .bangumi-summary > p {
-  display: block;
-  overflow: visible;
+  display: -webkit-box;
+  overflow: hidden;
   height: auto;
   margin: 0;
   white-space: normal;
-  text-overflow: clip;
-  -webkit-line-clamp: none;
-  line-clamp: none;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  text-overflow: ellipsis;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
 }
 
 /* 47.7 tabs：实心选中块 → 下划线式。
-   原来 active 是主色实底 + 白字，在本页只有三个 tab 的情况下像一个按钮，
-   且与正文的轻量排版不是一套语言。 */
+   ⚠️ 本节所有属性都必须 !important。
+   主题 _extra/anzhiyu/custom.css:118 那条 `#article-container a:not(…)×5`
+   （特异性 1,5,1）会给每个 tab 补上 border-bottom: 2px 金 + padding: 0 .2em，
+   本节的 (1,1,1) 完全压不住。实测被压时：padding 变成 0 2.7px、
+   三个 tab 全都带同色下划线（不只 active）。 */
 #article-container .bangumi-tabs {
   display: flex;
   flex-wrap: nowrap;
   gap: 0;
-  margin: 22px 0 0;
+  margin: 22px 0 18px;
   padding: 0;
   border: none;
   border-bottom: 1px solid var(--lopx-line);
@@ -391,11 +436,11 @@
 
 #article-container .bangumi-tab {
   flex: 0 1 auto;
-  padding: 0 0 10px;
+  padding: 0 0 10px !important;
   margin-right: 26px;
   border-radius: 0;
-  border-bottom: 2px solid transparent;
-  color: var(--lopx-muted);
+  border-bottom: 2px solid transparent !important;
+  color: var(--lopx-muted) !important;
   font-size: 13.5px;
   font-weight: 600;
   text-align: left;
@@ -403,39 +448,44 @@
 }
 
 #article-container .bangumi-tab:hover {
-  color: var(--lopx-ink);
+  color: var(--lopx-ink) !important;
   background: none;
+  border-bottom-color: transparent !important;
 }
 
 #article-container .bangumi-tab.bangumi-active {
-  color: var(--lopx-ink);
-  background: none;
+  color: var(--lopx-ink) !important;
+  background: none !important;
   box-shadow: none;
-  border-bottom-color: var(--lopx-accent);
+  border-bottom-color: var(--lopx-accent) !important;
 }
 
 [data-theme='dark'] #article-container .bangumi-tab.bangumi-active {
-  color: var(--lopx-ink);
+  color: var(--lopx-ink) !important;
 }
 
-/* 47.8 窄屏：留白收紧，评分仍贴右上 */
+/* 分页按钮同属 `a`，一样被那条规则压成「padding 0 2.7px + 金线」。 */
+#article-container .bangumi-button {
+  padding: 5px 10px !important;
+  border-bottom: none !important;
+}
+
+/* 47.8 窄屏：卡片内衬收紧，但仍保留左右内边距
+   （上一版这里写的是 padding:18px 0，纯分隔线列表下无碍，
+   换成卡片后会把文字顶到边框上）。 */
 @media screen and (max-width: 768px) {
   #article-container .bangumi-item {
-    padding: 18px 0;
+    margin-bottom: 12px;
+    padding: 15px 16px;
   }
 
   #article-container .bangumi-title {
-    padding-right: 52px;
-    font-size: 16px;
-  }
-
-  #article-container .bangumi-info-item-score em {
-    font-size: 17px;
+    font-size: 15.5px;
   }
 
   #article-container .bangumi-summary {
-    font-size: 13px;
-    line-height: 1.8;
+    font-size: 12.5px;
+    line-height: 1.75;
   }
 }
 
