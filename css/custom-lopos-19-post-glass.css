@@ -43,9 +43,11 @@
   --lopx-post-ink-1: #141b22;
   --lopx-post-ink-2: #1d2731;
   --lopx-post-measure: 1.78;
-  --lopx-post-code-bg: #f8f9fb;
-  --lopx-post-code-bar: linear-gradient(180deg, #fcfdfe, #f3f6f9);
-  --lopx-post-code-border: rgba(15, 23, 42, 0.08);
+  --lopx-post-code-bg: #14161c;
+  --lopx-post-code-bar: #1a1d25;
+  --lopx-post-code-border: rgba(255, 255, 255, 0.08);
+  --lopx-post-code-ink: #c8d0dc;
+  --lopx-post-code-muted: rgba(255, 255, 255, 0.42);
 }
 
 /* ---- 49.2 暗色参数 ---- */
@@ -62,9 +64,11 @@
   --lopx-post-accent-soft: rgba(127, 179, 213, 0.14);
   --lopx-post-ink-1: #f2f4f8;
   --lopx-post-ink-2: #e3e7ee;
-  --lopx-post-code-bg: #14171e;
-  --lopx-post-code-bar: linear-gradient(180deg, #1c202a, #171b23);
-  --lopx-post-code-border: rgba(255, 255, 255, 0.08);
+  --lopx-post-code-bg: #101218;
+  --lopx-post-code-bar: #16181f;
+  --lopx-post-code-border: rgba(255, 255, 255, 0.07);
+  --lopx-post-code-ink: #d3dae6;
+  --lopx-post-code-muted: rgba(255, 255, 255, 0.38);
 }
 
 /* ---- 49.3 卡片玻璃化 ---- */
@@ -146,7 +150,10 @@
   margin-bottom: 0;
 }
 
-/* ---- 49.7 表格：圆角 + 渐变表头 + 斑马纹 + 行悬浮 ---- */
+/* ---- 49.7 表格：圆角 + 中性表头 + 斑马纹 + 行悬浮 ----
+   2026-10-19：表头由 #0b2130→#1f6288 的深蓝渐变改为中性浅灰底 + 深字。
+   那层渐变是全页饱和度最高的色块，夹在正文里比正文本身更抢眼，与「简洁」相反；
+   外投影同时去掉，表格只靠描边与斑马纹分层。 */
 #post #article-container table {
   width: 100%;
   margin: 1.4em 0;
@@ -156,18 +163,23 @@
   border-radius: 12px;
   overflow: hidden;
   font-size: 0.96em;
-  box-shadow: 0 10px 26px -20px rgba(15, 23, 42, 0.4);
+  box-shadow: none;
 }
 
 #post #article-container table th {
   padding: 0.72em 1em;
   border: none;
-  background: linear-gradient(135deg, #0b2130 0%, #1f6288 100%);
-  color: #ffffff;
-  font-weight: 600;
+  background: #eef2f7;
+  color: var(--lopx-post-ink-1);
+  font-weight: 650;
   text-align: left;
   font-size: 0.95em;
   letter-spacing: 0.01em;
+}
+
+[data-theme='dark'] #post #article-container table th {
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--lopx-post-ink-1);
 }
 
 #post #article-container table td {
@@ -193,51 +205,75 @@
   background: rgba(127, 179, 213, 0.1);
 }
 
-/* ---- 49.8 行内代码：淡主色胶囊，不再像按钮 ---- */
+/* ---- 49.8 行内代码：中性灰底，不再像按钮 ----
+   2026-10-19：去掉主色淡底 + inset 描边 + 主色字的「三重装饰」，
+   改成单一中性底，与黑代码块的冷中性调统一。 */
 #post #article-container :not(pre) > code {
   margin: 0 0.14em;
   padding: 0.15em 0.44em;
-  border-radius: 6px;
-  background: var(--lopx-post-accent-soft);
-  box-shadow: inset 0 0 0 1px rgba(58, 122, 160, 0.16);
-  color: var(--lopx-post-accent-ink);
+  border-radius: 5px;
+  background: rgba(15, 23, 42, 0.06);
+  box-shadow: none;
+  color: var(--lopx-post-ink-1);
   font-size: 0.92em;
   text-shadow: none;
 }
 
 [data-theme='dark'] #post #article-container :not(pre) > code {
-  box-shadow: inset 0 0 0 1px rgba(127, 179, 213, 0.18);
+  background: rgba(255, 255, 255, 0.08);
 }
 
-/* ---- 49.9 代码块：圆角外壳 + 标题栏 + 悬浮显形的复制按钮 ---- */
+/* ---- 49.9 代码块：黑色系平铺外壳 + 极简工具栏 ----
+   2026-10-19 重做。highlight_theme 已从 `mac light` 换到 `darker`（见 _config.lopOS.yml），
+   底色 / 前景 / 语法着色全部由主题按 darker 的色表生成，本节只做容器层：
+     · 去掉两层投影 —— 主题 mac light 自带的 `0 5px 10px` 加上本节原来的
+       `0 14px 34px`，叠起来就是用户说的「代码框怎么还有一个浮动特效」。
+       现在改成纯 1px 描边定边界，不再有悬浮感；
+     · 底色压到 #14161c，比 darker 默认的 #212121 更冷更深：一是贴合站点偏冷的
+       蓝灰色调，二是让「黑代码框」在浅色玻璃卡上成为一块干净的独立区域；
+     · 工具栏只留「语言名（左）+ 复制（右，hover 出现）」，去掉 mac 三色圆点、
+       渐变底、底部描边。darker 本身不生成三色点，所以不需要额外隐藏；
+     · 行号压到 34% 白，亮暗主题共用（原来只修了暗色分支）。
+   语法色不在这里动 —— 一旦主题再换，这里不会留下过期色值。 */
 #post #article-container figure.highlight {
+  --hl-bg: var(--lopx-post-code-bg);
+  --hltools-bg: var(--lopx-post-code-bar);
+  --hlnumber-bg: var(--lopx-post-code-bg);
+  --hlnumber-color: var(--lopx-post-code-muted);
+  --hl-color: var(--lopx-post-code-ink);
   margin: 0 0 1.7em;
   border: 1px solid var(--lopx-post-code-border);
-  border-radius: 14px;
+  border-radius: 12px;
   overflow: hidden;
   background: var(--lopx-post-code-bg);
-  box-shadow: 0 14px 34px -24px rgba(15, 23, 42, 0.42), 0 1px 2px rgba(15, 23, 42, 0.03);
-}
-
-[data-theme='dark'] #post #article-container figure.highlight {
-  box-shadow: 0 14px 34px -22px rgba(0, 0, 0, 0.72), 0 1px 2px rgba(0, 0, 0, 0.4);
+  box-shadow: none;
 }
 
 #post #article-container figure.highlight .highlight-tools {
   height: auto;
-  min-height: 34px;
+  min-height: 32px;
   padding: 0 12px;
-  border-bottom: 1px solid var(--lopx-post-code-border);
+  border-bottom: none;
   background: var(--lopx-post-code-bar);
-  color: var(--lopx-post-accent-ink);
+  color: var(--lopx-post-code-muted);
 }
 
 #post #article-container figure.highlight .highlight-tools .code-lang {
-  font-size: 10.5px;
-  font-weight: 700;
-  letter-spacing: 0.09em;
-  color: var(--lopx-post-accent-ink);
-  opacity: 0.85;
+  left: 12px;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  color: var(--lopx-post-code-muted);
+  opacity: 1;
+}
+
+/* 折叠箭头：内容永远展开（highlight_shrink: false），这个按钮本就不该存在。
+   主题 main.js:251 的判断是 `isHighlightShrink !== undefined` —— 配 false 也会渲染，
+   而且模板用了单引号，`${highlightShrinkClass}` 没被插值，类名里字面带着这段占位符。
+   与其去改主题 JS，这里直接不显示；顺带把 code-lang 的左缩进收回 12px
+   （主题在 `.expand + .code-lang` 里给它留了 17px 的空位）。 */
+#post #article-container figure.highlight .highlight-tools .expand {
+  display: none;
 }
 
 /* 复制按钮：桌面端默认隐形，悬浮代码块才出现（移动端无 hover，故不隐藏） */
@@ -253,18 +289,18 @@
   }
 }
 
-/* 代码区底色与圆角收口（主题 mac light 自带白底，暗色要更深才与卡片分层） */
+/* 代码区底色交给 figure 的 --hl-bg，这里只清掉内层各自的底，避免出现第二层色块 */
 #post #article-container figure.highlight pre,
 #post #article-container figure.highlight table,
 #post #article-container figure.highlight .code pre {
   background: transparent;
 }
 
-/* 暗色下行号对比度偏低（主题 --hlnumber-color 0.4 只有 3.9:1），
-   直接用更高特异性的选择器覆盖 gutter 颜色（1 id > 主题的 0 id）。 */
-[data-theme='dark'] #post #article-container figure.highlight .gutter,
-[data-theme='dark'] #post #article-container figure.highlight .gutter pre {
-  color: rgba(255, 255, 255, 0.6) !important;
+/* 行号：亮暗主题统一压低。mac light 时代这里只写了暗色分支，
+   现在代码框在所有主题下都是黑的，必须两边一起改，否则亮色下行号会是浅灰。 */
+#post #article-container figure.highlight .gutter,
+#post #article-container figure.highlight .gutter pre {
+  color: var(--lopx-post-code-muted) !important;
 }
 
 /* ---- 49.10 页头：压低高度，标题更紧凑 ---- */
@@ -281,28 +317,19 @@
   height: 23rem;
 }
 
-/* ---- 49.11 底部：上/下一篇与相关文章收圆角 + 悬浮抬升（保留空间识别色渐变） ---- */
+/* ---- 49.11 底部：上/下一篇与相关文章收圆角（2026-10-19 去掉了悬停位移）
+   原来相关文章 hover 会 translateY(-3px) + 加深阴影，正文末尾出现一圈会浮起来
+   的卡片，与「简洁」相悖。现在只留圆角与静态投影，hover 只改描边色。 */
 #pagination.pagination-post {
   border-radius: 16px;
   overflow: hidden;
   box-shadow: 0 18px 44px -30px rgba(11, 33, 48, 0.6);
-  transition: box-shadow 0.3s ease;
-}
-
-#pagination.pagination-post:hover {
-  box-shadow: 0 24px 54px -30px rgba(11, 33, 48, 0.72);
 }
 
 .relatedPosts > .relatedPosts-list > div {
   border-radius: 14px;
   overflow: hidden;
   box-shadow: 0 14px 34px -26px rgba(11, 33, 48, 0.55);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.relatedPosts > .relatedPosts-list > div:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 22px 44px -24px rgba(11, 33, 48, 0.68);
 }
 
 /* ---- 49.12 窄屏：卡片沿用玻璃，但用 !important 压过主题的移动端实色覆盖 ---- */

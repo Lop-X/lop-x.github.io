@@ -265,60 +265,45 @@
   --lopx-card-accent: #0F6E56;
 }
 
-/* 28.2 网格：固定三列（2026-10-06 由 auto-fit 改回）
-   2026-10-05 曾为了让 /indie/ 的唯一一张卡不孤零零贴左，改成 auto-fit 自适应：
-   卡数 ≤3 时铺满整行。但那样在 1440 下会导致「一篇文的分类页」把卡片拉成
-   1094px 宽的巨幅卡，而同页的 tech 五卡仍是 350px —— 同一套组件出现两种尺度，
-   且与「容器 1000」的收窄方向相反。
-   用户 2026-10-06 明确要求：技术与独立游戏这一块就正常三栏，不要自动拉宽。
-   故改回固定三列。代价是 /indie/ 单卡只占第一列、右侧留两列空白 —— 这是
-   用户已知并接受的取舍，不是缺陷，勿再以「留白难看」为由改回 auto-fit。
-   卡片实测宽：1440 下 297px（1000 容器内容区 934，减 2×22 gap 后三等分）。
-   ≤960 / ≤600 的收口见 28.6。 */
+/* 28.2 网格：固定三列，间距 30（2026-10-18 改用 Godot .posts 的桌面档取值）
+   历史：2026-10-06 由 auto-fit 改回固定三列（auto-fit 会把单卡拉成 1094px 巨幅卡）。
+   用户 2026-10-06 明确要求：技术与独立游戏正常三栏，不要自动拉宽，
+   故 /indie/ 单卡只占第一列 —— 这是已知取舍，不是缺陷。
+   2026-10-18：gap 22 → 30，与参考站 .posts{gap:30} 一致；卡片无外壳后需要更大的
+   呼吸间距来分隔条目。实测卡片宽 291px（内容区 934 - 2×30 后三等分）。 */
 .lopx-cards {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 22px;
-  margin-top: 40px;
+  gap: 30px;
+  margin-top: 36px;
 }
 
-/* 28.3 卡片外壳 */
+/* 28.3 卡片外壳：Godot 式「无壳」—— 不画边框、不铺底色、不加投影，
+   图片与文字靠 20px 间距建立关系，观感是「一条内容」而不是「一个盒子」。
+   整卡等高由 28.6 的 align-items: stretch（grid 默认值）保证，
+   再靠 body 的 flex:1 让短卡正文区补足高度。实测 1440 下同排卡片
+   高度全部 277px、标题基线与底边逐行对齐。 */
 .lopx-card {
   display: flex;
   flex-direction: column;
-  overflow: hidden;
-  border: 1px solid var(--lopx-line);
-  border-radius: 12px;
-  background: var(--lopx-surface);
-  box-shadow: 0 4px 16px rgba(32, 42, 49, 0.045);
-  transition:
-    transform var(--lopx-dur-mid) ease,
-    border-color var(--lopx-dur-mid) ease,
-    box-shadow var(--lopx-dur-mid) ease;
+  gap: 20px;
+  min-width: 0;
 }
 
-.lopx-card:hover {
-  transform: translateY(-3px);
-  border-color: var(--lopx-card-accent);
-  box-shadow: 0 10px 24px rgba(32, 42, 49, 0.09);
-}
-
-/* 28.4 渐变文字封面：空间识别色 + 与色带同源的细网格纹理
-   2026-10-03：由固定 height:104px（348×104 ≈ 3.4:1，太扁）改为 16:10，
-   3 列时约 348×218；将来文章补了 cover 字段，图片在这个比例下才像封面。
-   2026-10-05：配合 28.2 的自适应列数补 max-height:300px —— 单卡铺满整行时
-   16:10 会算到 685px 高（控制整张卡），封顶后为 1096×300（约 3.7:1）的特征卡，
-   多列时（218px）够不到上限，取值不变。
-   2026-10-06：28.2 已改回固定三栏，单卡铺满整行的情况不再发生，本上限当前
-   无命中（三栏卡片 297px → 16:10 算出 186px）。保留作兜底：将来若再引入
-   自适应列数，没有它会算出 685px 的巨幅封面。 */
+/* 28.4 封面：16:9 独立图块（圆角只属于图片，不属于卡片）
+   无封面文章渲染空间识别色渐变 + 细网格纹理，与色带同源，
+   高度同样是 16:9 —— 有图无图一律对齐。
+   2026-10-18 关键修复：图片改绝对定位填满封面区。此前 img 是 static + height:100%，
+   而 aspect-ratio 推导出的高度不能作为百分比高度的基准 → height 失效 → 图片按
+   自身比例撑开容器。实测 Obsidian(1.37) 216px、Bangumi(1.33) 221px、
+   EasyX(1.18) 251px，只有 16:9 的图恰好落在 184px，于是卡片高度 268~305 不等。
+   绝对定位后高度只由列宽决定，与图片比例完全解耦。 */
 .lopx-card-cover {
   position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  aspect-ratio: 16 / 10;
-  max-height: 300px;
+  display: block;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  border-radius: 8px;
   background-image: repeating-linear-gradient(
       90deg,
       rgba(255, 255, 255, 0.055) 0 1px,
@@ -329,51 +314,75 @@
   background-repeat: repeat, repeat, no-repeat;
   background-size: 26px 26px, 26px 26px, cover;
   background-position: left top, left top, center center;
+  box-shadow: 0 4px 14px rgba(32, 42, 49, 0.1);
   text-decoration: none;
+  transition: box-shadow var(--lopx-dur-mid) ease;
 }
 
 .lopx-card-cover-img {
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
+  transition: transform 0.45s ease;
 }
 
-.lopx-card-cat {
-  color: #ffffff;
-  font-size: 0.9rem;
-  font-weight: 650;
-  letter-spacing: 0.14em;
-  text-shadow: 0 2px 10px rgba(6, 14, 20, 0.35);
+.lopx-card:hover .lopx-card-cover {
+  box-shadow: 0 10px 26px rgba(32, 42, 49, 0.18);
 }
 
-/* 有封面图时，分类名降为左下角角标 */
-.lopx-card-cover.has-img .lopx-card-cat {
-  position: absolute;
-  left: 10px;
-  bottom: 10px;
-  padding: 3px 9px;
-  border-radius: 999px;
-  background: rgba(6, 14, 20, 0.55);
-  font-size: 0.7rem;
-  letter-spacing: 0.06em;
-  -webkit-backdrop-filter: blur(4px);
-  backdrop-filter: blur(4px);
+.lopx-card:hover .lopx-card-cover-img {
+  transform: scale(1.035);
 }
 
-/* 28.5 卡片正文：标题两行封顶，元信息贴底（同一行卡片对齐底部） */
+/* 28.5 正文区：图下第一行是「日期 · 分类」，再标题，再摘要
+   分类名不再压在封面上（用户 2026-10-18：文字信息要和图片分开）。
+   短卡用 flex:1 把摘要后面的空白吃掉，保证同一行卡片底部对齐。 */
 .lopx-card-body {
   display: flex;
   flex: 1;
   flex-direction: column;
-  gap: 12px;
-  padding: 14px 16px 16px;
+  gap: 8px;
+  padding: 0;
+}
+
+.lopx-card-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  color: var(--lopx-muted);
+  font-size: 0.78rem;
+  line-height: 1.4;
+}
+
+.lopx-card-date {
+  font-variant-numeric: tabular-nums;
+}
+
+.lopx-card-cat {
+  position: relative;
+  padding-left: 13px;
+}
+
+.lopx-card-cat::before {
+  content: '';
+  position: absolute;
+  left: 5px;
+  top: 50%;
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: currentColor;
+  opacity: 0.55;
+  transform: translateY(-50%);
 }
 
 .lopx-card-title {
   display: -webkit-box;
   overflow: hidden;
   color: var(--lopx-ink);
-  font-size: 0.95rem;
+  font-size: 1rem;
   font-weight: 650;
   line-height: 1.45;
   -webkit-box-orient: vertical;
@@ -385,48 +394,38 @@
   color: var(--lopx-card-accent);
 }
 
-.lopx-card-meta {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 6px 8px;
-  margin-top: auto;
+.lopx-card-desc {
+  display: -webkit-box;
+  overflow: hidden;
+  margin: 0;
   color: var(--lopx-muted);
-  font-size: 0.78rem;
-  line-height: 1.4;
+  font-size: 0.82rem;
+  line-height: 1.6;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
 }
 
-/* 2026-10-03：分类徽章（.lopx-card-kind）已删 —— 分类名在封面正中/角标上已有，
-   元信息行只留「日期 + 标签」，不再重复标注「项目 / 笔记」这个已取消的维度。 */
-
-.lopx-card-date {
-  font-variant-numeric: tabular-nums;
-}
-
-.lopx-card-tag {
-  padding: 1px 8px;
-  border-radius: 999px;
-  background: rgba(58, 122, 160, 0.09);
-  color: var(--lopx-muted);
-  font-size: 0.7rem;
-}
+/* 2026-10-18：#标签 不再出现在卡片上（标签体系在文章页保留）——
+   参考站的卡片只承载「时间 / 归属 / 标题 / 一句介绍」，标签会让元信息行过密。 */
 
 /* 28.6 响应式：≤960 两列，≤600 单列 */
 @media screen and (max-width: 960px) {
   .lopx-cards {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 26px;
   }
 }
 
 @media screen and (max-width: 600px) {
   .lopx-cards {
     grid-template-columns: minmax(0, 1fr);
-    gap: 16px;
-    margin-top: 32px;
+    gap: 22px;
+    margin-top: 28px;
   }
 }
 
-/* 28.7 暗色：强调色换亮阶（与 26 节空间卡同源），阴影收敛 */
+/* 28.7 暗色：强调色换亮阶（与 26 节空间卡同源），阴影收敛
+   无壳卡片在深色底上需要更明显的图块边界，故封面投影保持存在、只调深。 */
 [data-theme='dark'] :is(#space-tech, #space-tech-cat) {
   --lopx-card-accent: #85B7EB;
 }
@@ -439,16 +438,12 @@
   --lopx-card-accent: #5DCAA5;
 }
 
-[data-theme='dark'] .lopx-card {
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.32);
+[data-theme='dark'] .lopx-card-cover {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.36);
 }
 
-[data-theme='dark'] .lopx-card:hover {
-  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.44);
-}
-
-[data-theme='dark'] .lopx-card-tag {
-  background: rgba(255, 255, 255, 0.08);
+[data-theme='dark'] .lopx-card:hover .lopx-card-cover {
+  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.5);
 }
 
 /* 28.8 色带上的胶囊导航：主页沿 537 / 278 行的既有 flex 规则，

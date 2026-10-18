@@ -74,52 +74,34 @@
 }
 
 /* ============================================================
-   20. 分页面（space）头部色带 —— 2026-09-30（任务8）
+   20. 分页面（space）头部 —— 2026-09-30 色带版，2026-10-18 改为纯文字头
    原状：/tech/、/indie/、/garden/ 及其列表页都是「白卡片 + 一行 h1」，很素。
-   处理：容器顶部压一条贴边的插画色带，标题落在色带上转白；
-        同一张封面图按 space 换裁切位置与色调，三个空间各有脸色，
-        再统一到与文章页通栏封面同一套美术语言。
-   实现：纯 CSS 伪元素，不改模板与页面生成器。
+   旧处理：容器顶部压一条贴边的插画色带，标题落在色带上转白（纯 CSS 伪元素）。
+   2026-10-18 用户反馈「不喜欢标题头」，tech / indie（主页 + 4 个分类页）的色带
+        整体移除，改为与 About / 文章页一致的纯文字头：白底深字 h1 + 灰色副标题
+        + 浅底描边胶囊。色带只保留在 Garden 分类页（深绿识别头，见第 44 节体系）。
+   影响面：--lopx-band-h / --lopx-band-base / --lopx-band-glow 现在只服务
+        #garden-category，其余空间的取值已删，勿再按旧注释去找 232 / 168 / 176。
    ============================================================ */
 
-/* 20.1 色带高度（2026-10-05 按实测重写说明）
-   实际分工（1440 实测）：
-   · tech / indie：色带 232 盖住 h1 + 副标题 + 43px 胶囊导航行（胶囊 245–289，带底 312）→ 余量 23px；
-   · garden：色带 232 只盖住 h1 + 描述行（描述行底 295），下方 104px 的分类大卡落在带外
-     （卡 323–427）。这是 17.1 把胶囊换成大卡后的结果，卡片自带渐变底，所以白字仍可读，
-     属「有意为之」而非事故 —— 旧注释写的「要盖住…胶囊导航行」已过期。
-   2026-10-03：tech/indie 分类化后分类子页与主页同构，导航行一直在；
-       主页在该空间只有一个分类时隐藏胶囊（模板加 .is-solo），色带相应降低。 */
-/* 2026-10-11：Garden 空间主页移出色带体系（改 Bento 卡片，见第 44 节），
-   色带只服务 tech / indie 的空间主页与三个分类列表页。 */
-:is(#space-tech, #space-indie) {
-  --lopx-band-h: 232px;
-}
-
-:is(#space-tech-cat, #space-indie-cat) {
-  --lopx-band-h: 168px;
-}
-
-:is(#space-tech, #space-indie).is-solo {
-  --lopx-band-h: 176px;
-}
-
+/* 20.1 色带高度
+   2026-10-18：tech / indie（主页 + 分类页）的色带整体移除，改为纯文字头，
+   理由见本节标题注释。此处只剩 Garden 分类页一种色带。
+   历史（2026-10-05 实测）：tech/indie 主页 232 盖住 h1 + 副标题 + 胶囊行；
+   分类页 168；is-solo（无胶囊）176；garden 分类页 104。以上取值已随色带移除作废。 */
 #garden-category {
   --lopx-band-h: 104px;
 }
 
 /* 20.2 容器作为色带的定位基准 */
-:is(#space-tech, #space-tech-cat, #space-indie, #space-indie-cat, #garden-space, #garden-category) {
+#garden-category {
   position: relative;
 }
 
 /* 20.3 色带本体：贴容器上沿，圆角沿用容器自身（只取上半），不裁切任何内容
-   2026-10-02：去掉照片。原方案三个空间共用同一张 post-cover.webp，
-   只靠遮罩色调与裁切位置区分，等于「换个角度拍同一张图」，仍属撞图。
-   现在改为纯 CSS：空间识别色深色渐变 + 细网格纹理，各空间独立成色，
-   以后想换回照片，只需把 url() 追加到 background-image 末尾。
-   2026-10-11：Garden 空间主页移出（页头已删，色带会变成一整块无内容绿底）。 */
-:is(#space-tech, #space-tech-cat, #space-indie, #space-indie-cat, #garden-category)::before {
+   2026-10-18 起只服务 Garden 分类页；tech/indie 的四条色带已移除
+   （用户要求：标题头不要大面积深色块，改纯文字）。 */
+#garden-category::before {
   content: '';
   position: absolute;
   top: 0;
@@ -143,26 +125,8 @@
   background-position: left top, left top, center center, center center;
 }
 
-/* 20.4 三个空间各一套渐变色（深底 → 识别色），色相与 26 节首页空间卡同源 */
-:is(#space-tech, #space-tech-cat) {
-  --lopx-band-base: linear-gradient(115deg, #0b2130 0%, #163f57 58%, #1f6288 100%);
-  --lopx-band-glow: radial-gradient(
-    120% 130% at 88% 6%,
-    rgba(24, 95, 165, 0.5) 0%,
-    rgba(24, 95, 165, 0) 62%
-  );
-}
-
-:is(#space-indie, #space-indie-cat) {
-  --lopx-band-base: linear-gradient(115deg, #171432 0%, #2d2760 58%, #4a3f9b 100%);
-  --lopx-band-glow: radial-gradient(
-    120% 130% at 88% 6%,
-    rgba(83, 74, 183, 0.5) 0%,
-    rgba(83, 74, 183, 0) 62%
-  );
-}
-
-:is(#garden-category) {
+/* 20.4 Garden 分类页色带渐变（深底 → 空间识别色） */
+#garden-category {
   --lopx-band-base: linear-gradient(115deg, #0b2a23 0%, #14503f 58%, #1f6d55 100%);
   --lopx-band-glow: radial-gradient(
     120% 130% at 88% 6%,
@@ -172,28 +136,32 @@
 }
 
 /* 暗色下页面底色本身就是深色，给色带补一条下沿发丝线保证边界可见 */
-[data-theme='dark'] :is(#space-tech, #space-tech-cat, #space-indie, #space-indie-cat, #garden-space, #garden-category)::before {
+[data-theme='dark'] #garden-category::before {
   box-shadow: inset 0 -1px 0 rgba(255, 255, 255, 0.08);
 }
 
-/* 20.5 色带是绝对定位元素，会把非定位兄弟盖住；所有直接子元素提到它之上 */
-:is(#space-tech, #space-tech-cat, #space-indie, #space-indie-cat, #garden-space, #garden-category) > * {
+/* 20.5 色带是绝对定位元素，会把非定位兄弟盖住；直接子元素提到它之上 */
+#garden-category > * {
   position: relative;
   z-index: 1;
 }
 
-/* 20.6 色带上的标题转白
-   2026-10-02：色带恒为深底（不再是「亮色主题下的照片 + 遮罩」），
-   因此 20.6 / 20.7 / 20.8 一并去掉 :not([data-theme='dark']) 限制，
-   两个主题共用同一套白字。 */
-:root:root :is(#space-tech, #space-tech-cat, #space-indie, #space-indie-cat, #garden-category) > h1 {
+/* 20.6 标题
+   tech / indie：白底深字（纯文字头），不再有 text-shadow。
+   Garden 分类页：仍在深绿色带上，保持白字 + 投影。 */
+:root:root :is(#space-tech, #space-tech-cat, #space-indie, #space-indie-cat) > h1 {
+  color: var(--lopx-ink);
+}
+
+:root:root #garden-category > h1 {
   color: #ffffff;
   text-shadow: 0 2px 12px rgba(6, 14, 20, 0.42);
 }
 
-/* 20.7 副标题（tech / indie 的空间说明、garden 的分类串）转浅白 */
+/* 20.7 副标题：tech / indie 改回正文次要色（原先为压在深色带上的浅白）。
+   2026-10-18：色带移除后浅白字在白底上不可见，必须同步改回。 */
 :root:root :is(#space-tech, #space-indie) > p {
-  color: rgba(255, 255, 255, 0.78);
+  color: var(--lopx-muted);
 }
 
 /* 20.7b Garden 的分类串在 941 行带一对浅灰发丝线（原本用于白底分隔），
@@ -203,10 +171,53 @@
   border-color: transparent;
 }
 
-/* 20.8 色带上的空间导航胶囊（玻璃质感，压在渐变上）
-   与 28 节的卡片网格配套：主页给 Projects / Notes，列表页给空间主页 + 同级列表。 */
-:root:root :is(#space-tech, #space-indie, #garden-space, #space-tech-cat, #space-indie-cat, #garden-category) > nav.lopx-space-nav > a,
-:root:root :is(#space-tech, #space-indie, #garden-space, #space-tech-cat, #space-indie-cat, #garden-category) > nav.lopx-space-nav > span {
+/* 20.8 空间导航胶囊
+   tech / indie（2026-10-18）：从「压在渐变上的白玻璃」改为「浅底描边胶囊」，
+   与全站白底卡片体系一致；激活态用空间强调色区分。
+   Garden 分类页（若将来出现胶囊）仍用原来的白玻璃。 */
+:root:root :is(#space-tech, #space-tech-cat, #space-indie, #space-indie-cat) > nav.lopx-space-nav > a,
+:root:root :is(#space-tech, #space-tech-cat, #space-indie, #space-indie-cat) > nav.lopx-space-nav > span {
+  display: inline-flex;
+  align-items: center;
+  padding: 7px 16px;
+  border: 1px solid var(--lopx-line);
+  border-radius: 999px;
+  background: var(--lopx-surface);
+  color: var(--lopx-muted);
+  font-size: 0.82rem;
+  font-weight: 650;
+  text-decoration: none;
+  transition:
+    background-color var(--lopx-dur-mid) ease,
+    border-color var(--lopx-dur-mid) ease,
+    color var(--lopx-dur-mid) ease;
+}
+
+:root:root :is(#space-tech, #space-tech-cat, #space-indie, #space-indie-cat) > nav.lopx-space-nav > a:hover {
+  border-color: var(--lopx-card-accent);
+  background: var(--lopx-surface);
+  color: var(--lopx-ink);
+}
+
+/* 当前页胶囊：强调色描边 + 淡底，不可点 */
+:root:root :is(#space-tech, #space-tech-cat, #space-indie, #space-indie-cat) > nav.lopx-space-nav > span.is-active {
+  border-color: var(--lopx-card-accent);
+  background: color-mix(in srgb, var(--lopx-card-accent) 10%, transparent);
+  color: var(--lopx-ink);
+}
+
+/* 数量：胶囊内的次要信息 */
+:root:root :is(#space-tech, #space-tech-cat, #space-indie, #space-indie-cat) > nav.lopx-space-nav small {
+  margin-left: 6px;
+  color: var(--lopx-muted);
+  font-size: 0.78rem;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Garden 分类页的白玻璃胶囊（与旧观感一致，作用于深绿色带上） */
+:root:root #garden-category > nav.lopx-space-nav > a,
+:root:root #garden-category > nav.lopx-space-nav > span {
   display: inline-flex;
   align-items: center;
   padding: 7px 16px;
@@ -219,23 +230,9 @@
   text-decoration: none;
   -webkit-backdrop-filter: blur(8px);
   backdrop-filter: blur(8px);
-  transition: background-color var(--lopx-dur-mid) ease, border-color var(--lopx-dur-mid) ease;
 }
 
-:root:root :is(#space-tech, #space-indie, #garden-space, #space-tech-cat, #space-indie-cat, #garden-category) > nav.lopx-space-nav > a:hover {
-  border-color: rgba(255, 255, 255, 0.5);
-  background: rgba(255, 255, 255, 0.26);
-  color: #ffffff;
-}
-
-/* 当前页胶囊：不可点，靠底色与描边区分 */
-:root:root :is(#space-tech, #space-indie, #garden-space, #space-tech-cat, #space-indie-cat, #garden-category) > nav.lopx-space-nav > span.is-active {
-  border-color: rgba(255, 255, 255, 0.62);
-  background: rgba(255, 255, 255, 0.28);
-}
-
-/* 数量：胶囊内的次要信息，不抢标题 */
-:root:root :is(#space-tech, #space-indie, #garden-space, #space-tech-cat, #space-indie-cat, #garden-category) > nav.lopx-space-nav small {
+:root:root #garden-category > nav.lopx-space-nav small {
   margin-left: 6px;
   color: rgba(255, 255, 255, 0.72);
   font-size: 0.78rem;
@@ -243,25 +240,16 @@
   font-variant-numeric: tabular-nums;
 }
 
-/* 20.9 列表页：色带只有 104px 高，把第一条内容推离色带下沿，别贴在一起 */
-:is(#space-tech-cat, #space-indie-cat, #garden-category) > :is(article, .article-sort, p):first-of-type {
+/* 20.9 列表页：把第一条内容推离色带下沿，别贴在一起（仅色带页面需要） */
+#garden-category > :is(article, .article-sort, p):first-of-type {
   margin-top: 24px;
 }
 
-/* 20.10 窄屏
-   2026-10-02：列表页新增胶囊导航，窄屏下导航可能折到第二行，色带同步加高。
-   2026-10-05：实测 375 下 tech 的胶囊底 263 与带底 270 只差 7px，贴得太紧 →
-       tech / indie 单独提到 220（余量 27px）。garden 窄屏下是大卡（3 行，本身在带外），
-       维持 200，不必跟着加高。 */
+/* 20.10 窄屏色带高度
+   2026-10-18：tech / indie 的色带已移除，原先为「胶囊折行会掉出带外」而做的
+   220 / 216 / 272 三档加高全部作废（胶囊改浅底描边后不存在出带问题）。
+   此处只保留 Garden 分类页：窄屏下它的分类大卡本身在带外，92px 只包 h1。 */
 @media screen and (max-width: 768px) {
-  :is(#space-tech, #space-indie) {
-    --lopx-band-h: 220px;
-  }
-
-  :is(#space-tech-cat, #space-indie-cat) {
-    --lopx-band-h: 168px;
-  }
-
   #garden-category {
     --lopx-band-h: 92px;
   }

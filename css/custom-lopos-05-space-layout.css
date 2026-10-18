@@ -42,17 +42,30 @@
   max-width: 900px;
 }
 
-/* 12.3 标题分级：space 主页 2.8rem / 列表页 2rem（原 garden 分类页误用主页字号） */
-:root:root #space-tech > h1,
-:root:root #space-indie > h1,
-:root:root #garden-space > h1 {
-  font-size: 2.8rem;
+/* 12.3 标题分级：space 主页 / 列表页 —— 全站唯一的 space h1 字号来源
+   2026-10-18：2.8rem（44.8px）是「深色色带 + 白字」时代的取值 —— 当时标题压在高
+   232px 的渐变带上，需要大字号才压得住。第 20 节删掉 tech/indie 色带后，这行
+   44.8px 纯黑字直接怼在白卡顶部、紧贴导航，点进来第一眼就是「整页被放大」。
+   收到 1.9rem（30.4px）：比正文 16 高两级、比 About 的 h2（24px）略重，
+   仍是页面主标题，但不再占据视觉全部重量。列表页 2rem → 1.55rem 同步收口。
+
+   同日第二轮（去根）：custom-lopos-01 里 5 处旧值（2.8×3 / 2×2 / 2.35）
+   已物理删除，字号只在本节定义 —— 以前是靠 `:root:root` 提权重压住旧值，
+   旧值仍在文件里活着，谁清理掉双伪类就会复发。现在无需压权重，
+   选择器降回普通 `#id`，改这里的值即为最终值，不会再有第二个来源。
+   层级基准：主页 = 正文 ×1.9，列表页 ×1.55；无装饰衬托时不超过 ×2.2。 */
+#space-tech > h1,
+#space-indie > h1,
+#garden-space > h1 {
+  font-size: 1.9rem;
+  line-height: 1.25;
 }
 
-:root:root #space-tech-cat > h1,
-:root:root #space-indie-cat > h1,
-:root:root #garden-category > h1 {
-  font-size: 2rem;
+#space-tech-cat > h1,
+#space-indie-cat > h1,
+#garden-category > h1 {
+  font-size: 1.55rem;
+  line-height: 1.3;
 }
 
 /* 12.4 garden 列表补回日期
@@ -76,7 +89,8 @@
 }
 
 /* 12.6 移动端：12.1 / 12.3 用的是 id 选择器且位置在文件末尾，
-   会压过主题原有的窄屏媒体查询，故在此显式补回窄屏取值。 */
+   会压过主题原有的窄屏媒体查询，故在此显式补回窄屏取值。
+   2026-10-18：同步去掉 `:root:root` 前缀 —— 01 里的旧值已删，不再需要提权重。 */
 @media screen and (max-width: 768px) {
   #space-tech,
   #space-tech-cat,
@@ -87,16 +101,16 @@
     padding: 40px 20px 56px;
   }
 
-  :root:root #space-tech > h1,
-  :root:root #space-indie > h1,
-  :root:root #garden-space > h1 {
-    font-size: 2.35rem;
+  #space-tech > h1,
+  #space-indie > h1,
+  #garden-space > h1 {
+    font-size: 1.65rem;
   }
 
-  :root:root #space-tech-cat > h1,
-  :root:root #space-indie-cat > h1,
-  :root:root #garden-category > h1 {
-    font-size: 1.8rem;
+  #space-tech-cat > h1,
+  #space-indie-cat > h1,
+  #garden-category > h1 {
+    font-size: 1.35rem;
   }
 }
 

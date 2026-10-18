@@ -181,3 +181,288 @@
   }
 }
 
+/* ============================================================
+   47. 追番列表重排 —— 2026-10-19
+
+   用户反馈：「界面不美观，简介也显示不全，整体显示效果很不好，看起来高端一点」。
+   逐项实测出的问题：
+     · 每条 6 个「小方块」指标（全11话 / 类型 / 想看 / 在看 / 已看 / 评分）
+       排成一行网格 —— 这是 bgm 全站热度，对本站读者没有信息量，却占了整条
+       卡片的视觉中心，看着像后台数据面板；
+     · 每条左侧固定 110px 封面位，图来自 lain.bgm.tv 外链，国内常年打不开
+       → 结构留着、图是空的，等于每条左边挖一个 110px 的洞；
+     · 简介被插件写死 `-webkit-line-clamp:3`，300 部番每部只能看三行开头；
+     · 每个条目一张带投影的白卡（`box-shadow: 0 10px 28px`），一屏挤三四张，
+       底面全是浮起来的方块。
+
+   重排方向：卡片 → 分隔线列表（纯文字）。番剧名 + 右上角评分 + 一行轻量元信息
+   + 完整简介。封面位整个隐藏 —— 这一步是「高端」的关键：在封面图源不可靠的
+   前提下，留白比空白框好看，纯文字排版也比「图挂着但加载不出来」稳。
+
+   本节的覆盖全部带 `#article-container` 前缀（1 id + 1 class），
+   高于插件内联 style 里的 `.bangumi-*`（0 id + 1 class），不需要 !important。
+   ============================================================ */
+
+/* 47.1 条目：卡片壳 → 分隔线 */
+#article-container .bangumi-item {
+  display: block;
+  min-height: 0;
+  margin: 0;
+  padding: 22px 0;
+  border: none;
+  border-bottom: 1px solid var(--lopx-line);
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+}
+
+#article-container .bangumi-item:first-of-type {
+  padding-top: 8px;
+}
+
+#article-container .bangumi-item:last-of-type {
+  border-bottom: none;
+}
+
+/* 47.2 封面位隐藏（外链图不可达，留着只会每条挖一个 110px 的洞） */
+#article-container .bangumi-picture {
+  display: none;
+}
+
+#article-container .bangumi-info {
+  min-height: 0;
+  padding-left: 0;
+}
+
+/* 47.3 标题：右侧留 64px 给绝对定位的评分 */
+#article-container .bangumi-title {
+  margin: 0 0 8px;
+  padding-right: 64px;
+  font-size: 17px;
+  font-weight: 650;
+  line-height: 1.4;
+}
+
+#article-container .bangumi-title a {
+  color: var(--lopx-ink);
+  transition: color var(--lopx-dur-fast, 0.2s) ease;
+}
+
+#article-container .bangumi-title a:hover {
+  color: var(--lopx-accent);
+}
+
+/* 47.4 元信息：一行灰字。想看 / 在看 / 已看 是 bgm 全站统计，对读者无意义，隐去；
+   只留话数与类型。被隐藏的 item 不再占网格位。
+   「类型」这个 label 也去掉 —— 值是「动画 / TV」这类词，本身已自解释，
+   留着会变成「类型 动画」这种拗口读法。分隔符用中点，靠 gap 统一控制间距。 */
+#article-container .bangumi-info-items {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0;
+  width: auto;
+  height: auto;
+  padding: 0;
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: var(--lopx-muted);
+}
+
+#article-container .bangumi-info-items > .bangumi-info-item + .bangumi-info-item::before {
+  content: '·';
+  margin: 0 7px;
+  color: var(--lopx-muted);
+  opacity: 0.55;
+}
+
+#article-container .bangumi-info-item {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 4px;
+  width: auto;
+  min-width: 0;
+  min-height: 0;
+  height: auto;
+  padding: 0;
+  border: none;
+  border-radius: 0;
+  background: none;
+  text-align: left;
+}
+
+#article-container .bangumi-info-label {
+  display: inline;
+  color: var(--lopx-muted);
+  line-height: inherit;
+}
+
+/* 「类型」的 label 去掉，只留值（动画 / TV / 剧场版…） */
+#article-container .bangumi-type .bangumi-info-label {
+  display: none;
+}
+
+/* 「全 N 话」自带说明，不让它再派生一个「共」字之类的读法 */
+
+#article-container .bangumi-info-item em {
+  display: inline;
+  padding: 0;
+  overflow: visible;
+  color: var(--lopx-ink);
+  font-weight: 600;
+  white-space: normal;
+}
+
+#article-container .bangumi-info-total {
+  display: inline;
+  padding: 0;
+  font-weight: 600;
+  color: var(--lopx-ink);
+}
+
+#article-container .bangumi-info-label-em,
+#article-container .bangumi-wish,
+#article-container .bangumi-doing,
+#article-container .bangumi-collect {
+  display: none;
+}
+
+/* 47.5 评分：从网格里提出来，绝对定位到条目右上 —— 唯一保留的强调色，
+   给整条一个视觉落点，替代原来 6 个方块的作用。 */
+#article-container .bangumi-info-item-score {
+  position: absolute;
+  top: 20px;
+  right: 0;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 4px;
+  padding: 0;
+  border: none;
+  background: none;
+}
+
+#article-container .bangumi-info-item-score .bangumi-info-label {
+  font-size: 11px;
+  color: var(--lopx-muted);
+}
+
+#article-container .bangumi-info-item-score em {
+  font-size: 19px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+  color: var(--lopx-accent);
+}
+
+/* 47.6 简介：解除 3 行截断，完整显示。
+   插件写死的是 `.bangumi-summary>p{display:-webkit-box;...;-webkit-line-clamp:3}`，
+   这里必须同时把 display 改回 block，否则 overflow 放开了也还是 3 行。 */
+#article-container .bangumi-summary {
+  margin-top: 10px;
+  font-size: 13.5px;
+  line-height: 1.85;
+  color: var(--lopx-muted);
+}
+
+#article-container .bangumi-summary > p {
+  display: block;
+  overflow: visible;
+  height: auto;
+  margin: 0;
+  white-space: normal;
+  text-overflow: clip;
+  -webkit-line-clamp: none;
+  line-clamp: none;
+}
+
+/* 47.7 tabs：实心选中块 → 下划线式。
+   原来 active 是主色实底 + 白字，在本页只有三个 tab 的情况下像一个按钮，
+   且与正文的轻量排版不是一套语言。 */
+#article-container .bangumi-tabs {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 0;
+  margin: 22px 0 0;
+  padding: 0;
+  border: none;
+  border-bottom: 1px solid var(--lopx-line);
+  border-radius: 0;
+  background: none;
+}
+
+#article-container .bangumi-tab {
+  flex: 0 1 auto;
+  padding: 0 0 10px;
+  margin-right: 26px;
+  border-radius: 0;
+  border-bottom: 2px solid transparent;
+  color: var(--lopx-muted);
+  font-size: 13.5px;
+  font-weight: 600;
+  text-align: left;
+  transition: color var(--lopx-dur-fast, 0.2s) ease, border-color var(--lopx-dur-fast, 0.2s) ease;
+}
+
+#article-container .bangumi-tab:hover {
+  color: var(--lopx-ink);
+  background: none;
+}
+
+#article-container .bangumi-tab.bangumi-active {
+  color: var(--lopx-ink);
+  background: none;
+  box-shadow: none;
+  border-bottom-color: var(--lopx-accent);
+}
+
+[data-theme='dark'] #article-container .bangumi-tab.bangumi-active {
+  color: var(--lopx-ink);
+}
+
+/* 47.8 窄屏：留白收紧，评分仍贴右上 */
+@media screen and (max-width: 768px) {
+  #article-container .bangumi-item {
+    padding: 18px 0;
+  }
+
+  #article-container .bangumi-title {
+    padding-right: 52px;
+    font-size: 16px;
+  }
+
+  #article-container .bangumi-info-item-score em {
+    font-size: 17px;
+  }
+
+  #article-container .bangumi-summary {
+    font-size: 13px;
+    line-height: 1.8;
+  }
+}
+
+/* 47.9 页首引语：渐变卡片 → 左侧细线
+   插件的 .bangumi-quote 是「主色 4px 左边框 + 对角渐变底 + 大引号 + 投影」，
+   在标题下方占掉一整块，是本页最重的装饰。改成一条细线和一行灰字后，
+   第一屏的视觉重心回到「番剧列表」本身。 */
+#article-container .bangumi-quote {
+  margin: 0 0 2px;
+  padding: 2px 0 2px 14px;
+  border: none;
+  border-left: 2px solid var(--lopx-line);
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+  color: var(--lopx-muted);
+}
+
+#article-container .bangumi-quote::before {
+  display: none;
+}
+
+#article-container .bangumi-quote > p {
+  margin: 0;
+  color: var(--lopx-muted);
+  font-size: 13.5px;
+  line-height: 1.7;
+}
+
+

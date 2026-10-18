@@ -207,3 +207,38 @@
    现在统一给头部铺通栏封面图 + 暗色压底，因此标题/导航恢复白字，
    不再需要按“有无封面”把文字切成深色。 */
 
+/* ============================================================
+   50. pjax 切换的等待反馈 —— 2026-10-19
+
+   问题：tech / indie 的分类胶囊之间切换，pjax 整块替换 #body-wrap，
+         替换期间界面毫无反应。本地实测 21ms 就完成（图片早被缓存），
+         但线上 GitHub Pages 是 300–600ms，体感为「卡住 → 突然换页」。
+         同一批里还有「卡片图重新走一遍懒加载」的问题，已在
+         mixins/space-cards.pug 用 nolazyload 解决，这里只处理等待反馈。
+
+   做法：pjax:send 给 <html> 挂 .lopx-pjax-loading，complete / error 移除
+        （见 includes/third-party/pjax.pug）。CSS 侧用 120ms 的
+        transition-delay：
+          · 本地那种「加上就删」的高速切换根本到不了 120ms → 视觉零变化；
+          · 只有真的慢，才开始降透明度，让等待变成「有响应」。
+        transition 声明只写在基础规则上（主题没有给 #content-inner 设过
+        transition，已核对），删 class 时无延迟、立刻回满，不会拖影。
+   ============================================================ */
+#content-inner {
+  transition: opacity 0.22s ease;
+}
+
+html.lopx-pjax-loading #content-inner {
+  opacity: 0.45;
+  transition-delay: 0.12s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #content-inner,
+  html.lopx-pjax-loading #content-inner {
+    transition: none;
+    opacity: 1;
+  }
+}
+
+

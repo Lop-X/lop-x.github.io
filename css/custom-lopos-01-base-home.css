@@ -368,15 +368,17 @@
   color: var(--hardware-ink);
 }
 
-/* Hardware & Soft Header */
+/* Hardware & Soft Header
+   2026-10-18：字号与行高移交给 custom-lopos-05 §12.3 的标题分级，本节不再声明。
+   原先这里的 2.8rem(44.8px) 是「232px 深色色带 + 白字」时代的值，色带删掉后
+   它变成白卡顶部一行巨黑字（用户报的「点导航后整页被放大」）。
+   只压着不删等于给下轮改造埋雷 —— 见 §12.3 顶部说明。 */
 #space-tech > h1,
 #space-tech-cat > h1 {
   margin: 0;
   color: var(--hardware-ink);
-  font-size: 2.8rem;
   font-weight: 750;
   letter-spacing: 0;
-  line-height: 1.1;
 }
 
 #space-tech > p {
@@ -393,7 +395,6 @@
 #space-tech-cat > h1 {
   margin-bottom: 22px;
   color: var(--hardware-ink);
-  font-size: 2rem;
   font-weight: 700;
   letter-spacing: 0;
 }
@@ -419,15 +420,13 @@
   color: var(--indie-ink);
 }
 
-/* Indie Header */
+/* Indie Header（字号与行高同 tech，见 §12.3） */
 #space-indie > h1,
 #space-indie-cat > h1 {
   margin: 0;
   color: var(--indie-ink);
-  font-size: 2.8rem;
   font-weight: 750;
   letter-spacing: 0;
-  line-height: 1.1;
 }
 
 #space-indie > p {
@@ -441,7 +440,6 @@
 #space-indie-cat > h1 {
   margin-bottom: 22px;
   color: var(--indie-ink);
-  font-size: 2rem;
   font-weight: 700;
   letter-spacing: 0;
 }
@@ -473,10 +471,8 @@
 #garden-category > h1 {
   margin: 0;
   color: var(--garden-ink);
-  font-size: 2.8rem;
   font-weight: 700;
   letter-spacing: 0;
-  line-height: 1.1;
 }
 
 /* Garden Posts
@@ -569,15 +565,14 @@
   color: var(--garden-muted);
 }
 
-/* Garden Responsive */
+/* Garden Responsive
+   2026-10-18：原 `#garden-category > h1 { font-size: 2.35rem }` 已删 ——
+   窄屏字号由 custom-lopos-05 §12.6 统一提供（1.35rem），避免同一个标题
+   在两处声明、靠加载顺序决胜。 */
 @media screen and (max-width: 768px) {
   #garden-space,
   #garden-category {
     padding: 40px 20px 56px;
-  }
-
-  #garden-category > h1 {
-    font-size: 2.35rem;
   }
 
   #garden-category > .article-sort {

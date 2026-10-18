@@ -133,51 +133,17 @@
   border-bottom-color: rgba(58, 122, 160, 0.35);
 }
 
-/* ---- 11. 代码块浅色化后的文字对比度修正 ----
-   highlight_theme 已由 pale night（深蓝紫底）改为 mac light（白底）。
-   实测 mac light 的默认代码文字与行号同为 #90A4AE 蓝灰，
-   在白底上对比度仅 2.59:1（WCAG AA 需 4.5:1），且色相偏蓝、与站点绿灰冲突。
-   语法着色 token（string 等）由主题另行下发，不受本规则影响。 */
-/* 亮色：mac light 默认文字对比度不足，统一加深到 #3f4a52 */
-:root:root:not([data-theme='dark']) figure.highlight pre,
-:root:root:not([data-theme='dark']) figure.highlight code,
-:root:root:not([data-theme='dark']) figure.highlight table,
-:root:root:not([data-theme='dark']) figure.highlight .line {
-  color: #3f4a52;
-}
+/* ---- 11. 代码块文字对比度修正 —— 2026-09 建立 / 2026-10-19 移除 ----
+   历史：当年 highlight_theme 是 pale night → mac light（白底），
+         mac light 的默认代码文字与行号同为 #90A4AE 蓝灰，白底只有 2.59:1，
+         所以在亮色下统一压深到 #3f4a52、行号 #a3aeb4；
+         暗色下又把 --hl-color 提到 #c9d6e0，并给 comment / meta 上 !important 兜底。
 
-:root:root:not([data-theme='dark']) figure.highlight .gutter,
-:root:root:not([data-theme='dark']) figure.highlight .gutter .line,
-:root:root:not([data-theme='dark']) figure.highlight .line-numbers {
-  color: #a3aeb4;
-}
+   2026-10-19：代码块改为黑色系（highlight_theme → darker，底 #14161c / #101218），
+         这一整节的前提（白底 / 亮字压暗）全部反转 —— 亮色下 #3f4a52 深灰字
+         放在黑底上等于消失。文字色统一改由第 49 节
+         （custom-lopos-19）在 figure.highlight 上声明 --hl-color 控制，
+         token 色交给主题 darker 色表，不再逐类覆盖。
 
-/* 暗色：§49 把代码块背景改到 #14171e，默认文字若仍是 #3f4a52 会掉到 3.9:1。
-   主题用 CSS 变量 --hl-color / --hlnumber-color 控制默认代码文字与行号色，
-   直接覆盖变量最干净，也不会误伤 token 类（它们 specificity 同等但后定义）。
-   但 Hexo 生成的代码行是 `pre > span.line`（不在 `code` 内），主题那条
-   `pre code { color: var(--hl-color) }` 漏掉 .line；所以再补一条 pre 的 color。 */
-[data-theme='dark'] {
-  --hl-color: #c9d6e0;
-  --hlnumber-color: rgba(255, 255, 255, 0.6);
-}
-
-[data-theme='dark'] #article-container figure.highlight pre {
-  color: #c9d6e0;
-}
-
-/* mac light 主题把 token 色硬编码为亮色方案值，在 §49 的深色代码块底上
-   注释色 #969896 / meta 色 #7c4dff 偏低。仅对低对比度 token 提亮，不动 keyword/string/number。 */
-:root:root[data-theme='dark'] figure.highlight .comment,
-:root:root[data-theme='dark'] figure.highlight .meta {
-  color: #a8b4be;
-}
-
-/* 用 !important 兜底：主题 token 规则被编译进 index.css 且可能后加载（虽然
-   实测 custom.css 后加载，但某些 token 类仍无法被 2 个 id 的规则覆盖），
-   直接对低对比度 token 上 important 最安全，只影响暗色代码块可读性。 */
-[data-theme='dark'] #post #article-container figure.highlight pre .comment,
-[data-theme='dark'] #post #article-container figure.highlight pre .meta {
-  color: #a8b4be !important;
-}
+   ⚠️ 改回白底主题时，这一节要和第 12 号文件的第 35 节一起恢复。 */
 

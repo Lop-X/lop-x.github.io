@@ -190,47 +190,18 @@
   --garden-accent: var(--lopx-accent);
 }
 
-/* 23.2 代码块：mac light 的语法配色是为白底设计的，而主题在 mac light 下把
-   代码块底色取成 var(--anzhiyu-card-bg)（暗色下自动变暗卡色）——
-   于是「深色字 + 深色底」，探针实测每一行 .line 只有 1.83:1。
-   这里在暗色下换一套暗底可读的 token 配色，底色仍沿用主题的卡片色。 */
-[data-theme='dark'] #article-container figure.highlight .line {
-  color: #c9d1d9;
-}
+/* 23.2 代码块 token 配色 —— 2026-10 建立 / 2026-10-19 移除
+   历史：mac light 下主题把代码块底取成 var(--anzhiyu-card-bg)（暗色时变暗卡色），
+         于是「深色字 + 深色底」，实测每行 .line 只有 1.83:1。这里在暗色下
+         换了一整套 8 条 token 配色（#79b8ff 蓝 / #9ecb9b 绿 / #e6a06a 橙…）。
 
-[data-theme='dark'] #article-container figure.highlight .gutter,
-[data-theme='dark'] #article-container figure.highlight .gutter .line,
-[data-theme='dark'] #article-container figure.highlight .line-numbers {
-  color: #6e7681;
-}
-
-[data-theme='dark'] #article-container figure.highlight :is(.comment, .quote) {
-  color: #8b949e;
-}
-
-[data-theme='dark'] #article-container figure.highlight :is(.keyword, .selector-tag, .built_in, .type) {
-  color: #79b8ff;
-}
-
-[data-theme='dark'] #article-container figure.highlight :is(.string, .attr, .addition, .regexp) {
-  color: #9ecb9b;
-}
-
-[data-theme='dark'] #article-container figure.highlight :is(.number, .literal, .symbol, .bullet, .meta .number) {
-  color: #e6a06a;
-}
-
-[data-theme='dark'] #article-container figure.highlight :is(.title, .function, .section, .name) {
-  color: #c9a7f5;
-}
-
-[data-theme='dark'] #article-container figure.highlight :is(.variable, .template-variable, .selector-id, .selector-class) {
-  color: #e3b341;
-}
-
-[data-theme='dark'] #article-container figure.highlight :is(.meta, .deletion, .tag) {
-  color: #ff8a80;
-}
+   2026-10-19：代码块改为黑色系，亮暗主题的底色都由第 49 节
+         （custom-lopos-19）统一控制（#14161c / #101218），
+         主题 highlight_theme 也换成了 darker —— 它自带的 token 色本来就是
+         为深底设计的浅色，这一整套手写配色成了第二套色表，
+         与 darker 的色相不一致（同一个 string 在亮暗主题下会是两种绿）。
+         整节移除，token 色统一交给主题。
+   ⚠️ 改回白底主题时，本节需与第 04 / 12 号文件的对应小节一起恢复。 */
 
 /* 23.3 About / 首页的能力标签与次要文字 —— 2026-10-03 已删：
    原规则针对 .author-tag / .title1（首页 hero 旧结构），改版后 .lopx-hero-chips
