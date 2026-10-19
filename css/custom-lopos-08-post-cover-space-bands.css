@@ -134,7 +134,11 @@
   color: var(--lopx-ink);
 }
 
-/* 当前页胶囊：强调色描边 + 淡底，不可点 */
+/* 当前页胶囊：强调色描边 + 淡底
+   2026-10-19：激活项由 <span> 改为 <a class="is-active">（本地过滤需要能原地改
+   class 而不重建节点），所以选择器主语从 span 换成 a；span 版本保留一条，
+   防止某处仍在用旧的 active 写法。 */
+:root:root :is(#space-tech, #space-tech-cat, #space-indie, #space-indie-cat) > nav.lopx-space-nav > a.is-active,
 :root:root :is(#space-tech, #space-tech-cat, #space-indie, #space-indie-cat) > nav.lopx-space-nav > span.is-active {
   border-color: var(--lopx-card-accent);
   background: color-mix(in srgb, var(--lopx-card-accent) 10%, transparent);
@@ -173,6 +177,13 @@
   font-size: 0.78rem;
   font-weight: 500;
   font-variant-numeric: tabular-nums;
+}
+
+/* Garden 分类页的激活胶囊（2026-10-19）：激活项同样由 span 变成 a.is-active，
+   若不给它一条规则，它会和普通胶囊长得一模一样 —— 白玻璃底上无法分辨当前页。 */
+:root:root #garden-category > nav.lopx-space-nav > a.is-active {
+  border-color: rgba(255, 255, 255, 0.52);
+  background: rgba(255, 255, 255, 0.26);
 }
 
 /* 20.9 列表页：把第一条内容推离色带下沿，别贴在一起（仅色带页面需要） */

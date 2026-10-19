@@ -290,6 +290,39 @@
   min-width: 0;
 }
 
+/* 2026-10-19 本地过滤：非当前分类的卡片带 hidden 属性输出。
+   .lopx-card 的 display:flex 会盖掉 UA 样式表的 [hidden]{display:none}
+   （作者样式优先于 UA 样式），所以必须显式补这一条，否则筛选完全无效。 */
+.lopx-card[hidden] {
+  display: none;
+}
+
+/* 28.3b 切换分类时的入场：只给「重新出现」的卡片一个极短的淡入位移。
+   为什么不做整块淡入淡出：容器高度随内容多少而变，给容器做过渡会和卡片
+   显隐互相拉扯，反而显得迟钝；逐卡 0.18s 已经足够传达「换了内容」。
+   时长与缓动沿用全站 token，prefers-reduced-motion 下直接关闭。
+   类名由 source/js/lopx-space-filter.js 在切换时临时挂到 .lopx-cards 上。 */
+.lopx-cards.is-switching > .lopx-card {
+  animation: lopx-card-swap-in 0.18s var(--lopx-ease, cubic-bezier(0.22, 1, 0.36, 1)) both;
+}
+
+@keyframes lopx-card-swap-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lopx-cards.is-switching > .lopx-card {
+    animation: none;
+  }
+}
+
 /* 28.4 封面：16:9 独立图块（圆角只属于图片，不属于卡片）
    无封面文章渲染空间识别色渐变 + 细网格纹理，与色带同源，
    高度同样是 16:9 —— 有图无图一律对齐。
@@ -837,14 +870,23 @@
   text-transform: uppercase;
 }
 
-/* 30.2 空间分类子页标题：分类名 + 空间名小字 —— 2026-10-03
-   分类页 h1 是分类名（如「建站」），补一个空间名小字说明归属。
-   色带上标题是白字，小字降一档透明度；只在 /tech/<分类>/、/indie/<分类>/ 出现。 */
-:is(#space-tech-cat, #space-indie-cat) > h1 > small {
+/* 30.2 空间分类子页标题：空间名 + 当前分类小字 —— 2026-10-03
+   2026-10-19：胶囊改本地过滤后，主页与分类页的 h1 结构统一为
+   「空间名 + small(当前分类)」，于是这条规则的主语从「分类页」扩到四个根节点。
+   同时修一个既存缺陷：原来 small 是 rgba(255,255,255,.68) —— 那是标题压在
+   深色色带上的取值，而 tech/indie 的色带早已删除（第 20 节），实测分类页 h1
+   主色是 rgb(23,23,23)、small 仍是白字，等于白底白字看不见。
+   现在统一用 --lopx-muted。Garden 分类页仍是深绿色带白字，不在本规则内。 */
+:is(#space-tech, #space-indie, #space-tech-cat, #space-indie-cat) > h1 > small {
   margin-left: 10px;
-  color: rgba(255, 255, 255, 0.68);
+  color: var(--lopx-muted);
   font-size: 0.82rem;
   font-weight: 550;
   letter-spacing: 0.12em;
   vertical-align: 0.12em;
+}
+
+/* 「全部」态的小字是空的，不能让它靠 margin-left 占住 10px 空白 */
+:is(#space-tech, #space-indie, #space-tech-cat, #space-indie-cat) > h1 > small:empty {
+  display: none;
 }
