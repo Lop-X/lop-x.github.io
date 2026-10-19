@@ -404,6 +404,14 @@
   align-items: center;
   gap: 0.3rem;
   justify-content: center;
+  /* ⚠️ 必须覆盖主题 head.styl 的 `width: 50rem`（800px）。
+     那个宽度是为「标题左对齐 + 元信息压在左下角」的封面版式留的；
+     只改 align-items 不改宽度的话，#post-meta 会按 800px 从内容盒左边缘排布，
+     在大屏上整体偏左约 200px —— 表现为「标题居中了，日期却没居中」。
+     改成整宽后，两行元信息与标题共用同一条中轴。 */
+  width: 100%;
+  max-width: 100%;
+  margin: 0 auto;
 }
 
 #page-header.post-bg #post-info #post-meta > div {
