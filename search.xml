@@ -192,6 +192,54 @@
 <h3 id="复制设置"><a href="#复制设置" class="headerlink" title="复制设置"></a>复制设置</h3><p>根目录下<code>.obsidian</code>文件夹保存着obsidian的所有设置，包括插件和主题，<br><strong>记得复制的时候删除<code>workspace.json</code>文件，里面保存的当前界面布局</strong></p>
 <p>目前支<code>ctrl+shift+p</code>一键同步当前文章到本地博客仓库</p>
 <h3 id="现在的完整工作流"><a href="#现在的完整工作流" class="headerlink" title="现在的完整工作流"></a>现在的完整工作流</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">在 Obsidian 里写  →  Ctrl+Shift+P 一键同步到 _posts  →  hexo d 手动上线</span><br><span class="line">                  ↘  每 10 分钟自动备份到 GitHub（无需操作）</span><br></pre></td></tr></table></figure>
+
+<h3 id="工作流解释"><a href="#工作流解释" class="headerlink" title="工作流解释"></a>工作流解释</h3><p>可以把整套系统想象成「一个源头，两条水管」：</p>
+<ul>
+<li><strong>源头</strong>：<code>D:/Note</code> 这个 Obsidian 笔记库。所有文章只在这里写，别的任何地方都不改。</li>
+<li><strong>水管一（发布）</strong>：按下 <code>Ctrl+Shift+P</code>，脚本 <code>publish.js</code> 会把当前这篇笔记<strong>复制</strong>到博客仓库的 <code>_posts</code> 文件夹里，顺便处理图片、生成封面。它只是「搬运工」，笔记库本身一个字都不会动。</li>
+<li><strong>水管二（备份）</strong>：<code>obsidian-git</code> 插件每 10 分钟自动把整个笔记库（包括设置、插件、脚本）提交并推送到 GitHub 私有仓库。</li>
+</ul>
+<p>脚本只把标记了 <code>publish: true</code> 的笔记搬到博客那边，<code>publish: false</code> 或没写的笔记永远不发布。</p>
+<h3 id="脚本命令速查"><a href="#脚本命令速查" class="headerlink" title="脚本命令速查"></a>脚本命令速查</h3><p><code>publish.js</code> 常用的几种用法（在终端里跑，或者用快捷键只发当前这篇）：</p>
+<table>
+<thead>
+<tr>
+<th>命令</th>
+<th>干什么</th>
+<th>会不会改文件</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>node publish.js --status</code></td>
+<td>列出全库哪些笔记会发布、哪些是私有</td>
+<td>只看，不改</td>
+</tr>
+<tr>
+<td><code>node publish.js --dry-run</code></td>
+<td>预演一遍：告诉你如果真跑会发生什么变化</td>
+<td>只看，不改</td>
+</tr>
+<tr>
+<td><code>node publish.js</code></td>
+<td>把所有 <code>publish: true</code> 的笔记同步到博客</td>
+<td>会写 <code>_posts</code></td>
+</tr>
+<tr>
+<td><code>Ctrl+Shift+P</code>（Obsidian 里）</td>
+<td>只同步当前打开的这一篇</td>
+<td>只写这一篇</td>
+</tr>
+</tbody></table>
+<p>日常写文章只需要记住一条：<strong>写完按 <code>Ctrl+Shift+P</code>，然后 <code>hexo d</code> 上线</strong>。其余命令是排查问题时用的。</p>
+<h3 id="换电脑怎么恢复"><a href="#换电脑怎么恢复" class="headerlink" title="换电脑怎么恢复"></a>换电脑怎么恢复</h3><p>所有配置和脚本都在 git 里，但有几样东西绑定了旧电脑，按下面步骤来：</p>
+<ol>
+<li><strong>配 SSH</strong>：生成新的 SSH 密钥并添加到 GitHub 账号（私钥不会也没法跟着 git 走），否则拉不了私有仓库。</li>
+<li><strong>clone 笔记库到 <code>D:/Note</code></strong>：<code>git clone git@github.com:Lop-X/lop-x-notes.git</code>。路径放一样的最省事，脚本里的路径就不用改。</li>
+<li><strong>clone 博客仓库到 <code>D:/blog2026</code></strong>：同样保持原路径。</li>
+<li><strong>装 Node.js</strong>：脚本和发布命令都靠它。</li>
+<li><strong>（可选）装 Python + Pillow</strong>：只有文章带图片需要转 WebP、自动生成封面时才用得上。装好后设一个环境变量 <code>PUBLISH_PYTHON</code> 指向它即可。</li>
+</ol>
+<p>装完打开 Obsidian，设置、主题、快捷键、插件全部原样回来，直接就能写。<code>workspace.json</code>（界面布局）被 gitignore 排除了，属于每次打开都会自动重建的东西，不用管。</p>
 ]]></content>
       <categories>
         <category>工具</category>
