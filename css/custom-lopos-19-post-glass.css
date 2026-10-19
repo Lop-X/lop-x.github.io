@@ -308,14 +308,10 @@
    页头改纯文字后高度由内容决定（第 51.1 节 height:auto），不再写死。
    按规范「删装饰层同一处改掉依赖它的高度」，这里不留空壳。 */
 
-/* ---- 49.11 底部：上/下一篇与相关文章收圆角（2026-10-19 去掉了悬停位移）
-   原来相关文章 hover 会 translateY(-3px) + 加深阴影，正文末尾出现一圈会浮起来
-   的卡片，与「简洁」相悖。现在只留圆角与静态投影，hover 只改描边色。 */
-.relatedPosts > .relatedPosts-list > div {
-  border-radius: 14px;
-  overflow: hidden;
-  box-shadow: 0 14px 34px -26px rgba(11, 33, 48, 0.55);
-}
+/* ---- 49.11 底部卡片收圆角 —— 2026-10-19 删除
+   原内容：.relatedPosts 每卡 border-radius 14px + 静态投影。
+   删除原因：「喜欢这篇文章的人也看了」整块已从 post.pug 移除，元素不再渲染。
+   （原本还有 hover translateY(-3px)，在同日更早一轮已去掉。） */
 
 /* ---- 49.12 窄屏：卡片沿用玻璃，但用 !important 压过主题的移动端实色覆盖 ---- */
 @media screen and (max-width: 768px) {
@@ -523,28 +519,11 @@
   line-height: 1.5;
 }
 
-/* ---- 51.7 相关文章：渐变大字封面 → 浅底文字卡 ----
-   第 33.3 节给每张卡刷了深蓝渐变，而卡片里还渲染 259×200 封面（本站封面
-   本身就是「渐变大字」图），两层大字叠在一起。隐掉封面，改成浅底细描边。 */
-.relatedPosts > .relatedPosts-list > div {
-  background-image: none;
-  background-color: var(--anzhiyu-card-bg, #ffffff);
-  border: 1px solid rgba(60, 60, 67, 0.12);
-  box-shadow: none;
-  height: 140px;
-}
-
-.relatedPosts > .relatedPosts-list > div .cover {
-  display: none;
-}
-
-.relatedPosts > .relatedPosts-list > div .content .date {
-  color: var(--anzhiyu-secondtext);
-}
-
-.relatedPosts > .relatedPosts-list > div .content .title {
-  color: var(--anzhiyu-fontcolor);
-}
+/* ---- 51.7 相关文章 —— 2026-10-19 删除
+   原内容：隐掉卡内封面 + 改成浅底细描边（height 200 → 140）。
+   删除原因：整块「喜欢这篇文章的人也看了」已从 post.pug 移除，不再渲染。
+   配套删除：custom-lopos-12 §33.3、_layout/relatedposts.styl、
+   _extra/fix/radius.css 的第一条、scripts/helpers/related_post.js。 */
 
 /* ---- 51.8 窄屏 ----
    标题与元信息在窄屏本来就居中，不需要再把对齐翻过来。 */
@@ -575,9 +554,6 @@
     text-align: left;
   }
 
-  .relatedPosts > .relatedPosts-list > div {
-    height: 120px;
-  }
 }
 
 /* ---- 51.9 暗色补偿 ----
@@ -585,7 +561,6 @@
    data-theme 在 <html> 上，选择器是 `:root[data-theme]`，与上面的
    `#page-header...` 不冲突（前者命中根元素，后者命中子元素）。 */
 :root[data-theme='dark'] #pagination.pagination-post .prev-post,
-:root[data-theme='dark'] #pagination.pagination-post .next-post,
-:root[data-theme='dark'] .relatedPosts > .relatedPosts-list > div {
+:root[data-theme='dark'] #pagination.pagination-post .next-post {
   border-color: rgba(255, 255, 255, 0.12);
 }

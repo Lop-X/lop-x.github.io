@@ -86,21 +86,10 @@ html {
    与相关文章、space 卡片同一套语言，样式在 custom-lopos-19 第 51.6 节。
    卡片上的封面图也一并去掉（本站封面是渐变大字图，与卡内标题会叠字）。 */
 
-/* 33.3 相关文章：每张卡各自一套渐变（与 28.4 卡片封面同配方） */
-.relatedPosts > .relatedPosts-list > div {
-  background-color: transparent;
-  background-image:
-    repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.055) 0 1px, transparent 1px 26px),
-    repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.045) 0 1px, transparent 1px 26px),
-    linear-gradient(135deg, #0b2130 0%, #1f6288 100%);
-  background-repeat: repeat, repeat, no-repeat;
-  background-size: 26px 26px, 26px 26px, cover;
-  background-position: left top, left top, center left;
-}
-
-/* 卡内文字不需要覆盖：主题的 .content .date = var(--light-grey) #eee、
-   .content .title = var(--white) #fff，实测落在渐变中段（≈#15415c）上分别是
-   9.3:1 与 10.7:1，均富余；沿用主题取值即可，勿再叠加规则。 */
+/* 33.3 相关文章卡片渐变 —— 2026-10-07 建立 / 2026-10-19 删除
+   原内容：每张卡刷 26px 网格 + 135deg 深蓝渐变（与 28.4 卡片封面同配方）。
+   删除原因：「喜欢这篇文章的人也看了」整块已从 post.pug 移除，元素不再渲染。
+   按「删装饰层不留空壳」的规范整段删除，避免下一轮美化重新激活。 */
 
 /* ============================================================
    34. 正文加粗文字对比度 —— 2026-10-07（第 1 批第 4 轮）

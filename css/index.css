@@ -242,7 +242,6 @@ template {
 #aside-content .aside-list > .aside-list-item .content > .title,
 #aside-content .aside-list > .aside-list-item .content > .comment,
 #post-info .post-title,
-.relatedPosts > .relatedPosts-list .content .title,
 #content-inner figure.gallery-group p,
 #content-inner figure.gallery-group .gallery-group-name {
   display: -webkit-box;
@@ -315,8 +314,7 @@ hr:before,
 }
 .postImgHover:hover img,
 #pagination .prev-post:hover img,
-#pagination .next-post:hover img,
-.relatedPosts > .relatedPosts-list > div:hover img {
+#pagination .next-post:hover img {
   opacity: 0.8;
   -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=80)";
   filter: alpha(opacity=80);
@@ -328,8 +326,7 @@ hr:before,
 }
 .postImgHover img,
 #pagination .prev-post img,
-#pagination .next-post img,
-.relatedPosts > .relatedPosts-list > div img {
+#pagination .next-post img {
   position: absolute;
   width: 100%;
   height: 100%;
@@ -14597,55 +14594,6 @@ blockquote {
 .post-tools .post-tools-left {
   width: auto;
 }
-.relatedPosts {
-  margin-top: 1.25rem;
-}
-.relatedPosts > .headline {
-  margin-bottom: 5px;
-  font-weight: 700;
-  font-size: 1.43em;
-}
-.relatedPosts > .relatedPosts-list > div {
-  position: relative;
-  display: inline-block;
-  overflow: hidden;
-  margin: 3px;
-  width: calc(33.333% - 6px);
-  height: 200px;
-  background: #000;
-  vertical-align: bottom;
-}
-@media screen and (max-width: 768px) {
-  .relatedPosts > .relatedPosts-list > div {
-    margin: 2px;
-    width: calc(50% - 4px);
-    height: 150px;
-  }
-}
-@media screen and (max-width: 600px) {
-  .relatedPosts > .relatedPosts-list > div {
-    width: calc(100% - 4px);
-  }
-}
-.relatedPosts > .relatedPosts-list .content {
-  position: absolute;
-  top: 50%;
-  padding: 0 20px;
-  width: 100%;
-  -webkit-transform: translate(0, -50%);
-  -moz-transform: translate(0, -50%);
-  -o-transform: translate(0, -50%);
-  -ms-transform: translate(0, -50%);
-  transform: translate(0, -50%);
-}
-.relatedPosts > .relatedPosts-list .content .date {
-  color: var(--light-grey);
-  font-size: 90%;
-}
-.relatedPosts > .relatedPosts-list .content .title {
-  color: var(--white);
-  -webkit-line-clamp: 2;
-}
 .post-reward {
   position: relative;
   text-align: center;
@@ -22569,9 +22517,7 @@ div#archive {
   }
 }
 
-.relatedPosts > .relatedPosts-list > div {
-  border-radius: var(--anzhiyu-border-radius);
-}
+/* 2026-10-19：.relatedPosts 圆角规则已删 —— 相关文章整块不再渲染。 */
 
 /* 侧边栏按钮圆角 */
 #rightside > div > button {
