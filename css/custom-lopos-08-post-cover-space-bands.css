@@ -1,77 +1,12 @@
 /* ============================================================
-   19. 文章页通栏封面 —— 2026-09-30（任务8）
-   原状：主题靠「图片主色」压底、右侧放一团旋转 10° 的模糊大图来撑起头部。
-        本站 mainTone 关闭 → 头部退化成「透明底 + 白色标题/白导航」，
-        压在浅色页面上几乎看不见；右侧还留出约 500px 空白。
-   处理：整幅封面图铺满头部 + 暗色渐变压底（与首页横幅同一套观感），
-        白字恢复可读，空白被填满，首屏不再「半张白纸」。
-   资源：source/img/1.jpg(1920x1080, 3.0MB) → post-cover.webp(1600x900, 144KB)
-   2026-10-09：底图改为「每篇独立」。
-        主题的 header/index.pug 会把文章 cover 写成内联变量
-        --lopx-post-cover:url('...') 挂在 #page-header 上，这里消费它；
-        未设 cover 的文章自动回落到 post-cover.webp。
-        注意 var() 的兜底必须是【合法图像】—— 写成裸字符串
-        var(--lopx-post-cover, '/img/post-cover.webp') 会被判为无效值，
-        整条 background-image 声明作废（三层全丢）。故兜底写作 url(...)。
-        横向仍是 center；纵向 center 34% 是把 16:9 源图裁成 26rem 通栏时的
-        取景基准（1440x416 的框 → 只可见源图纵向 16.5%~67.9%）。
+   19. 文章页通栏封面 —— 2026-09-30 建立 / 2026-10-19 整段删除
+   原内容：26rem(416px) 通栏封面 + 双层压暗渐变 + 白字 + 玻璃胶囊（19~19.4）。
+   删除原因：文章页页头在 10-19 改为纯文字（用户要求「简洁一点」），
+   封面图、压暗层、白字、胶囊全部不再存在。按「删装饰层必须同时删掉
+   依赖它的字号与高度」的规范，这里不留空壳规则 —— 留着就会被下一次
+   美化重新激活（详见 D:/Note/个人网站/导航栏缩放BUG修复.md）。
+   现役页头样式在 custom-lopos-19 第 51 节。
    ============================================================ */
-:root:not([data-theme='dark']) #page-header.post-bg {
-  height: 26rem;
-  background-color: #101c24;
-  /* 三层叠加：①左侧斜向压暗 → 标题所在区域；②上下压暗 → 导航与波浪过渡；③封面图 */
-  background-image: linear-gradient(
-      100deg,
-      rgba(8, 18, 26, 0.72) 0%,
-      rgba(8, 18, 26, 0.4) 38%,
-      rgba(8, 18, 26, 0.1) 66%,
-      rgba(8, 18, 26, 0.18) 100%
-    ),
-    linear-gradient(180deg, rgba(8, 18, 26, 0.5) 0%, rgba(8, 18, 26, 0.14) 42%, rgba(8, 18, 26, 0.66) 100%),
-    var(--lopx-post-cover, url('/img/post-cover.webp'));
-  background-repeat: no-repeat, no-repeat, no-repeat;
-  background-size: cover, cover, cover;
-  background-position: center center, center center, center 34%;
-}
-
-/* 19.1 主题那团「右侧旋转模糊大图」会和通栏封面叠影，且本站并不需要它 */
-:root:not([data-theme='dark']) #page-header.post-bg #post-top-cover {
-  display: none;
-}
-
-/* 19.2 顶图区恢复白字（含「原创 / 分类 / 标签」与日期行） */
-:root:not([data-theme='dark']) #page-header.post-bg #post-info .post-title {
-  color: #ffffff;
-  text-shadow: 0 2px 14px rgba(6, 14, 20, 0.45);
-}
-
-:root:not([data-theme='dark']) #page-header.post-bg #post-info :is(time, i, .post-meta-label, .post-meta-separator, .meta-firstline, .meta-secondline, .post-meta-wordcount, .word-count, .post-meta-date) {
-  color: rgba(255, 255, 255, 0.8);
-}
-
-:root:not([data-theme='dark']) #page-header.post-bg #post-info :is(#post-meta, #post-firstinfo) a,
-:root:not([data-theme='dark']) #page-header.post-bg #post-info a span {
-  color: rgba(255, 255, 255, 0.92);
-}
-
-/* 19.3 分类 / 标签 / 「原创」改成半透明玻璃胶囊，压在照片上更干净 */
-:root:not([data-theme='dark']) #page-header.post-bg #post-info :is(.post-meta-original, .post-meta-categories, .article-meta__tags) {
-  border: 1px solid rgba(255, 255, 255, 0.22);
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.16);
-  text-shadow: none;
-  -webkit-backdrop-filter: blur(6px);
-  backdrop-filter: blur(6px);
-}
-
-/* 19.4 窄屏：横幅矮一点，别把首屏吃满 */
-@media screen and (max-width: 768px) {
-  :root:not([data-theme='dark']) #page-header.post-bg {
-    height: 22rem;
-    min-height: 0;
-    background-position: center center, center center, center 28%;
-  }
-}
 
 /* ============================================================
    20. 分页面（space）头部 —— 2026-09-30 色带版，2026-10-18 改为纯文字头

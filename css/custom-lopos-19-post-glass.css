@@ -303,29 +303,14 @@
   color: var(--lopx-post-code-muted) !important;
 }
 
-/* ---- 49.10 页头：压低高度，标题更紧凑 ---- */
-:root:not([data-theme='dark']) #page-header.post-bg {
-  height: 23rem;
-  background-position: center center, center center, center 30%;
-}
-
-#page-header.post-bg #post-info .post-title {
-  letter-spacing: -0.01em;
-}
-
-[data-theme='dark'] #page-header.post-bg {
-  height: 23rem;
-}
+/* ---- 49.10 页头高度 —— 2026-10-19 删除
+   原内容：亮色 23rem / 暗色 23rem / 窄屏 18rem 的三档通栏高度。
+   页头改纯文字后高度由内容决定（第 51.1 节 height:auto），不再写死。
+   按规范「删装饰层同一处改掉依赖它的高度」，这里不留空壳。 */
 
 /* ---- 49.11 底部：上/下一篇与相关文章收圆角（2026-10-19 去掉了悬停位移）
    原来相关文章 hover 会 translateY(-3px) + 加深阴影，正文末尾出现一圈会浮起来
    的卡片，与「简洁」相悖。现在只留圆角与静态投影，hover 只改描边色。 */
-#pagination.pagination-post {
-  border-radius: 16px;
-  overflow: hidden;
-  box-shadow: 0 18px 44px -30px rgba(11, 33, 48, 0.6);
-}
-
 .relatedPosts > .relatedPosts-list > div {
   border-radius: 14px;
   overflow: hidden;
@@ -338,15 +323,6 @@
     background-color: rgba(var(--lopx-post-glass-rgb), 0.78) !important;
     border: 1px solid var(--lopx-post-glass-border) !important;
     border-radius: var(--lopx-post-radius) var(--lopx-post-radius) 0 0;
-  }
-
-  :root:not([data-theme='dark']) #page-header.post-bg {
-    height: 18rem;
-    background-position: center center, center center, center 26%;
-  }
-
-  [data-theme='dark'] #page-header.post-bg {
-    height: 18rem;
   }
 
   /* 移动端表格字号收一档，避免撑破卡片 */
@@ -369,4 +345,230 @@
   [data-theme='dark'] #content-inner #post {
     background-color: rgba(30, 33, 40, 0.96);
   }
+}
+
+/* ============================================================
+   51. 文章页：纯文字页头 + 极简上下篇 —— 2026-10-19（二改）
+   一改时用 `:root:root` 提权重去压 08 §19 / 09 §23.4 / 49.10 三处通栏封面规则，
+   正是 D:/Note/个人网站/导航栏缩放BUG修复.md 里点名的复发写法（旧值留着，
+   谁清理提权谁复发）。二改改成「删源头」：
+     · 08 §19（19~19.4）          整段删除
+     · 09 §23.4                   整段删除
+     · 19 §49.10 / 49.12 的高度    删除
+     · _layout/head.styl .post-title  3.3rem → 2rem（唯一来源）
+   所以本节所有选择器都回到普通权重，同一属性只此一处定义。
+   ============================================================ */
+
+/* ---- 51.1 页头：高度由内容决定，无背景、无圆角 ----
+   主题 base 是 31.25rem；`#nav` 是 position:fixed 不占文档流，
+   所以 header 的实际高度 = 60px 导航让位 + 标题区。 */
+#page-header.post-bg {
+  height: auto;
+  min-height: 0;
+  margin-bottom: 0;
+  padding-bottom: 0.3rem;
+  border-radius: 0;
+  background-image: none;
+  background-color: transparent;
+  overflow: visible;
+}
+
+/* ---- 51.2 标题区：脱离绝对定位，内容居中 ----
+   主题把 #post-info 写成 absolute + left/width 按 1400px 容器算，
+   本站正文容器 1200px，左边缘会差 36px。改为 static + 内边距对齐，
+   横向 padding 用 max() 保证窄屏至少有 1.25rem 呼吸。
+   padding-top 4.6rem：fixed 导航 60px + 13.6px 间距。 */
+#page-header.post-bg #post-info {
+  position: static;
+  left: auto;
+  width: 100%;
+  height: auto;
+  display: block;
+  padding: 4.6rem max(1.25rem, calc((100% - 1224px) / 2)) 0.3rem;
+  text-align: center;
+}
+
+/* ---- 51.3 标题与元信息：白字 → 正文色，整体居中 ----
+   字号不在这里写 —— 唯一来源是 _layout/head.styl 的 `.post-title`
+   （2rem = 32px = 正文 2×）。本节只负责颜色与对齐。 */
+#page-header.post-bg #post-info .post-title,
+#page-header.post-bg #post-info .post-title a {
+  color: var(--anzhiyu-fontcolor);
+  text-shadow: none;
+  letter-spacing: -0.01em;
+}
+
+#page-header.post-bg #post-info #post-meta {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3rem;
+  justify-content: center;
+}
+
+#page-header.post-bg #post-info #post-meta > div {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  width: auto;
+  text-align: center;
+}
+
+#page-header.post-bg #post-info :is(time, i, .post-meta-label, .post-meta-separator, .post-meta-wordcount, .word-count, .post-meta-date) {
+  color: var(--anzhiyu-secondtext);
+  text-shadow: none;
+}
+
+/* ---- 51.4 导航：文章页不再有顶图，白字必须翻回深色 ----
+   主题对 `#page-header:not(.not-top-img)` 一系给白字；文章页恒为 .post-bg
+   （有 cover 就有 top_img），所以这里按 .post-bg 精确覆盖。 */
+#page-header.post-bg #nav .site-page,
+#page-header.post-bg #nav #blog_name a,
+#page-header.post-bg #nav #nav-right .nav-button i,
+#page-header.post-bg #nav #nav-right #toggle-menu i,
+#page-header.post-bg #nav #center-console + label i {
+  color: var(--anzhiyu-fontcolor);
+}
+
+#page-header.post-bg #nav #menus .lopx-nav-indicator {
+  background: var(--lopx-accent, #2c6688);
+}
+
+/* ---- 51.5 无目录文章：单列 + 限宽 ----
+   正文在有侧栏时 794px；hide-aside 后 #content-inner 会撑到 1152px，
+   一行 40+ 汉字太宽。限制 860px 居中，阅读节奏与有侧栏时接近。 */
+#content-inner.layout.hide-aside > #post {
+  width: 100%;
+  max-width: 860px;
+  margin: 0 auto;
+}
+
+/* ---- 51.6 上一篇 / 下一篇：浅底细描边双卡 ----
+   原第 33.1 节是「深蓝渐变 + 26px 网格 + 白色半透明图」，与现在的白卡正文
+   不是一套语言；且旧版还会渲染 prev.cover（渐变大字图）与卡内标题叠字。
+   模板已去掉 <img>，这里改成两张等宽文字卡。
+   结构：nav#pagination.pagination-post > .prev-post/.next-post > a > .pagination-info */
+#pagination.pagination-post {
+  display: flex;
+  gap: 12px;
+  margin-top: 1.8rem;
+  background: transparent;
+  border-radius: 0;
+  overflow: visible;
+  box-shadow: none;
+}
+
+#pagination.pagination-post .prev-post,
+#pagination.pagination-post .next-post {
+  flex: 1 1 0;
+  min-width: 0;
+  width: auto;
+  height: auto;
+  background: var(--anzhiyu-card-bg, #ffffff);
+  border: 1px solid rgba(60, 60, 67, 0.12);
+  border-radius: 12px;
+  overflow: hidden;
+  transition: border-color 0.2s ease;
+}
+
+#pagination.pagination-post .prev-post:hover,
+#pagination.pagination-post .next-post:hover {
+  border-color: var(--lopx-accent, #2c6688);
+}
+
+#pagination.pagination-post .prev-post > a,
+#pagination.pagination-post .next-post > a {
+  position: static;
+  height: auto;
+  padding: 14px 18px;
+  background: transparent;
+  overflow: visible;
+}
+
+#pagination.pagination-post .pagination-info {
+  position: static;
+  width: 100%;
+  padding: 0;
+  transform: none;
+}
+
+#pagination.pagination-post .next-post .pagination-info {
+  text-align: right;
+}
+
+#pagination.pagination-post .label {
+  display: block;
+  margin-bottom: 4px;
+  color: var(--anzhiyu-secondtext);
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-transform: none;
+  letter-spacing: 0.02em;
+}
+
+#pagination.pagination-post .prev_info,
+#pagination.pagination-post .next_info {
+  color: var(--anzhiyu-fontcolor);
+  font-size: 0.95rem;
+  font-weight: 600;
+  line-height: 1.5;
+}
+
+/* ---- 51.7 相关文章：渐变大字封面 → 浅底文字卡 ----
+   第 33.3 节给每张卡刷了深蓝渐变，而卡片里还渲染 259×200 封面（本站封面
+   本身就是「渐变大字」图），两层大字叠在一起。隐掉封面，改成浅底细描边。 */
+.relatedPosts > .relatedPosts-list > div {
+  background-image: none;
+  background-color: var(--anzhiyu-card-bg, #ffffff);
+  border: 1px solid rgba(60, 60, 67, 0.12);
+  box-shadow: none;
+  height: 140px;
+}
+
+.relatedPosts > .relatedPosts-list > div .cover {
+  display: none;
+}
+
+.relatedPosts > .relatedPosts-list > div .content .date {
+  color: var(--anzhiyu-secondtext);
+}
+
+.relatedPosts > .relatedPosts-list > div .content .title {
+  color: var(--anzhiyu-fontcolor);
+}
+
+/* ---- 51.8 窄屏 ----
+   标题与元信息在窄屏本来就居中，不需要再把对齐翻过来。 */
+@media screen and (max-width: 768px) {
+  #page-header.post-bg #post-info {
+    padding: 4.2rem 1.25rem 0.3rem;
+  }
+
+  #content-inner.layout.hide-aside > #post {
+    max-width: 100%;
+  }
+
+  #pagination.pagination-post {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  #pagination.pagination-post .next-post .pagination-info {
+    text-align: left;
+  }
+
+  .relatedPosts > .relatedPosts-list > div {
+    height: 120px;
+  }
+}
+
+/* ---- 51.9 暗色补偿 ----
+   描边按浅色页面底（#f7f9fe）取的 rgba(60,60,67,·)，暗色底 #18171d 上会糊掉。
+   data-theme 在 <html> 上，选择器是 `:root[data-theme]`，与上面的
+   `#page-header...` 不冲突（前者命中根元素，后者命中子元素）。 */
+:root[data-theme='dark'] #pagination.pagination-post .prev-post,
+:root[data-theme='dark'] #pagination.pagination-post .next-post,
+:root[data-theme='dark'] .relatedPosts > .relatedPosts-list > div {
+  border-color: rgba(255, 255, 255, 0.12);
 }

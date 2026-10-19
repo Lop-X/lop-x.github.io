@@ -159,8 +159,7 @@
   <entry>
     <title>Hexo 配置 Bangumi 追番页面</title>
     <url>/hexo%E9%85%8D%E7%BD%AEbangumi%E8%BF%BD%E7%95%AA%E9%A1%B5%E9%9D%A2/</url>
-    <content><![CDATA[<h2 id="终于成功啦"><a href="#终于成功啦" class="headerlink" title="终于成功啦"></a>终于成功啦</h2><p><strong>Todo 目前不挂梯子无法显示封面，待解决！！！</strong></p>
-<p>使用插件<br><a href="https://github.com/HCLonely/hexo-bilibili-bangumi">HCLonely&#x2F;hexo-bilibili-bangumi: hexo 番剧页面插件，可选数据源：Bilibili, Bangumi</a></p>
+    <content><![CDATA[<h3 id="终于成功啦"><a href="#终于成功啦" class="headerlink" title="终于成功啦"></a>终于成功啦</h3><p>使用插件<br><a href="https://github.com/HCLonely/hexo-bilibili-bangumi">HCLonely&#x2F;hexo-bilibili-bangumi: hexo 番剧页面插件，可选数据源：Bilibili, Bangumi</a></p>
 <h3 id="第一步安装插件"><a href="#第一步安装插件" class="headerlink" title="第一步安装插件"></a>第一步安装插件</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">npm install hexo-bilibili-bangumi --save</span><br></pre></td></tr></table></figure>
 <h3 id="第二步安配置设置"><a href="#第二步安配置设置" class="headerlink" title="第二步安配置设置"></a>第二步安配置设置</h3><p><strong>在_config.yml里面添加如下代码，注意是hexo配置不是主题配置</strong></p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">bangumi: <span class="comment"># 追番设置</span></span><br><span class="line">  <span class="built_in">enable</span>: <span class="literal">true</span></span><br><span class="line">  <span class="built_in">source</span>: bangumi</span><br><span class="line">  path: bangumis/index.html</span><br><span class="line">  vmid: 956578 <span class="comment">#注意此处换成自己的bangumi ID 主页名字旁边有个 @XXXXX数字的那个</span></span><br><span class="line">  title: <span class="string">&quot;追番列表&quot;</span></span><br><span class="line">  quote: <span class="string">&quot;生命不息，追番不止！&quot;</span></span><br><span class="line">  show: 1</span><br><span class="line">  lazyload: <span class="literal">false</span></span><br><span class="line">  loading:</span><br><span class="line">  showMyComment: <span class="literal">false</span></span><br><span class="line">  pagination: <span class="literal">false</span></span><br><span class="line">  metaColor:</span><br><span class="line">  color:</span><br><span class="line">  webp:</span><br><span class="line">  progress:</span><br><span class="line">  extraOrder:</span><br><span class="line">  proxy:</span><br><span class="line">    host: <span class="string">&quot;127.0.0.1&quot;</span>   <span class="comment">#换成自己代理的地址</span></span><br><span class="line">    port: <span class="string">&quot;7897&quot;</span>        <span class="comment">#换成自己代理的端口</span></span><br><span class="line">  extra_options:</span><br><span class="line">    top_img: <span class="literal">false</span></span><br><span class="line">    lazyload:</span><br><span class="line">      <span class="built_in">enable</span>: <span class="literal">false</span></span><br></pre></td></tr></table></figure>
@@ -173,6 +172,7 @@
 <p>连接正常的话会看到</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">INFO  Getting bangumis, please <span class="built_in">wait</span>...</span><br><span class="line">正在获取 [想看] 番剧 [██] 100% 0.0s</span><br><span class="line">正在获取 [在看] 番剧 [█] 100% 0.0s</span><br><span class="line">正在获取 [已看] 番剧 [█████████████] 100% 33.6s</span><br></pre></td></tr></table></figure>
 <p>之后就可以正常部署啦</p>
+<h2 id="本地图片"><a href="#本地图片" class="headerlink" title="本地图片"></a>本地图片</h2><p>新增番剧后跑一次 <code>python tools/fetch-bgm-covers.py</code> 即可抓取图片到本地，<strong>已有的会跳过</strong>。</p>
 ]]></content>
       <categories>
         <category>建站</category>
@@ -190,17 +190,17 @@
 <h3 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h3><p>选择hexo现有的 <code>_post</code>文件夹作为obsidian地址，<br>可以看到本地生成了 <code>.obsidian</code>文件夹，<br>就可以愉快的管理编辑笔记啦</p>
 <h3 id="模版"><a href="#模版" class="headerlink" title="模版"></a>模版</h3><p>在<code>_post</code>文件夹下面新建文件夹<code>_templates</code>,里面直接添加<code>XX.md</code>作为模版，<br>将需要的属性模版打上去，注意日期要按照格式，详见obsidian设置页面<code>模版</code><br>将文件夹<code>_templates</code>添加进去，注意是相对地址，即可使用模版。</p>
 <h3 id="复制设置"><a href="#复制设置" class="headerlink" title="复制设置"></a>复制设置</h3><p>根目录下<code>.obsidian</code>文件夹保存着obsidian的所有设置，包括插件和主题，<br><strong>记得复制的时候删除<code>workspace.json</code>文件，里面保存的当前界面布局</strong></p>
-<p>目前支<code>ctrl+shift+p</code>一键同步当前文章到本地博客仓库</p>
-<h3 id="现在的完整工作流"><a href="#现在的完整工作流" class="headerlink" title="现在的完整工作流"></a>现在的完整工作流</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">在 Obsidian 里写  →  Ctrl+Shift+P 一键同步到 _posts  →  hexo d 手动上线</span><br><span class="line">                  ↘  每 10 分钟自动备份到 GitHub（无需操作）</span><br></pre></td></tr></table></figure>
+<p>目前支持三个快捷键：<code>ctrl+shift+p</code> 同步当前文章、<code>ctrl+shift+a</code> 全量同步、<code>ctrl+shift+d</code> 一键上线。</p>
+<h3 id="现在的完整工作流"><a href="#现在的完整工作流" class="headerlink" title="现在的完整工作流"></a>现在的完整工作流</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">在 Obsidian 里写  →  Ctrl+Shift+P 同步当前这篇（写稿时常按）</span><br><span class="line">                  →  Ctrl+Shift+A 全量同步（收工前对一遍）</span><br><span class="line">                  →  Ctrl+Shift+D 生成并部署上线</span><br><span class="line">                  ↘  每 10 分钟自动备份到 GitHub（无需操作）</span><br></pre></td></tr></table></figure>
 
 <h3 id="工作流解释"><a href="#工作流解释" class="headerlink" title="工作流解释"></a>工作流解释</h3><p>可以把整套系统想象成「一个源头，两条水管」：</p>
 <ul>
 <li><strong>源头</strong>：<code>D:/Note</code> 这个 Obsidian 笔记库。所有文章只在这里写，别的任何地方都不改。</li>
-<li><strong>水管一（发布）</strong>：按下 <code>Ctrl+Shift+P</code>，脚本 <code>publish.js</code> 会把当前这篇笔记<strong>复制</strong>到博客仓库的 <code>_posts</code> 文件夹里，顺便处理图片、生成封面。它只是「搬运工」，笔记库本身一个字都不会动。</li>
+<li><strong>水管一（发布）</strong>：按下 <code>Ctrl+Shift+P</code>（当前这篇）或 <code>Ctrl+Shift+A</code>（全部），脚本 <code>publish.js</code> 会把标记发布的笔记<strong>复制</strong>到博客仓库的 <code>_posts</code> 文件夹里，顺便处理图片、生成封面。它只是「搬运工」，笔记库本身一个字都不会动。</li>
 <li><strong>水管二（备份）</strong>：<code>obsidian-git</code> 插件每 10 分钟自动把整个笔记库（包括设置、插件、脚本）提交并推送到 GitHub 私有仓库。</li>
 </ul>
 <p>脚本只把标记了 <code>publish: true</code> 的笔记搬到博客那边，<code>publish: false</code> 或没写的笔记永远不发布。</p>
-<h3 id="脚本命令速查"><a href="#脚本命令速查" class="headerlink" title="脚本命令速查"></a>脚本命令速查</h3><p><code>publish.js</code> 常用的几种用法（在终端里跑，或者用快捷键只发当前这篇）：</p>
+<h3 id="脚本命令速查"><a href="#脚本命令速查" class="headerlink" title="脚本命令速查"></a>脚本命令速查</h3><p><code>publish.js</code> 常用的几种用法（在终端里跑，或者用快捷键）：</p>
 <table>
 <thead>
 <tr>
@@ -229,8 +229,18 @@
 <td>只同步当前打开的这一篇</td>
 <td>只写这一篇</td>
 </tr>
+<tr>
+<td><code>Ctrl+Shift+A</code>（Obsidian 里）</td>
+<td>全量同步所有已发布文章（含图片、封面、孤儿清理）</td>
+<td>写 <code>_posts</code></td>
+</tr>
+<tr>
+<td><code>Ctrl+Shift+D</code>（Obsidian 里）</td>
+<td>全量同步 + 生成 + 部署上线，一条龙</td>
+<td>写 <code>_posts</code>、生成 <code>public</code>、推送到 GitHub Pages</td>
+</tr>
 </tbody></table>
-<p>日常写文章只需要记住一条：<strong>写完按 <code>Ctrl+Shift+P</code>，然后 <code>hexo d</code> 上线</strong>。其余命令是排查问题时用的。</p>
+<p>日常写文章只需要记住一条：<strong>写的时候随手 <code>Ctrl+Shift+P</code> 看效果，收工时按 <code>Ctrl+Shift+D</code> 一键上线</strong>（它内含全量同步，所以 <code>Ctrl+Shift+A</code> 只是想在本地全量对齐、又不想部署时才用）。其余命令是排查问题时用的。</p>
 <h3 id="换电脑怎么恢复"><a href="#换电脑怎么恢复" class="headerlink" title="换电脑怎么恢复"></a>换电脑怎么恢复</h3><p>所有配置和脚本都在 git 里，但有几样东西绑定了旧电脑，按下面步骤来：</p>
 <ol>
 <li><strong>配 SSH</strong>：生成新的 SSH 密钥并添加到 GitHub 账号（私钥不会也没法跟着 git 走），否则拉不了私有仓库。</li>
@@ -246,32 +256,6 @@
       </categories>
       <tags>
         <tag>obsidian</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>关于Ai在独立游戏开发中的使用看法</title>
-    <url>/%E5%85%B3%E4%BA%8EAi%E5%9C%A8%E7%8B%AC%E7%AB%8B%E6%B8%B8%E6%88%8F%E5%BC%80%E5%8F%91%E4%B8%AD%E7%9A%84%E4%BD%BF%E7%94%A8%E7%9C%8B%E6%B3%95/</url>
-    <content><![CDATA[<p>最近开始刷Reddit了，上面有不少独立游戏开发者的社区</p>
-<p>其中一个高频的问题是AI辅助游戏制作。<br>感觉与国内主流论调不同，大家都想办法使用AI去加快自己的游戏开发进程，<br>但是国外有不少开发者明确反对AI，甚至有些过激。</p>
-<p><strong>有一个问题让我印象深刻，</strong><br>问：你会因为一款游戏使用AI就抵制它吗？</p>
-<p>下面的一个高赞回答： <strong>Yes</strong></p>
-<p><strong>为什么开发者这么反感AI呢？</strong></p>
-<p>我觉得可能有以下几个方面，</p>
-<ol>
-<li>独立游戏很多是美术和策划，AI确确实实挤占了他们的生存空间</li>
-<li>早期的生成式AI确实质量很差，让大家产生反感</li>
-<li>“匠人追求吧”，都自己做游戏了，肯定是有自己的追求的</li>
-<li>AI可能确实太厉害了让人产生自我怀疑，辛苦的付出都算什么？</li>
-</ol>
-<p><strong>但是问题是我发现甚至有人开始呼吁编程都别使用AI了，</strong> AI提升的效率是实打实的，维护得当的情况下AI的代码一样能用且好用，AI编程是主打赛道，已经具备相当强大的能力了。<br>好多人提到管理代码，代码结构混乱之类的问题，但是我感觉使用AI编程之前把框架搭清楚，不乱用AI问题不大。</p>
-<p>至于AI美术或者音乐，可能确实有潜在的版权风险，这个看个人怎么理解了。</p>
-<p>个人感觉，AI就是一个工具，它可以提高生产力，应该顺应潮流与时俱进学习怎么使用AI。<br>技术无罪，错的是那些用AI大肆搞低质作品的人，毕竟不管用不用AI，垃圾就是垃圾！<br>AI用多了会产生一种 <strong>“AI厉害&#x3D;我厉害”</strong> 的错觉，几个提示词就可以完成庞大的工作，但是又不具备理解能力和审美。用AI辅助人而不是用AI代替人，因为科技的发展长远来看都是造福人类的。</p>
-]]></content>
-      <categories>
-        <category>思考</category>
-      </categories>
-      <tags>
-        <tag>思考</tag>
       </tags>
   </entry>
   <entry>
@@ -371,7 +355,8 @@
   <entry>
     <title>用 EasyX 制作 Snake Game 记录</title>
     <url>/%E7%94%A8easyX%E5%88%B6%E4%BD%9CSnake-Game/</url>
-    <content><![CDATA[<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><h2 id="1-基础配置部分"><a href="#1-基础配置部分" class="headerlink" title="1 基础配置部分"></a>1 基础配置部分</h2><h3 id="1-1-初始化"><a href="#1-1-初始化" class="headerlink" title="1.1 初始化"></a>1.1 初始化</h3><figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;graphics.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;cstdio&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="built_in">initgraph</span>(<span class="number">640</span>, <span class="number">480</span>);</span><br><span class="line"></span><br><span class="line">    <span class="built_in">setbkcolor</span>(WHITE);</span><br><span class="line">    <span class="built_in">cleardevice</span>(); <span class="comment">//用刚才设置的背景色清空 / 刷新整个画面。</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">//setlinecolor(RED);</span></span><br><span class="line">    <span class="comment">//rectangle(100, 100, 200, 200);//画方块</span></span><br><span class="line">    <span class="built_in">setfillcolor</span>(BLUE);</span><br><span class="line">    <span class="built_in">solidrectangle</span>(<span class="number">100</span>, <span class="number">100</span>, <span class="number">200</span>, <span class="number">200</span>);</span><br><span class="line">    <span class="keyword">while</span> (<span class="literal">true</span>)</span><br><span class="line">    &#123;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">closegraph</span>();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+    <content><![CDATA[<p>使用EasyX做一个简单的贪吃蛇，这算是一个练手小项目了。</p>
+<h2 id="1-基础配置部分"><a href="#1-基础配置部分" class="headerlink" title="1 基础配置部分"></a>1 基础配置部分</h2><h3 id="1-1-初始化"><a href="#1-1-初始化" class="headerlink" title="1.1 初始化"></a>1.1 初始化</h3><figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;graphics.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;cstdio&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="built_in">initgraph</span>(<span class="number">640</span>, <span class="number">480</span>);</span><br><span class="line"></span><br><span class="line">    <span class="built_in">setbkcolor</span>(WHITE);</span><br><span class="line">    <span class="built_in">cleardevice</span>(); <span class="comment">//用刚才设置的背景色清空 / 刷新整个画面。</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">//setlinecolor(RED);</span></span><br><span class="line">    <span class="comment">//rectangle(100, 100, 200, 200);//画方块</span></span><br><span class="line">    <span class="built_in">setfillcolor</span>(BLUE);</span><br><span class="line">    <span class="built_in">solidrectangle</span>(<span class="number">100</span>, <span class="number">100</span>, <span class="number">200</span>, <span class="number">200</span>);</span><br><span class="line">    <span class="keyword">while</span> (<span class="literal">true</span>)</span><br><span class="line">    &#123;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">closegraph</span>();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <h3 id="1-2-移动效果"><a href="#1-2-移动效果" class="headerlink" title="1.2 移动效果"></a>1.2 移动效果</h3><p>尝试添加移动效果</p>
 <figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="type">int</span> x = <span class="number">100</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">while</span> (<span class="literal">true</span>)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="built_in">cleardevice</span>();</span><br><span class="line">    <span class="built_in">setfillcolor</span>(BLUE);</span><br><span class="line">    <span class="built_in">solidrectangle</span>(x, <span class="number">100</span>, x + <span class="number">50</span>, <span class="number">150</span>);</span><br><span class="line">    x = x + <span class="number">1</span>;</span><br><span class="line">    <span class="built_in">Sleep</span>(<span class="number">10</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p><strong>方块闪烁的主要原因是程序在刷新画面时，会先清空原来的画面，再重新绘制方块。由于屏幕刷新显示不可控制时间，屏幕可能卡在清除和绘制之前刷新显示出短暂的空白，因此产生闪烁。</strong></p>
@@ -442,17 +427,18 @@
 			</p>
 ]]></content>
       <categories>
-        <category>游戏开发</category>
+        <category>贪吃蛇</category>
       </categories>
       <tags>
         <tag>EasyX</tag>
-        <tag>独立游戏</tag>
+        <tag>贪吃蛇</tag>
       </tags>
   </entry>
   <entry>
     <title>网站装修记录</title>
     <url>/%E7%BD%91%E7%AB%99%E8%A3%85%E4%BF%AE%E8%AE%B0%E5%BD%95/</url>
-    <content><![CDATA[<h3 id="2026-10-17"><a href="#2026-10-17" class="headerlink" title="2026-10-17"></a>2026-10-17</h3><p>分页面小美化<br>文章页面美化<br>优化封面图片添加</p>
+    <content><![CDATA[<p>记录一下网站装修过程</p>
+<h3 id="2026-10-17"><a href="#2026-10-17" class="headerlink" title="2026-10-17"></a>2026-10-17</h3><p>分页面小美化<br>文章页面美化<br>优化封面图片添加</p>
 <h3 id="2026-10-16"><a href="#2026-10-16" class="headerlink" title="2026-10-16"></a>2026-10-16</h3><p>导航栏显示bug修复<br>本地文件整理，删除本地博客的冗杂内容</p>
 <h3 id="2026-10-14"><a href="#2026-10-14" class="headerlink" title="2026-10-14"></a>2026-10-14</h3><p>彻底删除anzhiyu主题，魔改并替换成自己的主题,LopOS了！</p>
 <h3 id="2026-10-12"><a href="#2026-10-12" class="headerlink" title="2026-10-12"></a>2026-10-12</h3><p>首页美化，和obsidian联动，可以一键本地复试obsidian文件到博客本地<br>测试博客添加图片，成功在本地添加博客图片</p>
@@ -503,6 +489,7 @@
     <title>考研记录（二）</title>
     <url>/%E8%80%83%E7%A0%94%E8%AE%B0%E5%BD%95%EF%BC%88%E4%BA%8C%EF%BC%89/</url>
     <content><![CDATA[<h3 id="写在前面"><a href="#写在前面" class="headerlink" title="写在前面"></a>写在前面</h3><p>已经是第二期了，距离考研还剩下90天。<br>计划这10天搞定概率论和现控，争取国庆节开真题。</p>
+<p><strong>[2026-10-18]</strong><br>英语沉淀中。。。<br>数学写了第二套张八，还剩一个大题，明天补上，然后好好整理一下知识点。</p>
 <p><strong>[2026-10-17]</strong><br>整理2017错题，整理2015阅读真题，写了text3终于全队了一篇<br>专业课按照题型一遍整理一遍写真题，目前到2022年了</p>
 <p><strong>[2026-10-16]</strong><br>炸裂，2015英一写了三篇阅读，效果很差，不如去年同期写的。<br>数一真题2017有个110分左右，去年同期也是这个分数，难绷。</p>
 <p><strong>[2026-10-15]</strong><br>报名完毕，已交钱锁车</p>
@@ -535,6 +522,34 @@
       </categories>
       <tags>
         <tag>考研</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>关于Ai在独立游戏的应用看法</title>
+    <url>/%E5%85%B3%E4%BA%8EAi%E5%9C%A8%E7%8B%AC%E7%AB%8B%E6%B8%B8%E6%88%8F%E7%9A%84%E5%BA%94%E7%94%A8/</url>
+    <content><![CDATA[<p>关于Ai在独立游戏开发中的使用看法，为什么独立开发者这么反感AI。</p>
+<p>最近开始刷Reddit了，上面有不少独立游戏开发者的社区</p>
+<p>其中一个高频的问题是AI辅助游戏制作。<br>感觉与国内主流论调不同，大家都想办法使用AI去加快自己的游戏开发进程，<br>但是国外有不少开发者明确反对AI，甚至有些过激。</p>
+<p><strong>有一个问题让我印象深刻，</strong><br>问：你会因为一款游戏使用AI就抵制它吗？</p>
+<p>下面的一个高赞回答： <strong>Yes</strong></p>
+<p><strong>为什么开发者这么反感AI呢？</strong></p>
+<p>我觉得可能有以下几个方面，</p>
+<ol>
+<li>AI可以轻松的抹平掉一个人几年的努力，目前已经出现很多恶性AI盗版</li>
+<li>独立游戏很多是美术和策划，AI确确实实挤占了他们的生存空间</li>
+<li>生成式AI确实质量很差，让大家产生反感</li>
+<li>很多人追求短期高回报，搞得社区都是粗制乱造的劣质游戏</li>
+</ol>
+<p>AI确实伤透了很多开发者的心，自己用心制作的游戏被别人直接用AI复刻，设置在作者发布玩法demo的时候就能有厂家抢险制作出来并且上线。</p>
+<p>Steam开始出手整治AI游戏了，确实是个好事。大家都呼吁添加AI披露标签，但是我感觉这个方法不怎么妙，因为怎么界定是使用了AI呢？AI写代码算不算，AI翻译，AI辅助整理文档算不算？AI生成式图片和AI音乐当然算是AI，但是如果说有人只是用AI调色，高清化资产呢？</p>
+<p>这个只能慢慢等待发展了，作为新入坑的人我肯定倾向于使用AI，但是这真的有错吗？</p>
+<p>个人感觉，AI就是一个工具，它可以提高生产力，应该顺应潮流与时俱进学习怎么使用AI。<br>技术无罪，错的是那些用AI大肆搞低质作品的人，毕竟不管用不用AI，垃圾就是垃圾！<br>AI用多了会产生一种 <strong>“AI厉害&#x3D;我厉害”</strong> 的错觉，几个提示词就可以完成庞大的工作，但是又不具备理解能力和审美。用AI辅助人而不是用AI代替人，因为科技的发展长远来看都是造福人类的。</p>
+]]></content>
+      <categories>
+        <category>思考</category>
+      </categories>
+      <tags>
+        <tag>思考</tag>
       </tags>
   </entry>
 </search>

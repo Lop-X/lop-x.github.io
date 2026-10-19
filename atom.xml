@@ -10,23 +10,23 @@
   <rights>All rights reserved 2026, Fanbo</rights>
   <subtitle>Embedded · Robotics · Indie Game</subtitle>
   <title>Lop-X</title>
-  <updated>2026-10-18T15:49:35.824Z</updated>
+  <updated>2026-10-19T11:11:24.528Z</updated>
   <entry>
     <author>
       <name>Fanbo</name>
     </author>
     <category term="思考" scheme="https://lop-x.github.io/categories/%E6%80%9D%E8%80%83/"/>
     <category term="思考" scheme="https://lop-x.github.io/tags/%E6%80%9D%E8%80%83/"/>
-    <id>https://lop-x.github.io/%E5%85%B3%E4%BA%8EAi%E5%9C%A8%E7%8B%AC%E7%AB%8B%E6%B8%B8%E6%88%8F%E5%BC%80%E5%8F%91%E4%B8%AD%E7%9A%84%E4%BD%BF%E7%94%A8%E7%9C%8B%E6%B3%95/</id>
-    <link href="https://lop-x.github.io/%E5%85%B3%E4%BA%8EAi%E5%9C%A8%E7%8B%AC%E7%AB%8B%E6%B8%B8%E6%88%8F%E5%BC%80%E5%8F%91%E4%B8%AD%E7%9A%84%E4%BD%BF%E7%94%A8%E7%9C%8B%E6%B3%95/"/>
+    <id>https://lop-x.github.io/%E5%85%B3%E4%BA%8EAi%E5%9C%A8%E7%8B%AC%E7%AB%8B%E6%B8%B8%E6%88%8F%E7%9A%84%E5%BA%94%E7%94%A8/</id>
+    <link href="https://lop-x.github.io/%E5%85%B3%E4%BA%8EAi%E5%9C%A8%E7%8B%AC%E7%AB%8B%E6%B8%B8%E6%88%8F%E7%9A%84%E5%BA%94%E7%94%A8/"/>
     <published>2026-10-14T15:30:00.000Z</published>
     <summary>
-      <![CDATA[<p>最近开始刷Reddit了，上面有不少独立游戏开发者的社区</p>
-<p>其中一个高频的问题是AI辅助游戏制作。<br>感觉与国内主流论调不同，大家都想办法使用AI去加快自己的游戏开发进程，<br>但是国外有不少开发者明确反对AI，甚至有些过激。</p>
-<p><strong]]>
+      <![CDATA[<p>关于Ai在独立游戏开发中的使用看法，为什么独立开发者这么反感AI。</p>
+<p>最近开始刷Reddit了，上面有不少独立游戏开发者的社区</p>
+<p>其中一个高频的问题是AI辅助游戏制作。<br>感觉与国内主流论调不同，大家都想办法使用AI去加快自己的游戏开发进程，<b]]>
     </summary>
-    <title>关于Ai在独立游戏开发中的使用看法</title>
-    <updated>2026-10-18T15:49:35.824Z</updated>
+    <title>关于Ai在独立游戏的应用看法</title>
+    <updated>2026-10-19T11:11:24.528Z</updated>
   </entry>
   <entry>
     <author>
@@ -78,7 +78,7 @@
 <p><strong]]>
     </summary>
     <title>考研记录（二）</title>
-    <updated>2026-10-18T15:49:35.017Z</updated>
+    <updated>2026-10-19T04:51:14.188Z</updated>
   </entry>
   <entry>
     <author>
@@ -94,23 +94,24 @@
 <h3 id="obsidian下载"><a href="#obsidian下载" class="headerli]]>
     </summary>
     <title>使用 Obsidian 编辑笔记</title>
-    <updated>2026-10-19T03:51:20.690Z</updated>
+    <updated>2026-10-19T11:11:24.535Z</updated>
   </entry>
   <entry>
     <author>
       <name>Fanbo</name>
     </author>
-    <category term="游戏开发" scheme="https://lop-x.github.io/categories/%E6%B8%B8%E6%88%8F%E5%BC%80%E5%8F%91/"/>
+    <category term="贪吃蛇" scheme="https://lop-x.github.io/categories/%E8%B4%AA%E5%90%83%E8%9B%87/"/>
     <category term="EasyX" scheme="https://lop-x.github.io/tags/EasyX/"/>
-    <category term="独立游戏" scheme="https://lop-x.github.io/tags/%E7%8B%AC%E7%AB%8B%E6%B8%B8%E6%88%8F/"/>
+    <category term="贪吃蛇" scheme="https://lop-x.github.io/tags/%E8%B4%AA%E5%90%83%E8%9B%87/"/>
     <id>https://lop-x.github.io/%E7%94%A8easyX%E5%88%B6%E4%BD%9CSnake-Game/</id>
     <link href="https://lop-x.github.io/%E7%94%A8easyX%E5%88%B6%E4%BD%9CSnake-Game/"/>
     <published>2026-09-14T16:03:56.000Z</published>
     <summary>
-      <![CDATA[<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><h2 id="1-基础配置部分"><a href="#1-基础配置部分" class="headerlink" title="1 基础配置部分"]]>
+      <![CDATA[<p>使用EasyX做一个简单的贪吃蛇，这算是一个练手小项目了。</p>
+<h2 id="1-基础配置部分"><a href="#1-基础配置部分" class="headerlink" title="1 基础配置部分"></a>1 基础配置部分</h2><h3 id="1-1-]]>
     </summary>
     <title>用 EasyX 制作 Snake Game 记录</title>
-    <updated>2026-10-18T15:49:35.829Z</updated>
+    <updated>2026-10-19T04:51:14.209Z</updated>
   </entry>
   <entry>
     <author>
@@ -138,11 +139,10 @@
     <link href="https://lop-x.github.io/hexo%E9%85%8D%E7%BD%AEbangumi%E8%BF%BD%E7%95%AA%E9%A1%B5%E9%9D%A2/"/>
     <published>2026-09-09T15:07:41.000Z</published>
     <summary>
-      <![CDATA[<h2 id="终于成功啦"><a href="#终于成功啦" class="headerlink" title="终于成功啦"></a>终于成功啦</h2><p><strong>Todo 目前不挂梯子无法显示封面，待解决！！！</strong></p>
-<p>使用插件<br><]]>
+      <![CDATA[<h3 id="终于成功啦"><a href="#终于成功啦" class="headerlink" title="终于成功啦"></a>终于成功啦</h3><p>使用插件<br><a href="https://github.com/HCLonely/hexo-bilibili]]>
     </summary>
     <title>Hexo 配置 Bangumi 追番页面</title>
-    <updated>2026-10-18T15:49:35.022Z</updated>
+    <updated>2026-10-19T04:51:14.195Z</updated>
   </entry>
   <entry>
     <author>
@@ -169,11 +169,11 @@
     <link href="https://lop-x.github.io/%E7%BD%91%E7%AB%99%E8%A3%85%E4%BF%AE%E8%AE%B0%E5%BD%95/"/>
     <published>2026-09-07T15:58:26.000Z</published>
     <summary>
-      <![CDATA[<h3 id="2026-10-17"><a href="#2026-10-17" class="headerlink" title="2026-10-17"></a>2026-10-17</h3><p>分页面小美化<br>文章页面美化<br>优化封面图片添加</p>
-<h3 i]]>
+      <![CDATA[<p>记录一下网站装修过程</p>
+<h3 id="2026-10-17"><a href="#2026-10-17" class="headerlink" title="2026-10-17"></a>2026-10-17</h3><p>分页面小美化<br>文章页面美化<br>]]>
     </summary>
     <title>网站装修记录</title>
-    <updated>2026-10-18T15:49:35.032Z</updated>
+    <updated>2026-10-19T04:51:14.200Z</updated>
   </entry>
   <entry>
     <author>

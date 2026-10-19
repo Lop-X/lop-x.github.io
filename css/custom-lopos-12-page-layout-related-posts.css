@@ -80,35 +80,11 @@ html {
         88% 白为 4.78:1；相关卡内文字沿用主题取值（#eee / #fff）实测 9.3:1 / 10.7:1。
    ============================================================ */
 
-/* 33.1 上一篇 / 下一篇：整条底带换成渐变。两半各占 50%、自身透明，
-   所以只需把底色刷在容器上，渐变自然连成一条。 */
-#pagination.pagination-post {
-  background-color: transparent;
-  background-image:
-    repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.055) 0 1px, transparent 1px 26px),
-    repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.045) 0 1px, transparent 1px 26px),
-    linear-gradient(135deg, #0b2130 0%, #1f6288 100%);
-  background-repeat: repeat, repeat, no-repeat;
-  background-size: 26px 26px, 26px 26px, cover;
-  background-position: left top, left top, center center;
-}
-
-/* 两半之间的发丝分隔；只有「两篇都在」时才出现（pull-right） */
-#pagination.pagination-post .next-post.pull-right {
-  border-left: 1px solid rgba(255, 255, 255, 0.14);
-}
-
-/* 33.2 带上的文字。主题给的是 var(--light-grey)，压在渐变上偏弱。
-   注：标签在窄带上位于渐变 92% 处（实测背景 ≈ #1d5d81），
-   82% 白只有 4.35:1（受 26px 网格的白色发丝线影响），提到 88% 白为 4.78:1。 */
-#pagination.pagination-post .label {
-  color: rgba(255, 255, 255, 0.88);
-}
-
-#pagination.pagination-post .prev_info,
-#pagination.pagination-post .next_info {
-  color: #ffffff;
-}
+/* 33.1 / 33.2 上一篇 / 下一篇的深蓝渐变带 —— 2026-10-07 建立 / 2026-10-19 删除
+   原内容：整条底带刷 26px 网格 + 135deg 渐变，文字提亮到 88% 白。
+   删除原因：用户要求文章页简洁统一。上下篇现为「浅底 + 1px 描边」双卡，
+   与相关文章、space 卡片同一套语言，样式在 custom-lopos-19 第 51.6 节。
+   卡片上的封面图也一并去掉（本站封面是渐变大字图，与卡内标题会叠字）。 */
 
 /* 33.3 相关文章：每张卡各自一套渐变（与 28.4 卡片封面同配方） */
 .relatedPosts > .relatedPosts-list > div {
