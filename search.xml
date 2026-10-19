@@ -236,11 +236,11 @@
 </tr>
 <tr>
 <td><code>Ctrl+Shift+D</code>（Obsidian 里）</td>
-<td>全量同步 + 生成 + 部署上线，一条龙</td>
-<td>写 <code>_posts</code>、生成 <code>public</code>、推送到 GitHub Pages</td>
+<td>生成 + 部署上线（不含同步，约 10 秒）</td>
+<td>生成 <code>public</code>、推送到 GitHub Pages</td>
 </tr>
 </tbody></table>
-<p>日常写文章只需要记住一条：<strong>写的时候随手 <code>Ctrl+Shift+P</code> 看效果，收工时按 <code>Ctrl+Shift+D</code> 一键上线</strong>（它内含全量同步，所以 <code>Ctrl+Shift+A</code> 只是想在本地全量对齐、又不想部署时才用）。其余命令是排查问题时用的。</p>
+<p>日常写文章只需要记住一条：<strong>写的时候随手 <code>Ctrl+Shift+P</code>，收工先 <code>Ctrl+Shift+A</code> 全量同步，再 <code>Ctrl+Shift+D</code> 上线</strong>。D 只管生成和发布，不做同步——这样写稿时的同步和发布解耦，互不拖累。</p>
 <h3 id="换电脑怎么恢复"><a href="#换电脑怎么恢复" class="headerlink" title="换电脑怎么恢复"></a>换电脑怎么恢复</h3><p>所有配置和脚本都在 git 里，但有几样东西绑定了旧电脑，按下面步骤来：</p>
 <ol>
 <li><strong>配 SSH</strong>：生成新的 SSH 密钥并添加到 GitHub 账号（私钥不会也没法跟着 git 走），否则拉不了私有仓库。</li>
