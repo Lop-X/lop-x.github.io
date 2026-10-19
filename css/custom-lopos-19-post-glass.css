@@ -554,6 +554,15 @@
     gap: 10px;
   }
 
+  /* ⚠️ 竖排时必须把 flex-basis 从 0 改成 auto：
+     桌面用的是 `flex: 1 1 0`（等宽平分），换到 column 主轴后 basis 管的是高度，
+     basis=0 + height:auto 会把卡片高度压成 2px（实测 356×2）。 */
+  #pagination.pagination-post .prev-post,
+  #pagination.pagination-post .next-post {
+    flex: 0 0 auto;
+    width: 100%;
+  }
+
   #pagination.pagination-post .next-post .pagination-info {
     text-align: left;
   }
