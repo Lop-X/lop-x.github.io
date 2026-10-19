@@ -43,11 +43,9 @@
   --lopx-post-ink-1: #141b22;
   --lopx-post-ink-2: #1d2731;
   --lopx-post-measure: 1.78;
-  --lopx-post-code-bg: #14161c;
-  --lopx-post-code-bar: #1a1d25;
-  --lopx-post-code-border: rgba(255, 255, 255, 0.08);
-  --lopx-post-code-ink: #c8d0dc;
-  --lopx-post-code-muted: rgba(255, 255, 255, 0.42);
+  /* ⚠️ 原来是 rgba(255,255,255,.08)：白字描边画在浅色卡片上等于看不见，
+     表格边框在亮色下一直是不可见的。改成中性深色。 */
+  --lopx-post-line: rgba(15, 23, 42, 0.1);
 }
 
 /* ---- 49.2 暗色参数 ---- */
@@ -64,11 +62,7 @@
   --lopx-post-accent-soft: rgba(127, 179, 213, 0.14);
   --lopx-post-ink-1: #f2f4f8;
   --lopx-post-ink-2: #e3e7ee;
-  --lopx-post-code-bg: #101218;
-  --lopx-post-code-bar: #16181f;
-  --lopx-post-code-border: rgba(255, 255, 255, 0.07);
-  --lopx-post-code-ink: #d3dae6;
-  --lopx-post-code-muted: rgba(255, 255, 255, 0.38);
+  --lopx-post-line: rgba(255, 255, 255, 0.09);
 }
 
 /* ---- 49.3 卡片玻璃化 ---- */
@@ -159,7 +153,7 @@
   margin: 1.4em 0;
   border-collapse: separate;
   border-spacing: 0;
-  border: 1px solid var(--lopx-post-code-border);
+  border: 1px solid var(--lopx-post-line);
   border-radius: 12px;
   overflow: hidden;
   font-size: 0.96em;
@@ -185,7 +179,7 @@
 #post #article-container table td {
   padding: 0.62em 1em;
   border: none;
-  border-top: 1px solid var(--lopx-post-code-border);
+  border-top: 1px solid var(--lopx-post-line);
   line-height: 1.6;
 }
 
@@ -223,85 +217,18 @@
   background: rgba(255, 255, 255, 0.08);
 }
 
-/* ---- 49.9 代码块：黑色系平铺外壳 + 极简工具栏 ----
-   2026-10-19 重做。highlight_theme 已从 `mac light` 换到 `darker`（见 _config.lopOS.yml），
-   底色 / 前景 / 语法着色全部由主题按 darker 的色表生成，本节只做容器层：
-     · 去掉两层投影 —— 主题 mac light 自带的 `0 5px 10px` 加上本节原来的
-       `0 14px 34px`，叠起来就是用户说的「代码框怎么还有一个浮动特效」。
-       现在改成纯 1px 描边定边界，不再有悬浮感；
-     · 底色压到 #14161c，比 darker 默认的 #212121 更冷更深：一是贴合站点偏冷的
-       蓝灰色调，二是让「黑代码框」在浅色玻璃卡上成为一块干净的独立区域；
-     · 工具栏只留「语言名（左）+ 复制（右，hover 出现）」，去掉 mac 三色圆点、
-       渐变底、底部描边。darker 本身不生成三色点，所以不需要额外隐藏；
-     · 行号压到 34% 白，亮暗主题共用（原来只修了暗色分支）。
-   语法色不在这里动 —— 一旦主题再换，这里不会留下过期色值。 */
-#post #article-container figure.highlight {
-  --hl-bg: var(--lopx-post-code-bg);
-  --hltools-bg: var(--lopx-post-code-bar);
-  --hlnumber-bg: var(--lopx-post-code-bg);
-  --hlnumber-color: var(--lopx-post-code-muted);
-  --hl-color: var(--lopx-post-code-ink);
-  margin: 0 0 1.7em;
-  border: 1px solid var(--lopx-post-code-border);
-  border-radius: 12px;
-  overflow: hidden;
-  background: var(--lopx-post-code-bg);
-  box-shadow: none;
-}
-
-#post #article-container figure.highlight .highlight-tools {
-  height: auto;
-  min-height: 32px;
-  padding: 0 12px;
-  border-bottom: none;
-  background: var(--lopx-post-code-bar);
-  color: var(--lopx-post-code-muted);
-}
-
-#post #article-container figure.highlight .highlight-tools .code-lang {
-  left: 12px;
-  font-size: 10px;
-  font-weight: 600;
-  letter-spacing: 0.1em;
-  color: var(--lopx-post-code-muted);
-  opacity: 1;
-}
-
-/* 折叠箭头：内容永远展开（highlight_shrink: false），这个按钮本就不该存在。
-   主题 main.js:251 的判断是 `isHighlightShrink !== undefined` —— 配 false 也会渲染，
-   而且模板用了单引号，`${highlightShrinkClass}` 没被插值，类名里字面带着这段占位符。
-   与其去改主题 JS，这里直接不显示；顺带把 code-lang 的左缩进收回 12px
-   （主题在 `.expand + .code-lang` 里给它留了 17px 的空位）。 */
-#post #article-container figure.highlight .highlight-tools .expand {
-  display: none;
-}
-
-/* 复制按钮：桌面端默认隐形，悬浮代码块才出现（移动端无 hover，故不隐藏） */
-@media (hover: hover) {
-  #post #article-container figure.highlight .highlight-tools .copy-button {
-    opacity: 0;
-    transition: opacity 0.25s ease, color 0.2s ease;
-  }
-
-  #post #article-container figure.highlight:hover .highlight-tools .copy-button,
-  #post #article-container figure.highlight:focus-within .highlight-tools .copy-button {
-    opacity: 1;
-  }
-}
-
-/* 代码区底色交给 figure 的 --hl-bg，这里只清掉内层各自的底，避免出现第二层色块 */
-#post #article-container figure.highlight pre,
-#post #article-container figure.highlight table,
-#post #article-container figure.highlight .code pre {
-  background: transparent;
-}
-
-/* 行号：亮暗主题统一压低。mac light 时代这里只写了暗色分支，
-   现在代码框在所有主题下都是黑的，必须两边一起改，否则亮色下行号会是浅灰。 */
-#post #article-container figure.highlight .gutter,
-#post #article-container figure.highlight .gutter pre {
-  color: var(--lopx-post-code-muted) !important;
-}
+/* ---- 49.9 代码块 —— 2026-10-07 建立 / 2026-10-19 改 / 2026-10-19（本轮）整段删除
+   原内容：把 figure.highlight 的底色从 darker 默认的 #212121 压到 #14161c（暗色 #101218），
+   加 1px 描边 + 12px 圆角、工具栏只留语言名、复制按钮改 hover 才出现、折叠箭头隐藏。
+   删除原因：用户要求「代码框恢复成 Butterfly 原版」。
+   Butterfly 原生的代码框（highlight_theme: darker）本来就是：
+     · 底色 #212121 / 前景 #EEFFFF（_highlight/theme.styl 的 darker 色表）
+     · 工具栏 2.15em 高、底 #1b1b1b，左侧 ▾ 折叠箭头 + 语言名，右侧常驻复制按钮
+     · 圆角 10px（_extra/code/code.css），无外投影 —— 投影只给 mac / mac light
+   所以「恢复原版」= 把这一层自定义外壳整个拿掉，让主题自己的值生效。
+   ⚠️ 保留与此无关的：highlight_theme 仍是 darker（Butterfly 的默认就是 darker）、
+      highlight_height_limit 仍是 0（Butterfly 默认 false，同为不截断、不挂展开条）。
+   语法着色不在这里写，主题换配色时不会留下过期色值。 */
 
 /* ---- 49.10 页头高度 —— 2026-10-19 删除
    原内容：亮色 23rem / 暗色 23rem / 窄屏 18rem 的三档通栏高度。
