@@ -86,6 +86,18 @@
   position: relative;
 }
 
+/* 顶栏菜单：中文主标题与英文副标题之间的间距
+ * ---------------------------------------------------------------------------
+ * 2026-10-19：原来靠浏览器端 pangu 在「技术」和「Tech」之间插一个空格。
+ * 但两者分属不同元素（.nav-label 文本 / <small class="nav-sub-label">），
+ * 属于跨标签排版，构建期的 pangu-static.js 处理不到（它只能改标签之间的纯文本）。
+ * pangu 改为构建期后，这里用 margin 补上等价间距，视觉与原来一致。
+ * 侧栏 #sidebar 那份本来就有 margin-left: 8px，不受影响。
+ */
+#nav #menus .menus_items .nav-label .nav-sub-label {
+  margin-left: 0.3em;
+}
+
 #nav #menus .lopx-nav-indicator {
   position: absolute;
   bottom: 10px;

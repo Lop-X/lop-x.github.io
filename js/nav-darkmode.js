@@ -37,32 +37,11 @@
     btn.setAttribute('aria-pressed', isDark() ? 'true' : 'false');
   }
 
+  // 2026-10-19：按钮已改为服务端渲染（见 layout/includes/header/nav.pug）。
+  // 之前在这里 createElement + insertBefore，会在首屏渲染后才把 #nav-right 撑宽
+  // 51px，导航菜单随之左右位移。现在只负责刷新按钮自身状态，不再动 DOM 结构。
   function mount() {
-    var navRight = document.getElementById('nav-right');
-    if (!navRight) return;
-
-    var btn = document.getElementById(BTN_ID);
-    if (btn && btn.parentNode === navRight) {
-      paint(btn);
-      return;
-    }
-    if (btn) btn.remove();
-
-    btn = document.createElement('div');
-    btn.id = BTN_ID;
-    btn.className = 'nav-button lopx-darkmode-btn';
-    btn.innerHTML =
-      '<a class="site-page" href="javascript:void(0);" role="button">' +
-      '<i class="anzhiyufont ' + ICON + '"></i></a>';
-    paint(btn);
-
-    // 与「回到顶部」同属右侧动作组，插在它前面
-    var anchor = document.getElementById('nav-totop');
-    if (anchor && anchor.parentNode === navRight) {
-      navRight.insertBefore(btn, anchor);
-    } else {
-      navRight.appendChild(btn);
-    }
+    paint(document.getElementById(BTN_ID));
   }
 
   // 委托到 document：pjax 换掉 #nav-right 也不需要重新绑定
