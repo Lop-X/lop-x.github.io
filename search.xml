@@ -134,55 +134,6 @@
       </tags>
   </entry>
   <entry>
-    <title>WorkBuddy 初体验</title>
-    <url>/Workbuddy%E5%88%9D%E4%BD%93%E9%AA%8C/</url>
-    <content><![CDATA[<p>看到了b站打的广告，安装了腾讯的workbuddy,体验一下。</p>
-<p>不得不说界面还是很美观的，和codex很像，看看国产agent使用体验怎么样。</p>
-<p>想先用这个清理一下C盘看看效果，目前容量 剩下 26.4G&#x2F;199G<br><img src="/img/Workbuddy%E5%88%9D%E4%BD%93%E9%AA%8C/Workbuddy%E5%88%9D%E4%BD%93%E9%AA%8C-01.webp"></p>
-<p>告诉他：<br><code>帮我完整分析 C 盘全部目录空间占用，区分可安全清理的临时文件、缓存、安装包、日志，标注高风险禁止删除的系统文件夹，生成详细清理清单并标注每一项可释放空间大小。</code></p>
-<p>过了5min8s，给我返回了结果，<br>WB返给我的分析的数据，自动做成了一个html，比较详细直观的看到文件结构了。<br><img src="/img/Workbuddy%E5%88%9D%E4%BD%93%E9%AA%8C/Workbuddy%E5%88%9D%E4%BD%93%E9%AA%8C-02.webp"></p>
-<p>输入：<br><code>删除可以安全清楚的部分，直接删除不放入回收站。</code><br>电脑风扇疯狂转动，在删除 DXCache 的时候，进度卡住了10min左右，自动检测然后修正了任务。<br><img src="/img/Workbuddy%E5%88%9D%E4%BD%93%E9%AA%8C/Workbuddy%E5%88%9D%E4%BD%93%E9%AA%8C-03.webp"></p>
-<p>大约20min后依然没有效果，于是选择重新执行命令。</p>
-<p>最后花费36分钟，战况：<br><img src="/img/Workbuddy%E5%88%9D%E4%BD%93%E9%AA%8C/Workbuddy%E5%88%9D%E4%BD%93%E9%AA%8C-04.webp"></p>
-<h4 id="总结："><a href="#总结：" class="headerlink" title="总结："></a>总结：</h4><p>效果不错，但是预计的时间比我想的要长，新用户赠送的2000免费额度可以干很多事情了，暂时推荐。</p>
-<p><strong>打算用workbuddy去vibecoding，让他帮我美化博客了</strong></p>
-]]></content>
-      <categories>
-        <category>工具</category>
-      </categories>
-      <tags>
-        <tag>WorkBuddy</tag>
-        <tag>AI</tag>
-        <tag>工具</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Hexo 配置 Bangumi 追番页面</title>
-    <url>/hexo%E9%85%8D%E7%BD%AEbangumi%E8%BF%BD%E7%95%AA%E9%A1%B5%E9%9D%A2/</url>
-    <content><![CDATA[<h3 id="终于成功啦"><a href="#终于成功啦" class="headerlink" title="终于成功啦"></a>终于成功啦</h3><p>使用插件<br><a href="https://github.com/HCLonely/hexo-bilibili-bangumi">HCLonely&#x2F;hexo-bilibili-bangumi: hexo 番剧页面插件，可选数据源：Bilibili, Bangumi</a></p>
-<h3 id="第一步安装插件"><a href="#第一步安装插件" class="headerlink" title="第一步安装插件"></a>第一步安装插件</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">npm install hexo-bilibili-bangumi --save</span><br></pre></td></tr></table></figure>
-<h3 id="第二步安配置设置"><a href="#第二步安配置设置" class="headerlink" title="第二步安配置设置"></a>第二步安配置设置</h3><p><strong>在_config.yml里面添加如下代码，注意是hexo配置不是主题配置</strong></p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">bangumi: <span class="comment"># 追番设置</span></span><br><span class="line">  <span class="built_in">enable</span>: <span class="literal">true</span></span><br><span class="line">  <span class="built_in">source</span>: bangumi</span><br><span class="line">  path: bangumis/index.html</span><br><span class="line">  vmid: 956578 <span class="comment">#注意此处换成自己的bangumi ID 主页名字旁边有个 @XXXXX数字的那个</span></span><br><span class="line">  title: <span class="string">&quot;追番列表&quot;</span></span><br><span class="line">  quote: <span class="string">&quot;生命不息，追番不止！&quot;</span></span><br><span class="line">  show: 1</span><br><span class="line">  lazyload: <span class="literal">false</span></span><br><span class="line">  loading:</span><br><span class="line">  showMyComment: <span class="literal">false</span></span><br><span class="line">  pagination: <span class="literal">false</span></span><br><span class="line">  metaColor:</span><br><span class="line">  color:</span><br><span class="line">  webp:</span><br><span class="line">  progress:</span><br><span class="line">  extraOrder:</span><br><span class="line">  proxy:</span><br><span class="line">    host: <span class="string">&quot;127.0.0.1&quot;</span>   <span class="comment">#换成自己代理的地址</span></span><br><span class="line">    port: <span class="string">&quot;7897&quot;</span>        <span class="comment">#换成自己代理的端口</span></span><br><span class="line">  extra_options:</span><br><span class="line">    top_img: <span class="literal">false</span></span><br><span class="line">    lazyload:</span><br><span class="line">      <span class="built_in">enable</span>: <span class="literal">false</span></span><br></pre></td></tr></table></figure>
-
-<p>把vmid 换成自己bangumi的 </p>
-<p>proxy代理换成自己的地址（自己去小软件里面查），众所周知bangumi现在不能直连了</p>
-<p>规则代理可能会绕过梯子，导致无法更新bangumi数据，</p>
-<h3 id="第三步同步数据"><a href="#第三步同步数据" class="headerlink" title="第三步同步数据"></a>第三步同步数据</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 更新追番数据</span></span><br><span class="line">hexo bangumi -u</span><br><span class="line"></span><br><span class="line"><span class="comment"># 删除追番数据</span></span><br><span class="line">hexo bangumi -d</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<p>连接正常的话会看到</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">INFO  Getting bangumis, please <span class="built_in">wait</span>...</span><br><span class="line">正在获取 [想看] 番剧 [██] 100% 0.0s</span><br><span class="line">正在获取 [在看] 番剧 [█] 100% 0.0s</span><br><span class="line">正在获取 [已看] 番剧 [█████████████] 100% 33.6s</span><br></pre></td></tr></table></figure>
-<p>之后就可以正常部署啦</p>
-<h2 id="本地图片"><a href="#本地图片" class="headerlink" title="本地图片"></a>本地图片</h2><p>新增番剧后跑一次 <code>python tools/fetch-bgm-covers.py</code> 即可抓取图片到本地，<strong>已有的会跳过</strong>。</p>
-]]></content>
-      <categories>
-        <category>建站</category>
-      </categories>
-      <tags>
-        <tag>hexo</tag>
-        <tag>bangumi</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>使用 Obsidian 编辑笔记</title>
     <url>/%E4%BD%BF%E7%94%A8obsidian%E7%BC%96%E8%BE%91%E7%AC%94%E8%AE%B0/</url>
     <content><![CDATA[<p>使用Vscode编辑markdown显示效果不好，使用Typora编辑只能一次打开一篇文章，<br>为了解决编辑文章的痛点，可以使用obsidian。</p>
@@ -256,6 +207,29 @@
       </categories>
       <tags>
         <tag>obsidian</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>WorkBuddy 初体验</title>
+    <url>/Workbuddy%E5%88%9D%E4%BD%93%E9%AA%8C/</url>
+    <content><![CDATA[<p>看到了b站打的广告，安装了腾讯的workbuddy,体验一下。</p>
+<p>不得不说界面还是很美观的，和codex很像，看看国产agent使用体验怎么样。</p>
+<p>想先用这个清理一下C盘看看效果，目前容量 剩下 26.4G&#x2F;199G<br><img src="/img/Workbuddy%E5%88%9D%E4%BD%93%E9%AA%8C/Workbuddy%E5%88%9D%E4%BD%93%E9%AA%8C-01.webp"></p>
+<p>告诉他：<br><code>帮我完整分析 C 盘全部目录空间占用，区分可安全清理的临时文件、缓存、安装包、日志，标注高风险禁止删除的系统文件夹，生成详细清理清单并标注每一项可释放空间大小。</code></p>
+<p>过了5min8s，给我返回了结果，<br>WB返给我的分析的数据，自动做成了一个html，比较详细直观的看到文件结构了。<br><img src="/img/Workbuddy%E5%88%9D%E4%BD%93%E9%AA%8C/Workbuddy%E5%88%9D%E4%BD%93%E9%AA%8C-02.webp"></p>
+<p>输入：<br><code>删除可以安全清楚的部分，直接删除不放入回收站。</code><br>电脑风扇疯狂转动，在删除 DXCache 的时候，进度卡住了10min左右，自动检测然后修正了任务。<br><img src="/img/Workbuddy%E5%88%9D%E4%BD%93%E9%AA%8C/Workbuddy%E5%88%9D%E4%BD%93%E9%AA%8C-03.webp"></p>
+<p>大约20min后依然没有效果，于是选择重新执行命令。</p>
+<p>最后花费36分钟，战况：<br><img src="/img/Workbuddy%E5%88%9D%E4%BD%93%E9%AA%8C/Workbuddy%E5%88%9D%E4%BD%93%E9%AA%8C-04.webp"></p>
+<h4 id="总结："><a href="#总结：" class="headerlink" title="总结："></a>总结：</h4><p>效果不错，但是预计的时间比我想的要长，新用户赠送的2000免费额度可以干很多事情了，暂时推荐。</p>
+<p><strong>打算用workbuddy去vibecoding，让他帮我美化博客了</strong></p>
+]]></content>
+      <categories>
+        <category>工具</category>
+      </categories>
+      <tags>
+        <tag>WorkBuddy</tag>
+        <tag>AI</tag>
+        <tag>工具</tag>
       </tags>
   </entry>
   <entry>
@@ -337,6 +311,66 @@
       <tags>
         <tag>Git</tag>
       </tags>
+  </entry>
+  <entry>
+    <title>关于Ai在独立游戏的应用</title>
+    <url>/%E5%85%B3%E4%BA%8EAi%E5%9C%A8%E7%8B%AC%E7%AB%8B%E6%B8%B8%E6%88%8F%E7%9A%84%E5%BA%94%E7%94%A8/</url>
+    <content><![CDATA[<p>关于Ai在独立游戏开发中的使用看法，为什么独立开发者这么反感AI。</p>
+<p>最近开始刷Reddit了，上面有不少独立游戏开发者的社区</p>
+<p>其中一个高频的问题是AI辅助游戏制作。<br>感觉与国内主流论调不同，大家都想办法使用AI去加快自己的游戏开发进程，<br>但是国外有不少开发者明确反对AI，甚至有些过激。</p>
+<p><strong>有一个问题让我印象深刻，</strong><br>问：你会因为一款游戏使用AI就抵制它吗？</p>
+<p>下面的一个高赞回答： <strong>Yes</strong></p>
+<p><strong>为什么开发者这么反感AI呢？</strong></p>
+<p>我觉得可能有以下几个方面，</p>
+<ol>
+<li>AI可以轻松的抹平掉一个人几年的努力，目前已经出现很多恶性AI盗版</li>
+<li>独立游戏很多是美术和策划，AI确确实实挤占了他们的生存空间</li>
+<li>生成式AI确实质量很差，让大家产生反感</li>
+<li>很多人追求短期高回报，搞得社区都是粗制乱造的劣质游戏</li>
+</ol>
+<p>AI确实伤透了很多开发者的心，自己用心制作的游戏被别人直接用AI复刻，设置在作者发布玩法demo的时候就能有厂家抢险制作出来并且上线。</p>
+<p>Steam开始出手整治AI游戏了，确实是个好事。大家都呼吁添加AI披露标签，但是我感觉这个方法不怎么妙，因为怎么界定是使用了AI呢？AI写代码算不算，AI翻译，AI辅助整理文档算不算？AI生成式图片和AI音乐当然算是AI，但是如果说有人只是用AI调色，高清化资产呢？</p>
+<p>这个只能慢慢等待发展了，作为新入坑的人我肯定倾向于使用AI，但是这真的有错吗？</p>
+<p>个人感觉，AI就是一个工具，它可以提高生产力，应该顺应潮流与时俱进学习怎么使用AI。<br>技术无罪，错的是那些用AI大肆搞低质作品的人，毕竟不管用不用AI，垃圾就是垃圾！<br>AI用多了会产生一种 <strong>“AI厉害&#x3D;我厉害”</strong> 的错觉，几个提示词就可以完成庞大的工作，但是又不具备理解能力和审美。用AI辅助人而不是用AI代替人，因为科技的发展长远来看都是造福人类的。</p>
+]]></content>
+      <categories>
+        <category>杂谈</category>
+      </categories>
+      <tags>
+        <tag>思考</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Hexo 配置 Bangumi 追番页面</title>
+    <url>/hexo%E9%85%8D%E7%BD%AEbangumi%E8%BF%BD%E7%95%AA%E9%A1%B5%E9%9D%A2/</url>
+    <content><![CDATA[<h3 id="终于成功啦"><a href="#终于成功啦" class="headerlink" title="终于成功啦"></a>终于成功啦</h3><p>使用插件<br><a href="https://github.com/HCLonely/hexo-bilibili-bangumi">HCLonely&#x2F;hexo-bilibili-bangumi: hexo 番剧页面插件，可选数据源：Bilibili, Bangumi</a></p>
+<h3 id="第一步安装插件"><a href="#第一步安装插件" class="headerlink" title="第一步安装插件"></a>第一步安装插件</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">npm install hexo-bilibili-bangumi --save</span><br></pre></td></tr></table></figure>
+<h3 id="第二步安配置设置"><a href="#第二步安配置设置" class="headerlink" title="第二步安配置设置"></a>第二步安配置设置</h3><p><strong>在_config.yml里面添加如下代码，注意是hexo配置不是主题配置</strong></p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">bangumi: <span class="comment"># 追番设置</span></span><br><span class="line">  <span class="built_in">enable</span>: <span class="literal">true</span></span><br><span class="line">  <span class="built_in">source</span>: bangumi</span><br><span class="line">  path: bangumis/index.html</span><br><span class="line">  vmid: 956578 <span class="comment">#注意此处换成自己的bangumi ID 主页名字旁边有个 @XXXXX数字的那个</span></span><br><span class="line">  title: <span class="string">&quot;追番列表&quot;</span></span><br><span class="line">  quote: <span class="string">&quot;生命不息，追番不止！&quot;</span></span><br><span class="line">  show: 1</span><br><span class="line">  lazyload: <span class="literal">false</span></span><br><span class="line">  loading:</span><br><span class="line">  showMyComment: <span class="literal">false</span></span><br><span class="line">  pagination: <span class="literal">false</span></span><br><span class="line">  metaColor:</span><br><span class="line">  color:</span><br><span class="line">  webp:</span><br><span class="line">  progress:</span><br><span class="line">  extraOrder:</span><br><span class="line">  proxy:</span><br><span class="line">    host: <span class="string">&quot;127.0.0.1&quot;</span>   <span class="comment">#换成自己代理的地址</span></span><br><span class="line">    port: <span class="string">&quot;7897&quot;</span>        <span class="comment">#换成自己代理的端口</span></span><br><span class="line">  extra_options:</span><br><span class="line">    top_img: <span class="literal">false</span></span><br><span class="line">    lazyload:</span><br><span class="line">      <span class="built_in">enable</span>: <span class="literal">false</span></span><br></pre></td></tr></table></figure>
+
+<p>把vmid 换成自己bangumi的 </p>
+<p>proxy代理换成自己的地址（自己去小软件里面查），众所周知bangumi现在不能直连了</p>
+<p>规则代理可能会绕过梯子，导致无法更新bangumi数据，</p>
+<h3 id="第三步同步数据"><a href="#第三步同步数据" class="headerlink" title="第三步同步数据"></a>第三步同步数据</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 更新追番数据</span></span><br><span class="line">hexo bangumi -u</span><br><span class="line"></span><br><span class="line"><span class="comment"># 删除追番数据</span></span><br><span class="line">hexo bangumi -d</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>连接正常的话会看到</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">INFO  Getting bangumis, please <span class="built_in">wait</span>...</span><br><span class="line">正在获取 [想看] 番剧 [██] 100% 0.0s</span><br><span class="line">正在获取 [在看] 番剧 [█] 100% 0.0s</span><br><span class="line">正在获取 [已看] 番剧 [█████████████] 100% 33.6s</span><br></pre></td></tr></table></figure>
+<p>之后就可以正常部署啦</p>
+<h2 id="本地图片"><a href="#本地图片" class="headerlink" title="本地图片"></a>本地图片</h2><p>新增番剧后跑一次 <code>python tools/fetch-bgm-covers.py</code> 即可抓取图片到本地，<strong>已有的会跳过</strong>。</p>
+]]></content>
+      <categories>
+        <category>建站</category>
+      </categories>
+      <tags>
+        <tag>hexo</tag>
+        <tag>bangumi</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>测试1</title>
+    <url>/%E6%B5%8B%E8%AF%951/</url>
+    <content><![CDATA[<p><img src="/img/%E6%B5%8B%E8%AF%951/HUjv6EPacAAZwpP.webp"></p>
+]]></content>
   </entry>
   <entry>
     <title>智能汽车竞赛</title>
@@ -523,39 +557,5 @@
       <tags>
         <tag>考研</tag>
       </tags>
-  </entry>
-  <entry>
-    <title>关于Ai在独立游戏的应用</title>
-    <url>/%E5%85%B3%E4%BA%8EAi%E5%9C%A8%E7%8B%AC%E7%AB%8B%E6%B8%B8%E6%88%8F%E7%9A%84%E5%BA%94%E7%94%A8/</url>
-    <content><![CDATA[<p>关于Ai在独立游戏开发中的使用看法，为什么独立开发者这么反感AI。</p>
-<p>最近开始刷Reddit了，上面有不少独立游戏开发者的社区</p>
-<p>其中一个高频的问题是AI辅助游戏制作。<br>感觉与国内主流论调不同，大家都想办法使用AI去加快自己的游戏开发进程，<br>但是国外有不少开发者明确反对AI，甚至有些过激。</p>
-<p><strong>有一个问题让我印象深刻，</strong><br>问：你会因为一款游戏使用AI就抵制它吗？</p>
-<p>下面的一个高赞回答： <strong>Yes</strong></p>
-<p><strong>为什么开发者这么反感AI呢？</strong></p>
-<p>我觉得可能有以下几个方面，</p>
-<ol>
-<li>AI可以轻松的抹平掉一个人几年的努力，目前已经出现很多恶性AI盗版</li>
-<li>独立游戏很多是美术和策划，AI确确实实挤占了他们的生存空间</li>
-<li>生成式AI确实质量很差，让大家产生反感</li>
-<li>很多人追求短期高回报，搞得社区都是粗制乱造的劣质游戏</li>
-</ol>
-<p>AI确实伤透了很多开发者的心，自己用心制作的游戏被别人直接用AI复刻，设置在作者发布玩法demo的时候就能有厂家抢险制作出来并且上线。</p>
-<p>Steam开始出手整治AI游戏了，确实是个好事。大家都呼吁添加AI披露标签，但是我感觉这个方法不怎么妙，因为怎么界定是使用了AI呢？AI写代码算不算，AI翻译，AI辅助整理文档算不算？AI生成式图片和AI音乐当然算是AI，但是如果说有人只是用AI调色，高清化资产呢？</p>
-<p>这个只能慢慢等待发展了，作为新入坑的人我肯定倾向于使用AI，但是这真的有错吗？</p>
-<p>个人感觉，AI就是一个工具，它可以提高生产力，应该顺应潮流与时俱进学习怎么使用AI。<br>技术无罪，错的是那些用AI大肆搞低质作品的人，毕竟不管用不用AI，垃圾就是垃圾！<br>AI用多了会产生一种 <strong>“AI厉害&#x3D;我厉害”</strong> 的错觉，几个提示词就可以完成庞大的工作，但是又不具备理解能力和审美。用AI辅助人而不是用AI代替人，因为科技的发展长远来看都是造福人类的。</p>
-]]></content>
-      <categories>
-        <category>杂谈</category>
-      </categories>
-      <tags>
-        <tag>思考</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>测试1</title>
-    <url>/%E6%B5%8B%E8%AF%951/</url>
-    <content><![CDATA[<p><img src="/img/%E6%B5%8B%E8%AF%951/HUjv6EPacAAZwpP.webp"></p>
-]]></content>
   </entry>
 </search>
