@@ -10,23 +10,36 @@
   <rights>All rights reserved 2026, Fanbo</rights>
   <subtitle>Embedded · Robotics · Indie Game</subtitle>
   <title>Lop-X</title>
-  <updated>2026-10-19T11:11:24.528Z</updated>
+  <updated>2026-10-20T14:41:29.471Z</updated>
   <entry>
     <author>
       <name>Fanbo</name>
     </author>
-    <category term="思考" scheme="https://lop-x.github.io/categories/%E6%80%9D%E8%80%83/"/>
+    <id>https://lop-x.github.io/%E6%B5%8B%E8%AF%951/</id>
+    <link href="https://lop-x.github.io/%E6%B5%8B%E8%AF%951/"/>
+    <published>2026-10-20T12:31:00.000Z</published>
+    <summary>
+      <![CDATA[<p><img src="/img/%E6%B5%8B%E8%AF%951/HUjv6EPacAAZwpP.webp"></p>]]>
+    </summary>
+    <title>测试1</title>
+    <updated>2026-10-20T14:41:29.471Z</updated>
+  </entry>
+  <entry>
+    <author>
+      <name>Fanbo</name>
+    </author>
+    <category term="杂谈" scheme="https://lop-x.github.io/categories/%E6%9D%82%E8%B0%88/"/>
     <category term="思考" scheme="https://lop-x.github.io/tags/%E6%80%9D%E8%80%83/"/>
     <id>https://lop-x.github.io/%E5%85%B3%E4%BA%8EAi%E5%9C%A8%E7%8B%AC%E7%AB%8B%E6%B8%B8%E6%88%8F%E7%9A%84%E5%BA%94%E7%94%A8/</id>
     <link href="https://lop-x.github.io/%E5%85%B3%E4%BA%8EAi%E5%9C%A8%E7%8B%AC%E7%AB%8B%E6%B8%B8%E6%88%8F%E7%9A%84%E5%BA%94%E7%94%A8/"/>
-    <published>2026-10-14T15:30:00.000Z</published>
+    <published>2026-10-16T12:53:00.000Z</published>
     <summary>
       <![CDATA[<p>关于Ai在独立游戏开发中的使用看法，为什么独立开发者这么反感AI。</p>
 <p>最近开始刷Reddit了，上面有不少独立游戏开发者的社区</p>
 <p>其中一个高频的问题是AI辅助游戏制作。<br>感觉与国内主流论调不同，大家都想办法使用AI去加快自己的游戏开发进程，<b]]>
     </summary>
-    <title>关于Ai在独立游戏的应用看法</title>
-    <updated>2026-10-19T11:11:24.528Z</updated>
+    <title>关于Ai在独立游戏的应用</title>
+    <updated>2026-10-20T13:02:59.098Z</updated>
   </entry>
   <entry>
     <author>
@@ -40,10 +53,10 @@
     <link href="https://lop-x.github.io/%E6%99%BA%E8%83%BD%E6%B1%BD%E8%BD%A6%E7%AB%9E%E8%B5%9B/"/>
     <published>2026-10-12T16:10:00.000Z</published>
     <summary>
-      <![CDATA[<p><img src="/img/%E6%99%BA%E8%83%BD%E6%B1%BD%E8%BD%A6%E7%AB%9E%E8%B5%9B/wallhaven-yxpwmx.webp"></p>]]>
+      <![CDATA[<p><img src="/img/%E6%99%BA%E8%83%BD%E6%B1%BD%E8%BD%A6%E7%AB%9E%E8%B5%9B/%E6%99%BA%E8%83%BD%E6%B1%BD%E8%BD%A6%E7%AB%9E%E8%B5%9B-01.webp"></p]]>
     </summary>
     <title>智能汽车竞赛</title>
-    <updated>2026-10-19T11:11:24.526Z</updated>
+    <updated>2026-10-20T14:24:42.457Z</updated>
   </entry>
   <entry>
     <author>
@@ -62,7 +75,7 @@
 <p>想先用这个清理一下C盘看看效果，目前容量 剩下 26.4G&#x2F;199G<br><img src]]>
     </summary>
     <title>WorkBuddy 初体验</title>
-    <updated>2026-10-19T11:11:24.530Z</updated>
+    <updated>2026-10-20T14:24:42.478Z</updated>
   </entry>
   <entry>
     <author>
@@ -78,7 +91,7 @@
 <p><strong]]>
     </summary>
     <title>考研记录（二）</title>
-    <updated>2026-10-19T11:11:24.524Z</updated>
+    <updated>2026-10-20T13:02:59.066Z</updated>
   </entry>
   <entry>
     <author>
@@ -94,7 +107,7 @@
 <h3 id="obsidian下载"><a href="#obsidian下载" class="headerli]]>
     </summary>
     <title>使用 Obsidian 编辑笔记</title>
-    <updated>2026-10-19T12:18:54.294Z</updated>
+    <updated>2026-10-20T13:02:59.124Z</updated>
   </entry>
   <entry>
     <author>
@@ -111,7 +124,7 @@
 <h2 id="1-基础配置部分"><a href="#1-基础配置部分" class="headerlink" title="1 基础配置部分"></a>1 基础配置部分</h2><h3 id="1-1-]]>
     </summary>
     <title>用 EasyX 制作 Snake Game 记录</title>
-    <updated>2026-10-19T11:11:24.530Z</updated>
+    <updated>2026-10-20T13:02:59.110Z</updated>
   </entry>
   <entry>
     <author>
@@ -121,12 +134,12 @@
     <category term="Git" scheme="https://lop-x.github.io/tags/Git/"/>
     <id>https://lop-x.github.io/%E5%B8%B8%E8%A7%81Git%E5%91%BD%E4%BB%A4%E5%AD%A6%E4%B9%A0/</id>
     <link href="https://lop-x.github.io/%E5%B8%B8%E8%A7%81Git%E5%91%BD%E4%BB%A4%E5%AD%A6%E4%B9%A0/"/>
-    <published>2026-09-11T16:01:07.000Z</published>
+    <published>2026-09-12T13:11:00.000Z</published>
     <summary>
       <![CDATA[<h1 id="Git-基础使用"><a href="#Git-基础使用" class="headerlink" title="Git 基础使用"></a>Git 基础使用</h1><p>Git 是本地代码版本管理工具，用来记录修改历史、恢复旧版本。<br>GitHub 是把 G]]>
     </summary>
-    <title>常见 Git 命令学习使用</title>
-    <updated>2026-10-19T11:11:24.536Z</updated>
+    <title>常见Git命令学习</title>
+    <updated>2026-10-20T13:13:18.935Z</updated>
   </entry>
   <entry>
     <author>
@@ -142,7 +155,7 @@
       <![CDATA[<h3 id="终于成功啦"><a href="#终于成功啦" class="headerlink" title="终于成功啦"></a>终于成功啦</h3><p>使用插件<br><a href="https://github.com/HCLonely/hexo-bilibili]]>
     </summary>
     <title>Hexo 配置 Bangumi 追番页面</title>
-    <updated>2026-10-19T11:11:24.525Z</updated>
+    <updated>2026-10-20T13:02:59.077Z</updated>
   </entry>
   <entry>
     <author>
@@ -155,7 +168,7 @@
     <published>2026-09-08T14:07:39.000Z</published>
     <summary>考研复习的第一期记录。</summary>
     <title>考研记录（一）</title>
-    <updated>2026-10-19T11:11:24.523Z</updated>
+    <updated>2026-10-20T13:02:59.053Z</updated>
   </entry>
   <entry>
     <author>
@@ -173,7 +186,7 @@
 <h3 id="2026-10-17"><a href="#2026-10-17" class="headerlink" title="2026-10-17"></a>2026-10-17</h3><p>分页面小美化<br>文章页面美化<br>]]>
     </summary>
     <title>网站装修记录</title>
-    <updated>2026-10-19T11:11:24.526Z</updated>
+    <updated>2026-10-20T13:02:59.087Z</updated>
   </entry>
   <entry>
     <author>
@@ -193,6 +206,6 @@
 <h3 id="基于hexo的blog搭建流程"><a href="#基于hexo的blog搭建流程" cla]]>
     </summary>
     <title>Hello World</title>
-    <updated>2026-10-19T11:11:24.525Z</updated>
+    <updated>2026-10-20T13:02:59.070Z</updated>
   </entry>
 </feed>
