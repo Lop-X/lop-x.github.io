@@ -369,8 +369,11 @@
   <entry>
     <title>测试1</title>
     <url>/%E6%B5%8B%E8%AF%951/</url>
-    <content><![CDATA[<p><img src="/img/%E6%B5%8B%E8%AF%951/HUjv6EPacAAZwpP.webp"></p>
+    <content><![CDATA[<p><img src="/img/%E6%B5%8B%E8%AF%951/%E6%B5%8B%E8%AF%951-01.webp"></p>
 ]]></content>
+      <categories>
+        <category>测试</category>
+      </categories>
   </entry>
   <entry>
     <title>智能汽车竞赛</title>
@@ -461,11 +464,10 @@
 			</p>
 ]]></content>
       <categories>
-        <category>贪吃蛇</category>
+        <category>小游戏</category>
       </categories>
       <tags>
         <tag>EasyX</tag>
-        <tag>贪吃蛇</tag>
       </tags>
   </entry>
   <entry>

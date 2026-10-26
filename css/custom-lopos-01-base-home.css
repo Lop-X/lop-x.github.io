@@ -308,11 +308,20 @@
 
 #recent-writing li {
   display: grid;
-  grid-template-columns: 120px minmax(0, 1fr);
+  /* 2026-10-24：第三列 = 行尾「空间 · 分类」元信息（.rw-meta） */
+  grid-template-columns: 120px minmax(0, 1fr) auto;
   gap: 20px;
   align-items: baseline;
   padding: 16px 0;
   border-bottom: 1px solid var(--lopx-line);
+}
+
+/* 行尾元信息：与日期列同语言（muted 小字），右对齐，不与标题争夺宽度 */
+#recent-writing .rw-meta {
+  justify-self: end;
+  color: var(--lopx-muted);
+  font-size: 0.78rem;
+  white-space: nowrap;
 }
 
 #recent-writing time {
@@ -352,6 +361,12 @@
   #recent-writing time {
     display: block;
     margin-bottom: 4px;
+  }
+
+  #recent-writing .rw-meta {
+    display: block;
+    margin-top: 4px;
+    white-space: normal;
   }
 }
 

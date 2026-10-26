@@ -6,11 +6,13 @@
 
 /* Home */
 #recent-writing li a,
-#recent-writing time {
+#recent-writing time,
+#recent-writing .rw-meta {
   transition: color var(--lopx-dur-fast) ease;
 }
 
-#recent-writing li:hover time {
+#recent-writing li:hover time,
+#recent-writing li:hover .rw-meta {
   color: #4b5560;
 }
 
@@ -40,6 +42,7 @@
 @media (prefers-reduced-motion: reduce) {
   #recent-writing li a,
   #recent-writing time,
+  #recent-writing .rw-meta,
   .lopx-card,
   .lopx-card .lopx-card-title,
   #garden-space > nav a,
