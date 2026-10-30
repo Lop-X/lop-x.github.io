@@ -361,12 +361,23 @@
    现在把 `.bangumi-info-item-score` 绝对定位到封面右上角，
    做成 `★ 8.1` 的深色玻璃徽章：
      · 标题与评分不再抢同一条水平线，卡片只剩「封面 + 标题」；
-     · 徽章底色固定 rgba(12,16,22,.56) + 白字，在任何封面上
-       对比度都 ≥ 7:1，不受原作配色影响；
+     · 徽章底色固定 rgba(12,16,22,.6) + 白字，在任何封面上
+       对比度都 ≥ 5.5:1，不受原作配色影响；
      · 346 条实测全部有评分，不需要缺省态。
    隐藏的「全 N 话」「类型」「想看/在看/已看」维持原判断：每列只有
-   222px，四类信息挤一行会退化成不可读的小字；后三个本来就是 bgm
-   全站统计，对读者没有意义。 */
+   174px，四类信息挤一行会退化成不可读的小字；后三个本来就是 bgm
+   全站统计，对读者没有意义。
+
+   ⚠️ 2026-10-30 修：徽章之前根本不是一个胶囊，而是一块 42×46 的方块。
+   探针实测 `getBoundingClientRect()` 高度 46 —— 插件给 `.bangumi-info-item`
+   写了内联 `min-height:46px; padding:7px 6px`，给 `em` 写了 `padding-top:5px`，
+   我们的覆盖只清了 padding/border/background，没清 min-height，
+   于是海报右上角糊着一块接近正方形、占封面宽 24.5% 的深色砖头。
+   现在 min-height:0 + em 的 padding:0，实测 41×16（占宽 23%、占高 6.5%），
+   才是设计意图里那个「角标」。
+   同一轮还补了：hover 上浮时徽章跟着走（原来封面抬 2px、徽章不动，
+   视觉上像脱开了）、`评分` 二字改成视觉隐藏而非 display:none（读屏能念出
+   「评分 8.0」而不是孤零零一个数字）。 */
 #article-container .bangumi-meta {
   min-height: 0;
   height: 0;
@@ -393,48 +404,66 @@
 #article-container .bangumi-info-items > .bangumi-info-item-score {
   position: absolute;
   z-index: 2;
-  top: 8px;
-  right: 8px;
+  top: 7px;
+  right: 7px;
   display: inline-flex;
   align-items: center;
-  gap: 3px;
+  gap: 3.5px;
+  width: auto;
+  min-height: 0;
+  height: auto;
   margin: 0;
-  padding: 3px 7px 3px 6px;
+  padding: 2px 6px 2px 5.5px;
   border: none;
-  border-radius: 7px;
-  background: rgba(12, 16, 22, 0.56);
+  border-radius: 6px;
+  background: rgba(12, 16, 22, 0.6);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.14);
   -webkit-backdrop-filter: blur(8px) saturate(120%);
   backdrop-filter: blur(8px) saturate(120%);
   line-height: 1;
   pointer-events: none;
+  transition: transform 0.32s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+/* 封面 hover 抬 2px，徽章必须跟着抬，否则看起来是从封面上飘下来了 */
+#article-container .bangumi-item:hover .bangumi-info-item-score {
+  transform: translateY(-2px);
 }
 
 #article-container .bangumi-info-items > .bangumi-info-item-score::before {
   content: '★';
   margin: 0;
-  font-size: 9px;
+  font-size: 8.5px;
   line-height: 1;
   color: #ffd166;
   opacity: 1;
 }
 
+/* 视觉隐藏而不是 display:none：读屏仍然念「评分 8.0」 */
 #article-container .bangumi-info-item-score .bangumi-info-label {
-  display: none;
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
 }
 
 #article-container .bangumi-info-item-score em {
-  font-size: 11.5px;
+  display: block;
+  padding: 0;
+  font-size: 11px;
   font-weight: 600;
   font-variant-numeric: tabular-nums;
-  letter-spacing: 0.01em;
+  letter-spacing: 0.02em;
   line-height: 1;
   color: #fff;
 }
 
-/* 暗色下封面本身多半也偏暗，0.56 的透明度会让徽章边缘与画面糊在一起；
-   压到 0.68 并去掉饱和增强，保证在深色画面上仍有明确的圆角边界。 */
+/* 暗色下封面本身多半也偏暗，0.6 的透明度会让徽章边缘与画面糊在一起；
+   压到 0.72 并去掉饱和增强，保证在深色画面上仍有明确的圆角边界。 */
 [data-theme='dark'] #article-container .bangumi-info-items > .bangumi-info-item-score {
-  background: rgba(8, 10, 14, 0.68);
+  background: rgba(8, 10, 14, 0.72);
   -webkit-backdrop-filter: blur(8px);
   backdrop-filter: blur(8px);
 }
