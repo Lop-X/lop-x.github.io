@@ -196,6 +196,71 @@
    的描述是第二轮的历史记录，仅作背景保留；现行规格见 §47.1。
    ============================================================ */
 
+/* 47.0 显隐类：复刻一份到外部样式表（2026-10-30）
+   插件把 `.bangumi-hide{display:none!important}` / `.bangumi-show{display:block}`
+   写在自己的内联 <style> 里，而主题的 pjax 换页会把 <head> 里的 style 清掉
+   （实测：直连 style 标签 1 个 → pjax 后 0 个）。
+   结果是从首页点进追番页时这条规则不存在，`bangumi-hide` 变成无意义的类名，
+   三个分组 346 条一次全铺开 —— 分页、tab 全部失效。
+   外部 CSS 不参与 pjax 替换，所以在这里补一条，特异性也更高。
+   只复刻 `.bangumi-hide`：`.bangumi-show` 的 display 由下面的 grid 规则决定，
+   在这里写 block 反而会因为源码顺序把海报墙压回单列。 */
+#article-container .bangumi-hide {
+  display: none !important;
+}
+
+/* 47.0b 插件变量与分页条的复刻（2026-10-30）
+   和上面同理：`--bangumi-*` 定义在内联 style 的 :root 上，pjax 后一起消失。
+   取值直接从插件 CSS 抄，浅色/暗色两组都保留，视觉与直连完全一致。
+   挂在 .bangumi-container 上而不是 :root —— 特异性更高，不会外溢到全站。 */
+#article-container .bangumi-container {
+  --bangumi-bg: #fff;
+  --bangumi-border: #dde5ee;
+  --bangumi-muted: #697586;
+  --bangumi-accent-strong: #1766c2;
+  --bangumi-accent-soft: #e8f2ff;
+  --bangumi-surface: #f7f9fc;
+}
+
+[data-theme='dark'] #article-container .bangumi-container {
+  --bangumi-bg: #171b22;
+  --bangumi-border: #333d4a;
+  --bangumi-muted: #a5b1bf;
+  --bangumi-accent-strong: #9fcbff;
+  --bangumi-accent-soft: #1f354d;
+  --bangumi-surface: #202630;
+}
+
+/* pjax 后分页条会从 flex 退化成 block、按钮丢边框和底色（实测见 §47.0），
+   所以这三条也复刻。margin-top 由 §47.8 的 (1,1,1) 规则接管。 */
+#article-container .bangumi-pagination {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  justify-content: center;
+  margin: 18px 0 10px;
+  text-align: center;
+}
+
+#article-container .bangumi-button,
+#article-container .bangumi-pagenum {
+  display: inline-flex;
+  align-items: center;
+  min-height: 32px;
+  padding: 6px 10px;
+  border: 1px solid var(--bangumi-border);
+  border-radius: 7px;
+  color: var(--bangumi-muted);
+  background: var(--bangumi-bg);
+  line-height: 1.2;
+}
+
+#article-container .bangumi-button:hover {
+  color: var(--bangumi-accent-strong);
+  background: var(--bangumi-accent-soft);
+}
+
 /* 47.1 布局：单列卡片 → 四列海报墙 —— 2026-10-29（第三轮）
 
    前两轮都是「单列卡片 + 三行简介」模型，探针实测出的是模型本身的错配：
@@ -477,24 +542,35 @@
   display: none;
 }
 
-/* 47.7 tabs：下划线式 → 胶囊分段控件（2026-10-29）
-   原来只有「换颜色 + 2px 下划线」，字号字重都不变，三个 tab 合计 164px
-   散在 936px 宽的容器里，视觉重量接近一行注释 —— 看不出是主导航。
-   换成胶囊：外层一条浅凹槽，选中项浮起成白底。
+/* 47.7 tabs：计数胶囊 + 等宽三段（2026-10-30 第五轮）
+   第一版只有「换颜色 + 2px 下划线」，字号字重都不变，三个 tab 合计 164px
+   散在 936px 宽的容器里，视觉重量接近一行注释。第二版换成胶囊分段控件。
+   本轮再动，是因为数字和标签还是「一个整体」：插件输出的是纯文本
+   `想看\n(31)`，换行被折叠成一个空格，`(31)` 与中文同色同字重同字号，
+   读起来是一串连续的灰字，计数这个信息完全没被区分出来。
+   现在由 filters/bangumi-page.js 把它拆成
+       <a class="bangumi-tab">想看<span class="bangumi-tab-count">31</span></a>
+   数字画成小胶囊：11.5px / 600 / tabular-nums，比标签小一号但更重，
+   靠「尺寸降级 + 字重升级」把它从正文里分出来，又不会抢过标签本身。
+   选中时数字转强调色（--lopx-accent），与上方页面里的链接同一个蓝。
+   容器同时改成等宽三段：grid-auto-flow:column + 固定 340px，
+   三个 tab 各 110px，数字块落在同一条横线节奏上 —— 之前 80.8/76/90.3
+   的宽度差让整条控件看起来是「随手排的」。
+
    ⚠️ 本节所有属性仍需 !important —— 主题 _extra/anzhiyu/custom.css:118
    的 `#article-container a:not(…)` 特异性 (1,5,1) 会给每个 tab 补
    padding:0 .2em + 2px 金色下边框。 */
 #article-container .bangumi-tabs {
-  display: flex;
-  flex-wrap: nowrap;
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
   gap: 3px;
-  width: -moz-fit-content;
-  width: fit-content;
+  width: 340px;
   max-width: 100%;
   margin: 20px 0 22px;
-  padding: 4px;
+  padding: 5px;
   border: none;
-  border-radius: 11px;
+  border-radius: 12px;
   background: rgba(0, 0, 0, 0.042);
 }
 
@@ -503,11 +579,15 @@
 }
 
 #article-container .bangumi-tab {
-  flex: 0 1 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  min-width: 0;
   margin: 0 !important;
-  padding: 6px 15px !important;
+  padding: 6px 10px !important;
   border: none !important;
-  border-radius: 8px;
+  border-radius: 9px;
   background: none;
   color: var(--lopx-muted) !important;
   font-size: 13px;
@@ -519,13 +599,44 @@
     background-color var(--lopx-dur-fast, 0.2s) ease;
 }
 
+#article-container .bangumi-tab-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 25px;
+  height: 19px;
+  padding: 0 6px;
+  border-radius: 6px;
+  background: rgba(0, 0, 0, 0.055);
+  font-size: 11.5px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+  letter-spacing: 0.01em;
+  color: inherit;
+  transition: color var(--lopx-dur-fast, 0.2s) ease,
+    background-color var(--lopx-dur-fast, 0.2s) ease;
+}
+
 #article-container .bangumi-tab:hover {
   color: var(--lopx-ink) !important;
   background: rgba(255, 255, 255, 0.55);
 }
 
+#article-container .bangumi-tab:hover .bangumi-tab-count {
+  background: rgba(0, 0, 0, 0.075);
+}
+
 [data-theme='dark'] #article-container .bangumi-tab:hover {
   background: rgba(255, 255, 255, 0.06);
+}
+
+[data-theme='dark'] #article-container .bangumi-tab-count {
+  background: rgba(255, 255, 255, 0.075);
+}
+
+[data-theme='dark'] #article-container .bangumi-tab:hover .bangumi-tab-count {
+  background: rgba(255, 255, 255, 0.11);
 }
 
 #article-container .bangumi-tab.bangumi-active {
@@ -535,12 +646,25 @@
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08), 0 0 0 0.5px rgba(0, 0, 0, 0.03);
 }
 
+#article-container .bangumi-tab.bangumi-active .bangumi-tab-count {
+  /* 不用 --lopx-accent 原值：它在白底上是 4.3:1，再叠 12% 的自身淡底后
+     掉到约 3.8:1，11.5px 的粗体数字不达标。压深两档到 5.3:1。 */
+  background: rgba(58, 122, 160, 0.12);
+  color: #2b5d7d;
+}
+
 [data-theme='dark'] #article-container .bangumi-tab.bangumi-active {
   /* 0.11 的白色叠在 0.055 的容器上只差 5 个百分点，暗色下几乎看不出选中。
      提到 0.19 并补一圈 1px 内描边，靠「亮度差 + 边缘」一起表达选中。 */
   color: var(--lopx-ink) !important;
   background: rgba(255, 255, 255, 0.19) !important;
   box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.09);
+}
+
+[data-theme='dark'] #article-container .bangumi-tab.bangumi-active .bangumi-tab-count {
+  /* 深色底上 #67b2d0 只剩约 3.4:1；提亮到 5.4:1，蓝的识别度还在。 */
+  background: rgba(103, 178, 208, 0.2);
+  color: #9fd7f0;
 }
 
 /* 47.8 分页条：grid 让分页条脱离了原来的文档流，
@@ -583,15 +707,23 @@
   }
 
   #article-container .bangumi-tabs {
-    display: flex;
     width: 100%;
-    gap: 2px;
+    gap: 3px;
+    padding: 4px;
   }
 
   #article-container .bangumi-tab {
-    flex: 1 1 0;
-    min-width: 0;
-    padding: 6px 8px !important;
+    padding: 6px 4px !important;
+    gap: 5px;
+  }
+
+  /* 390 视口下三段各 114px，标签 + 数字要一起塞进 padding 8px 之内，
+     所以数字胶囊比桌面窄 2px、字号小 0.5px —— 视觉上仍是同一个东西。 */
+  #article-container .bangumi-tab-count {
+    min-width: 23px;
+    height: 18px;
+    padding: 0 5px;
+    font-size: 11px;
   }
 
   #article-container .bangumi-title {
@@ -651,12 +783,13 @@
   opacity: 0.65;
 }
 
-/* 47.12 首屏未初始化时的防闪（2026-10-28）
-   标签切换与分页都由 /js/bangumi-page.js 接管，脚本执行前三个分组会
-   同时堆在页面上（每页 656KB 的 HTML 解析期间能看见一次「全量列表」）。
-   这里在 data-lopx-ready 置位前只放第一组出来；脚本一运行就接管。
-   纯 CSS 兜底，不依赖 JS 是否成功加载：失败时页面仍停在「想看」第 1 页，
-   只是翻不了页，不会变成三组全展开。 */
-#article-container .bangumi-container:not([data-lopx-ready]) > div > [id^='bangumi-item']:not(#bangumi-item1) {
-  display: none;
-}
+/* 47.12 首屏不再需要 CSS 兜底（2026-10-30）
+   旧版这里有一条
+     .bangumi-container:not([data-lopx-ready]) > div > [id^='bangumi-item']:not(#bangumi-item1){display:none}
+   用来在脚本执行前只放第一组出来，避免三组 346 条同时堆在页面上。
+   现在 filters/bangumi-page.js 已经把 `bangumi.show` 指定的组在**构建期**
+   写成 `bangumi-show`、其余写成 `bangumi-hide`（后者带 !important），
+   首帧就是正确的，且不依赖 JS 是否加载成功。
+   那条兜底必须删掉而不是保留：它写死了 #bangumi-item1，而 show=1（在看）时
+   真正该显示的组是 item2 —— 于是「在看」被隐藏、item1 又带着 bangumi-hide，
+   禁 JS 的页面上只剩 tabs，下面一片空白。 */
