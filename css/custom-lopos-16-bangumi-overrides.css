@@ -119,25 +119,6 @@
   color: #8fc2e0;
 }
 
-/* 45.5 追番 tabs：移动端三等分
-   ⚠️ 这里原本还有一条 active 的实底胶囊配色（#page #article-container 双 id），
-   特异性压过 §47.7 的下划线式，导致桌面是下划线、移动端却是蓝胶囊。
-   2026-10-19 统一到 §47.7，那两条已删除。 */
-
-@media screen and (max-width: 768px) {
-  #article-container .bangumi-tabs {
-    display: flex;
-    flex-wrap: nowrap;
-    gap: 6px;
-  }
-
-  #article-container .bangumi-tabs .bangumi-tab {
-    flex: 1 1 0;
-    min-width: 0;
-    text-align: center;
-  }
-}
-
 /* ============================================================
    46. 追番页：去掉右侧栏后的容器对齐 —— 2026-10-11
 
@@ -172,6 +153,20 @@
     padding-left: 32px;
     box-sizing: border-box;
   }
+
+  /* 2026-10-29 补：H1 也要落在同一条轴线上。
+     实测（1440）：#page 宽 1160 / 内衬 40 → .page-title 左缘 x=176，
+     而 #article-container 内容左缘 x=247，标题比正文向左偏出 71px。
+     海报墙把左缘当成一条明确的基准线，这 71px 的错位就藏不住了。
+     这里给 H1 同样的 1000 宽 + 32 内衬，x 回到 247。 */
+  #page:has(.bangumi-container) .page-title {
+    max-width: 1000px;
+    margin-right: auto;
+    margin-left: auto;
+    padding-right: 32px;
+    padding-left: 32px;
+    box-sizing: border-box;
+  }
 }
 
 /* ============================================================
@@ -196,114 +191,172 @@
 
    本节的覆盖全部带 `#article-container` 前缀（1 id + 1 class），
    高于插件内联 style 里的 `.bangumi-*`（0 id + 1 class），不需要 !important。
+
+   ⚠️ 2026-10-29 第三轮已把形态改成四列海报墙，上面这段「卡片 + 简介 3 行」
+   的描述是第二轮的历史记录，仅作背景保留；现行规格见 §47.1。
    ============================================================ */
 
-/* 47.1 条目：回到原版插件的「卡片」形态（原版 .bangumi-item 就是
-   flex + padding 18/20 + 1px 边框 + 8px 圆角）。
-   上一版改成纯分隔线列表，丢掉了卡片的空间界定，条目一长就分不清边界。
-   这里恢复卡片，但去掉原版那层 0 10px 28px 的浮起投影 ——
-   一屏四五张卡，投影叠起来就是一堆浮方块。 */
-#article-container .bangumi-item {
-  display: flex;
-  gap: 18px;
-  align-items: flex-start;
-  min-height: 0;
-  margin: 0 0 14px;
-  padding: 18px 20px;
-  border: 1px solid var(--lopx-line);
-  border-radius: 12px;
-  background: #fafbfc;
-  box-shadow: none;
+/* 47.1 布局：单列卡片 → 四列海报墙 —— 2026-10-29（第三轮）
+
+   前两轮都是「单列卡片 + 三行简介」模型，探针实测出的是模型本身的错配：
+     · 简介宽 766px / 13.5px → 每行 55 字。中文舒适区是 30–45 字，
+       三行叠起来就是一堵灰字墙，眼睛无法定位行；
+     · 封面只有 110px（占卡宽 11.8%），而追番内容的主角本就是封面；
+     · 卡片底 #fafbfc 与页面 #fff 对比度 1.01:1、边框 1.15:1 ——
+       31 张卡在视觉上融成一片，等于没有「块」的边界；
+     · 移动端 12.5px × 210px 文字列 = 每行 13 字，三行只装 39 字，
+       信息效率不足桌面版的 1/4。
+
+   本轮换成海报墙：封面占满列宽，只留「标题 + 评分」，简介整块隐藏。
+   四列的依据：内容区 936px，4 × 222px，封面 222×312（原图 400×562 锁比例）。
+   一屏 900 可见 2 行、8 张，对比旧版单列 3 张是 2.7 倍浏览效率。
+   每页 24 条 = 6 行，与 /js/bangumi-page.js 的 PAGE_SIZE 一致，无需改 JS。
+
+   ⚠️ 分组容器 #bangumi-itemN 是 grid 宿主，分页条是它的直接子元素，
+   必须 grid-column:1/-1 才不会被挤进某一列。
+   ============================================================ */
+
+#article-container [id^='bangumi-item'] {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 22px 16px;
 }
 
-/* 卡片底不能直接用 --lopx-surface：它在亮色下是纯白，而本页 #article-container
-   本身就是白卡，同色叠同色等于没有卡片。改用比白低一档的中性灰。 */
-[data-theme='dark'] #article-container .bangumi-item {
-  background: rgba(255, 255, 255, 0.028);
+#article-container [id^='bangumi-item'] > .bangumi-pagination {
+  grid-column: 1 / -1;
+}
+
+/* 47.2 条目：去掉卡片外壳。
+   海报墙的「卡」就是封面本身 —— 边框、底色、内衬、投影全部退场，
+   只留封面和两行文字。上一版的 1px 边框 + #fafbfc 底在这里只会在封面
+   外侧再套一层几乎看不见的框，纯属噪音。 */
+#article-container .bangumi-item {
+  position: relative;
+  display: block;
+  min-height: 0;
+  margin: 0;
+  padding: 0;
+  border: none;
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
 }
 
 #article-container .bangumi-item:last-of-type {
   margin-bottom: 0;
 }
 
-/* 47.2 封面位：恢复左 110px 固定图位。
-   之前隐藏是因为图源 lain.bgm.tv 国内直连超时、naturalWidth 恒 0。
-   现在封面地址在构建期被改写到镜像（scripts/filters/bangumi-cover-mirror.js
-   读 _config.yml 的 bangumi.coverMirror），镜像实测 200 / 1.9s，可以正常出图。
-   原图 400×562（1:1.405），锁 aspect-ratio 让加载中和失败时都不塌高。 */
+/* 47.2b 信息块：必须清掉插件内联 CSS 的 min-height。
+   插件给 .bangumi-info 写了 min-height:152px —— 那是给「110px 封面 + 三行
+   简介」的单列布局做视觉配重的。海报墙里简介已隐藏，这 152px 会把每张卡片
+   撑到 464px（内容实际只有 353px），行间凭空多出 111px 空白。
+   实测路径：item.h 464 vs（封面 312 + 标题 41），差值全部来自这里。 */
+#article-container .bangumi-info {
+  min-height: 0;
+  padding: 9px 0 0;
+}
+
+/* 47.3 封面：占满列宽、锁 400/562 比例。
+   比例锁在**容器**上而不是 img 上：img 带着固有尺寸（220×311~315），
+   在解码完成前浏览器会先按固有比例排版，实测截图里就是几张封面差 15~20px
+   的「不齐」；容器有确定的 aspect-ratio 之后，无论图片加载到哪一步，
+   占位高度都是 222×312，网格不会抖。
+   插件给 img 写了内联 width:110px;margin:20px auto，还有 width="110" 属性，
+   所以宽度必须 !important。object-fit:cover 兜住非标准比例的原图
+   （只裁掉一点边缘，不会变形）。
+   hover 只做 2px 上浮 + 一层投影：8 张同时悬停也保持克制。 */
 #article-container .bangumi-picture {
   display: block;
-  flex: 0 0 110px;
-  width: 110px;
+  width: 100%;
+  aspect-ratio: 400 / 562;
+  flex: none;
   margin: 0;
+  border-radius: 10px;
+  background: var(--lopx-line);
 }
 
 #article-container .bangumi-picture img {
   display: block;
-  width: 110px !important;
-  height: auto !important;
-  aspect-ratio: 400 / 562;
+  width: 100% !important;
+  height: 100% !important;
   margin: 0 !important;
-  border-radius: 8px;
+  border-radius: 10px;
   object-fit: cover;
   background: var(--lopx-line);
+  transition: transform 0.32s cubic-bezier(0.22, 0.61, 0.36, 1),
+    box-shadow 0.32s ease;
 }
 
-#article-container .bangumi-info {
-  min-height: 0;
-  padding-left: 0;
+#article-container .bangumi-item:hover .bangumi-picture img {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.14);
 }
 
-/* 原版给 .bangumi-meta 写了 min-height:54px（给图位做视觉配重），
-   没有图之后这 54px 就是纯空白。 */
-#article-container .bangumi-meta {
-  min-height: 0;
+[data-theme='dark'] #article-container .bangumi-item:hover .bangumi-picture img {
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.55);
 }
 
-/* 47.3 标题：独占整行，不再给评分让位。
-   上一版把评分绝对定位到条目右上、给标题 padding-right:64px，
-   实测长标题照样压上去：1440 标题框右缘 1183 vs 评分左缘 1105 = 重叠 78px；
-   390 更差（75px）。因为 padding 只收窄了文字，元素框仍是整行宽，
-   而评分浮在框上 —— 这就是用户说的「右边像被砍掉」。
-   现在评分回到 meta 行内（47.5），标题零让位。 */
+/* 47.4 标题：两行封顶 + 固定两行高度。
+   min-height 取 2 行（1.45 × 2 = 2.9em）让同排卡片严格等高、底边齐平。
+   评分已经移到封面角上（§47.5），所以这段留白不会像第一版那样
+   在「标题」与「评分」之间撕出一道 20px 的空隙 —— 它现在只是把
+   单行标题的卡片撑到与双行标题一致，底下已经没有内容了。
+   数据实测：346 条标题均 9.2 字、最长 32 字；14px 下每行约 15 字，
+   2 行覆盖全部条目（仅 1 条超 30 字，压到第 2 行末）。 */
 #article-container .bangumi-title {
-  margin: 0 0 7px;
-  padding-right: 0;
-  font-size: 16.5px;
-  font-weight: 650;
-  line-height: 1.42;
+  margin: 0;
+  padding: 0;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.45;
+  min-height: 2.9em;
 }
 
-/* ⚠️ 这里必须 !important。
-   主题 _extra/anzhiyu/custom.css:118 有一条通用链接装饰：
-     #article-container a:not([data-fancybox=gallery]):not(.headerlink):
-       not(.cf-friends-link):not(.tag-Link):not(.btn-anzhiyu):not(.no-text-decoration)
-     { border-bottom: solid 2px var(--anzhiyu-lighttext); color: var(--anzhiyu-fontcolor);
-       padding: 0 .2em; }
-   它的特异性是 (1,5,1)，本节最朴素的 (1,1,1) 压不住，
-   于是番剧标题也带上了 2px 金色下边框（亮色下淡得像分割线，暗色下很扎眼），
-   颜色也被改成 --anzhiyu-fontcolor 而非 --lopx-ink。
-   主题给这个逃生口预留了 .no-text-decoration，但标题由插件模板输出，加不了 class。 */
+/* 主题 _extra/anzhiyu/custom.css:118 那条 `#article-container a:not(…)×5`
+   （特异性 1,5,1）会给每个链接补 border-bottom:2px 金 + padding:0 .2em，
+   海报墙里标题也会被画上金线。插件模板生成的 a 加不了 .no-text-decoration，
+   只能 !important 压掉。 */
 #article-container .bangumi-title a {
+  display: -webkit-box;
+  overflow: hidden;
   color: var(--lopx-ink) !important;
   border-bottom: none !important;
   padding: 0 !important;
   text-decoration: none !important;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  word-break: break-word;
+  overflow-wrap: break-word;
   transition: color var(--lopx-dur-fast, 0.2s) ease;
 }
 
-/* 同上，hover 也要 !important，否则被上面那条 color !important 锁死不变色；
-   同时清掉主题通用链接的 2px 金线。 */
 #article-container .bangumi-title a:hover {
   color: var(--lopx-accent) !important;
   border-bottom: none !important;
   text-decoration: none !important;
 }
 
-/* 47.4 元信息：一行灰字。想看 / 在看 / 已看 是 bgm 全站统计，对读者无意义，隐去；
-   只留话数与类型。被隐藏的 item 不再占网格位。
-   「类型」这个 label 也去掉 —— 值是「动画 / TV」这类词，本身已自解释，
-   留着会变成「类型 动画」这种拗口读法。分隔符用中点，靠 gap 统一控制间距。 */
+/* 47.5 元信息：只留评分，且评分浮到封面角上（2026-10-29）
+   第一版把评分放在标题下方：短标题卡片里，标题与评分之间会空出
+   20px（min-height 预留的第二行），读起来像两个不相干的元素；
+   而且各卡标题行数不同，评分上下错位，网格看起来是「散」的。
+   现在把 `.bangumi-info-item-score` 绝对定位到封面右上角，
+   做成 `★ 8.1` 的深色玻璃徽章：
+     · 标题与评分不再抢同一条水平线，卡片只剩「封面 + 标题」；
+     · 徽章底色固定 rgba(12,16,22,.56) + 白字，在任何封面上
+       对比度都 ≥ 7:1，不受原作配色影响；
+     · 346 条实测全部有评分，不需要缺省态。
+   隐藏的「全 N 话」「类型」「想看/在看/已看」维持原判断：每列只有
+   222px，四类信息挤一行会退化成不可读的小字；后三个本来就是 bgm
+   全站统计，对读者没有意义。 */
+#article-container .bangumi-meta {
+  min-height: 0;
+  height: 0;
+  margin: 0;
+  overflow: visible;
+}
+
 #article-container .bangumi-info-items {
   display: flex;
   flex-wrap: wrap;
@@ -316,209 +369,195 @@
   color: var(--lopx-muted);
 }
 
-#article-container .bangumi-info-items > .bangumi-info-item + .bangumi-info-item::before {
-  content: '·';
-  margin: 0 7px;
-  color: var(--lopx-muted);
-  opacity: 0.55;
-}
-
-#article-container .bangumi-info-item {
-  display: inline-flex;
-  align-items: baseline;
-  gap: 4px;
-  width: auto;
-  min-width: 0;
-  min-height: 0;
-  height: auto;
-  padding: 0;
-  border: none;
-  border-radius: 0;
-  background: none;
-  text-align: left;
-}
-
-#article-container .bangumi-info-label {
-  display: inline;
-  color: var(--lopx-muted);
-  line-height: inherit;
-}
-
-/* 「类型」的 label 去掉，只留值（动画 / TV / 剧场版…） */
-#article-container .bangumi-type .bangumi-info-label {
+#article-container .bangumi-info-items > .bangumi-info-item:not(.bangumi-info-item-score) {
   display: none;
 }
 
-/* 「全 N 话」自带说明，不让它再派生一个「共」字之类的读法 */
-
-#article-container .bangumi-info-item em {
-  display: inline;
-  padding: 0;
-  overflow: visible;
-  color: var(--lopx-ink);
-  font-weight: 600;
-  white-space: normal;
-}
-
-#article-container .bangumi-info-total {
-  display: inline;
-  padding: 0;
-  font-weight: 600;
-  color: var(--lopx-ink);
-}
-
-#article-container .bangumi-info-label-em,
-#article-container .bangumi-wish,
-#article-container .bangumi-doing,
-#article-container .bangumi-collect {
-  display: none;
-}
-
-/* 47.5 评分：回到 meta 行内、靠 margin-left:auto 推到行尾。
-   这是「左右对齐」的关键 —— 元信息左起、评分右止，两条边都由卡片 padding 决定，
-   不会像绝对定位那样压到标题上。 */
-#article-container .bangumi-info-item-score {
-  position: static;
-  margin-left: auto;
-  padding-left: 12px;
+#article-container .bangumi-info-items > .bangumi-info-item-score {
+  position: absolute;
+  z-index: 2;
+  top: 8px;
+  right: 8px;
   display: inline-flex;
-  align-items: baseline;
-  gap: 4px;
-  border: none;
-  border-radius: 0;
-  background: none;
-}
-
-/* 行内后就不再需要「·」分隔（它已经是行尾独立的一块） */
-#article-container .bangumi-info-items > .bangumi-info-item-score::before {
-  content: none;
+  align-items: center;
+  gap: 3px;
   margin: 0;
+  padding: 3px 7px 3px 6px;
+  border: none;
+  border-radius: 7px;
+  background: rgba(12, 16, 22, 0.56);
+  -webkit-backdrop-filter: blur(8px) saturate(120%);
+  backdrop-filter: blur(8px) saturate(120%);
+  line-height: 1;
+  pointer-events: none;
+}
+
+#article-container .bangumi-info-items > .bangumi-info-item-score::before {
+  content: '★';
+  margin: 0;
+  font-size: 9px;
+  line-height: 1;
+  color: #ffd166;
+  opacity: 1;
 }
 
 #article-container .bangumi-info-item-score .bangumi-info-label {
-  font-size: 11px;
-  color: var(--lopx-muted);
+  display: none;
 }
 
 #article-container .bangumi-info-item-score em {
-  font-size: 15px;
-  font-weight: 700;
+  font-size: 11.5px;
+  font-weight: 600;
   font-variant-numeric: tabular-nums;
-  letter-spacing: -0.01em;
-  color: var(--lopx-accent);
+  letter-spacing: 0.01em;
+  line-height: 1;
+  color: #fff;
 }
 
-/* 47.6 简介：3 行截断（回到原版规格）+ 强制断词。
-   上一版把 clamp 整个放开想「显示全」，结果 1440 下一段 5 行、390 下 11 行，
-   条目高度在 207~804px 之间乱跳 —— 用户要的不是全文，是「不要超限、右边别被截」。
-   原版 index.css 的 .bangumi-summary>p 还有 word-break:break-word，
-   那是长日文/英文不断词造成右侧溢出的正解，一起补回来。 */
+/* 暗色下封面本身多半也偏暗，0.56 的透明度会让徽章边缘与画面糊在一起；
+   压到 0.68 并去掉饱和增强，保证在深色画面上仍有明确的圆角边界。 */
+[data-theme='dark'] #article-container .bangumi-info-items > .bangumi-info-item-score {
+  background: rgba(8, 10, 14, 0.68);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+}
+
+/* 47.6 简介：整块隐藏（2026-10-29）。
+   三行 clamp 在 222px 列宽里只装得下 30 字，读不出有效信息，
+   却把卡片高度从 379px 撑到 450px。想看简介点标题去 Bangumi。
+   注意：只作用于渲染结果，source/_data/bangumis.json 的 des 仍完整保留，
+   构建期的 180 字截断与 [简介原文] 清理照旧生效。 */
 #article-container .bangumi-summary {
-  margin-top: 9px;
-  font-size: 13.5px;
-  line-height: 1.8;
-  color: var(--lopx-muted);
+  display: none;
 }
 
-#article-container .bangumi-summary > p {
-  display: -webkit-box;
-  overflow: hidden;
-  height: auto;
-  margin: 0;
-  white-space: normal;
-  word-break: break-word;
-  overflow-wrap: break-word;
-  text-overflow: ellipsis;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 3;
-  line-clamp: 3;
-}
-
-/* 47.7 tabs：实心选中块 → 下划线式。
-   ⚠️ 本节所有属性都必须 !important。
-   主题 _extra/anzhiyu/custom.css:118 那条 `#article-container a:not(…)×5`
-   （特异性 1,5,1）会给每个 tab 补上 border-bottom: 2px 金 + padding: 0 .2em，
-   本节的 (1,1,1) 完全压不住。实测被压时：padding 变成 0 2.7px、
-   三个 tab 全都带同色下划线（不只 active）。 */
+/* 47.7 tabs：下划线式 → 胶囊分段控件（2026-10-29）
+   原来只有「换颜色 + 2px 下划线」，字号字重都不变，三个 tab 合计 164px
+   散在 936px 宽的容器里，视觉重量接近一行注释 —— 看不出是主导航。
+   换成胶囊：外层一条浅凹槽，选中项浮起成白底。
+   ⚠️ 本节所有属性仍需 !important —— 主题 _extra/anzhiyu/custom.css:118
+   的 `#article-container a:not(…)` 特异性 (1,5,1) 会给每个 tab 补
+   padding:0 .2em + 2px 金色下边框。 */
 #article-container .bangumi-tabs {
   display: flex;
   flex-wrap: nowrap;
-  gap: 0;
-  margin: 22px 0 18px;
-  padding: 0;
+  gap: 3px;
+  width: -moz-fit-content;
+  width: fit-content;
+  max-width: 100%;
+  margin: 20px 0 22px;
+  padding: 4px;
   border: none;
-  border-bottom: 1px solid var(--lopx-line);
-  border-radius: 0;
-  background: none;
+  border-radius: 11px;
+  background: rgba(0, 0, 0, 0.042);
+}
+
+[data-theme='dark'] #article-container .bangumi-tabs {
+  background: rgba(255, 255, 255, 0.055);
 }
 
 #article-container .bangumi-tab {
   flex: 0 1 auto;
-  padding: 0 0 10px !important;
-  margin-right: 26px;
-  border-radius: 0;
-  border-bottom: 2px solid transparent !important;
+  margin: 0 !important;
+  padding: 6px 15px !important;
+  border: none !important;
+  border-radius: 8px;
+  background: none;
   color: var(--lopx-muted) !important;
-  font-size: 13.5px;
-  font-weight: 600;
-  text-align: left;
-  transition: color var(--lopx-dur-fast, 0.2s) ease, border-color var(--lopx-dur-fast, 0.2s) ease;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.5;
+  text-align: center;
+  white-space: nowrap;
+  transition: color var(--lopx-dur-fast, 0.2s) ease,
+    background-color var(--lopx-dur-fast, 0.2s) ease;
 }
 
 #article-container .bangumi-tab:hover {
   color: var(--lopx-ink) !important;
-  background: none;
-  border-bottom-color: transparent !important;
+  background: rgba(255, 255, 255, 0.55);
+}
+
+[data-theme='dark'] #article-container .bangumi-tab:hover {
+  background: rgba(255, 255, 255, 0.06);
 }
 
 #article-container .bangumi-tab.bangumi-active {
   color: var(--lopx-ink) !important;
-  background: none !important;
-  box-shadow: none;
-  border-bottom-color: var(--lopx-accent) !important;
+  background: var(--lopx-surface) !important;
+  font-weight: 600;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08), 0 0 0 0.5px rgba(0, 0, 0, 0.03);
 }
 
 [data-theme='dark'] #article-container .bangumi-tab.bangumi-active {
+  /* 0.11 的白色叠在 0.055 的容器上只差 5 个百分点，暗色下几乎看不出选中。
+     提到 0.19 并补一圈 1px 内描边，靠「亮度差 + 边缘」一起表达选中。 */
   color: var(--lopx-ink) !important;
+  background: rgba(255, 255, 255, 0.19) !important;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.09);
 }
 
-/* 分页按钮同属 `a`，一样被那条规则压成「padding 0 2.7px + 金线」。 */
+/* 47.8 分页条：grid 让分页条脱离了原来的文档流，
+   默认会贴着最后一行海报的底边，这里补一段呼吸空间。 */
+#article-container [id^='bangumi-item'] > .bangumi-pagination {
+  margin-top: 14px;
+}
+
 #article-container .bangumi-button {
   padding: 5px 10px !important;
   border-bottom: none !important;
 }
 
-/* 47.8 窄屏：卡片内衬收紧，但仍保留左右内边距
-   （上一版这里写的是 padding:18px 0，纯分隔线列表下无碍，
-   换成卡片后会把文字顶到边框上）。 */
-@media screen and (max-width: 768px) {
-  #article-container .bangumi-item {
-    margin-bottom: 12px;
-    padding: 15px 16px;
-  }
-
-  #article-container .bangumi-title {
-    font-size: 15.5px;
-  }
-
-  #article-container .bangumi-summary {
-    font-size: 12.5px;
-    line-height: 1.75;
-  }
-
-  /* 390 视口下 110px 图位会把文字列压到 190px 以内，标题和简介都要反复折行，
-     缩到 88px（高 124px）后文字列回到 210px 以上。 */
-  #article-container .bangumi-picture {
-    flex: 0 0 88px;
-    width: 88px;
-  }
-
-  #article-container .bangumi-picture img {
-    width: 88px !important;
+/* 47.9 响应式：4 → 3 → 2 列。
+   1100px 断点：内容区跌破 4×200px 时封面明显小一号，退 3 列。
+   768px 断点：平板竖屏，3 列每列 235px 仍充裕。
+   560px 断点：390 视口下 3 列每列只剩 108px（封面高 152px），
+   已小到认不出脸；退 2 列后每列 166px（高 233px），接近豆瓣「看过」的尺寸。 */
+@media screen and (max-width: 1100px) {
+  #article-container [id^='bangumi-item'] {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
 
-/* 47.9 页首引语：渐变卡片 → 左侧细线
+@media screen and (max-width: 768px) {
+  #article-container [id^='bangumi-item'] {
+    gap: 18px 12px;
+  }
+
+  #article-container .bangumi-tabs {
+    display: flex;
+    width: 100%;
+    gap: 2px;
+  }
+
+  #article-container .bangumi-tab {
+    flex: 1 1 0;
+    min-width: 0;
+    padding: 6px 8px !important;
+  }
+
+  #article-container .bangumi-title {
+    font-size: 13px;
+    line-height: 1.42;
+    min-height: 2.84em;
+  }
+
+  /* 评分徽章尺寸不随断点变：11.5px 在 166px 与 222px 两种封面宽度上
+     占比相差不到 1%，没有缩小必要；多一条断点就多一处要同步的地方。 */
+}
+
+@media screen and (max-width: 560px) {
+  #article-container [id^='bangumi-item'] {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px 12px;
+  }
+
+  #article-container .bangumi-title {
+    font-size: 13.5px;
+  }
+}
+
+/* 47.10 页首引语：渐变卡片 → 左侧细线
    插件的 .bangumi-quote 是「主色 4px 左边框 + 对角渐变底 + 大引号 + 投影」，
    在标题下方占掉一整块，是本页最重的装饰。改成一条细线和一行灰字后，
    第一屏的视觉重心回到「番剧列表」本身。 */
@@ -545,3 +584,22 @@
 }
 
 
+/* 47.11 空简介（2026-10-28）
+   8 条番剧在 Bangumi 上没有 summary，插件写入的 des 是占位符 `-`，
+   页面就会出现「简介：-」。构建期已把这类改成「暂无简介」，
+   这里只做弱化，避免它比正文更抢眼。 */
+#article-container .bangumi-summary-empty {
+  color: var(--lopx-muted);
+  font-style: italic;
+  opacity: 0.65;
+}
+
+/* 47.12 首屏未初始化时的防闪（2026-10-28）
+   标签切换与分页都由 /js/bangumi-page.js 接管，脚本执行前三个分组会
+   同时堆在页面上（每页 656KB 的 HTML 解析期间能看见一次「全量列表」）。
+   这里在 data-lopx-ready 置位前只放第一组出来；脚本一运行就接管。
+   纯 CSS 兜底，不依赖 JS 是否成功加载：失败时页面仍停在「想看」第 1 页，
+   只是翻不了页，不会变成三组全展开。 */
+#article-container .bangumi-container:not([data-lopx-ready]) > div > [id^='bangumi-item']:not(#bangumi-item1) {
+  display: none;
+}
