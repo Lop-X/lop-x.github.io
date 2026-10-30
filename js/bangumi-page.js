@@ -20,7 +20,9 @@
 (function () {
   'use strict';
 
-  var PER_PAGE = 24;
+  // 25 = 五列 × 5 整行（见 custom-lopos-16-bangumi-overrides.css §47.1）。
+  // 换列数必须同步改这里，否则最后一页会剩半行。
+  var PER_PAGE = 25;
   var TOP_OFFSET = 96; // 固定导航栏 + 一点呼吸位
 
   function toArray(list) {
